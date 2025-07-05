@@ -9,8 +9,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
-    "express": "^5.1.0"
+    "@mikro-orm/core": "6.4.16",
+    "express": "4.*"
+  },
+  "devDependencies": {
+    "tsc-watch": "^7.1.1",
+    "typescript": "^5.8.3"
   }
 }
