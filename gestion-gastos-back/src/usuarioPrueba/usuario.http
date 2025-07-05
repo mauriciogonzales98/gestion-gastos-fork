@@ -1,0 +1,44 @@
+### GET all characters
+http://localhost:3000/api/usuario
+
+### GET 
+http://localhost:3000
+### POST a character
+# @name createVader
+POST http://localhost:3000/api/usuario
+Content-Type: application/json
+
+{
+    "nombre": "maldito",
+    "apellido": "maleante"
+}
+
+### POST a character
+POST http://localhost:3000/api/characters
+Content-Type: application/json
+
+{
+    "name": "Luke Skywalker",
+    "characterClass": 3,
+    "items": [1],
+    "attack": 20,
+    "mana": 70,
+    "hp": 130,
+    "level": 5
+}
+
+### POST a character
+# @name createCharacterToDelete
+POST http://localhost:3000/api/characters
+Content-Type: application/json
+
+{
+    "name": "Ashoka Tano",
+    "characterClass": 3,
+    "items": [1],
+    "attack": 20,
+    "mana": 70,
+    "hp": 130,
+    "level": 5
+}
+
