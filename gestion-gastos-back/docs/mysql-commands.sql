@@ -6,7 +6,6 @@ use heroclash4geeks;
 create user if not exists dsw@'%' identified by 'dsw';
 grant select, update, insert, delete on heroclash4geeks.* to dsw@'%';
 
-
 create table if not exists `heroclash4geeks`.`characters` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL,
