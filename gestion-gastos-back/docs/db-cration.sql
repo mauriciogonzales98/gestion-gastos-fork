@@ -30,6 +30,14 @@ create table if not exists `gestion_gastos`.`wallet` (
   PRIMARY KEY (`walletId`)
 );
 
+create table if not exists `gestion_gastos`.`tag` (
+  `tagId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tagName` VARCHAR(50) NULL UNIQUE,
+  `userId` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`tagId`),
+  FOREIGN KEY (`userId`) REFERENCES `user`(`userId`)
+);
+
 create table if not exists `gestion_gastos`.`operation` (
   `operationId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `operationAmount` DECIMAL(10, 2) NOT NULL,
@@ -44,12 +52,4 @@ create table if not exists `gestion_gastos`.`operation` (
   FOREIGN KEY (`categoryId`) REFERENCES `category`(`categoryId`),
   FOREIGN KEY (`tagId`) REFERENCES `tag`(`tagId`),
   FOREIGN KEY (`walletId`) REFERENCES `wallet`(`walletId`)
-);
-
-create table if not exists `gestion_gastos`.`tag` (
-  `tagId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `tagName` VARCHAR(50) NULL UNIQUE,
-  `userId` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`tagId`),
-  FOREIGN KEY (`userId`) REFERENCES `user`(`userId`)
 );
