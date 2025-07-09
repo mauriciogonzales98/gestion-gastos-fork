@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { Usuario } from './usuario.entity.js'
+import { Usuario } from './user.entity.js'
 import { orm } from '../shared/db/orm.js'
 
 const em = orm.em
@@ -11,7 +11,9 @@ function sanitizeCharacterInput(
 ) {
   req.body.sanitizedInput = {
     nombre: req.body.nombre,
-    apellido: req.body.apellido
+    apellido: req.body.apellido,
+    email: req.body.email,
+    password: req.body.password
   }
   //more checks here
 

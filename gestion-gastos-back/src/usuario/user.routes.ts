@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import { sanitizeCharacterInput, findAll, add } from './usuario.controller.js'
+import { sanitizeCharacterInput, findAll, add } from './user.controller.js'
 
-export const usuarioRouter = Router()
+export const userRouter = Router()
 
-usuarioRouter.get('/', findAll)
+userRouter.get('/', findAll)
 // characterRouter.get('/:id', findOne)
-usuarioRouter.post('/', sanitizeCharacterInput, add)
+userRouter.post('/', sanitizeCharacterInput, add)
 // characterRouter.put('/:id', sanitizeCharacterInput, update)
 // characterRouter.patch('/:id', sanitizeCharacterInput, update)
 // characterRouter.delete('/:id', remove)
