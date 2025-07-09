@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { Usuario } from './usuario.entity.js'
+import { User } from './user.entity.js'
 import { orm } from '../shared/db/orm.js'
 
 const em = orm.em
@@ -10,8 +10,10 @@ function sanitizeCharacterInput(
   next: NextFunction
 ) {
   req.body.sanitizedInput = {
-    nombre: req.body.nombre,
-    apellido: req.body.apellido
+    name: req.body.name,
+    surname: req.body.surname,
+    email: req.body.email,
+    password: req.body.password
   }
   //more checks here
 
@@ -25,11 +27,11 @@ function sanitizeCharacterInput(
 
 async function findAll(req: Request, res: Response) {
   try {
-    const usuarios = await em.find(
-      Usuario,
+    const users = await em.find(
+      User,
       {},
     )
-    res.status(200).json({ message: 'found all characters', data: usuarios })
+    res.status(200).json({ message: 'found all characters', data: users })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -37,9 +39,9 @@ async function findAll(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const usuario = em.create(Usuario, req.body.sanitizedInput)
+    const user = em.create(User, req.body.sanitizedInput)
     await em.flush()
-    res.status(201).json({ message: 'usuario creado', data: usuario })
+    res.status(201).json({ message: 'usuario creado', data: user })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }

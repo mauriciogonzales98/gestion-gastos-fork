@@ -6,10 +6,10 @@ export const orm = await MikroORM.init(
   defineConfig({
     entities: ['dist/**/*.entity.js'],
     entitiesTs: ['src/**/*.entity.ts'],
-    dbName: 'basedeprueba',
+    dbName: 'gestion_gastos',
     // type: 'mysql',
     // clientUrl: 'mysql://dsw:dsw@localhost:3306/basedeprueba',
-    clientUrl: 'mysql://dsw:dsw@localhost:3307/basedeprueba.',
+    clientUrl: 'mysql://dsw:dsw@localhost:3307/gestion_gastos.',
     highlighter: new SqlHighlighter(),
     debug: true,
     schemaGenerator: {
