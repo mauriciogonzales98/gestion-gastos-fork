@@ -13,12 +13,12 @@ export class Operation extends BaseEntity{
   idOperation!: number;
 
   @Property ({ nullable: true})
-  amoutOperation!: number; 
+  operationAmount!: number; 
 
   @Property ({ nullable: true})
-  dateOperation!: Date; //Revisar si es DateTimeType o Date
+  operationDate!: Date; //Revisar si es DateTimeType o Date
 
   @Property ({ nullable: true})
-  descriptionOperation!: string;
+  operationDescription!: string;
 
 }
