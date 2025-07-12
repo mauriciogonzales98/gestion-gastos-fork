@@ -19,7 +19,9 @@ create table if not exists `gestion_gastos`.`category` (
   `categoryName` VARCHAR(50) NULL UNIQUE,
   `categoryIcon` VARCHAR(50) NULL,
   `categoryDescription` VARCHAR(100) NULL,
-  PRIMARY KEY (`categoryId`)
+  `userId` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`categoryId`),
+  FOREIGN KEY (`userId`) REFERENCES `user`(`userId`)
 );
 
 create table if not exists `gestion_gastos`.`wallet` (

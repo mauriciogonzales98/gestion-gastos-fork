@@ -1,0 +1,14 @@
+### GET all characters
+http://localhost:3000/api/category
+
+### POST a character
+# @name AnUser
+POST http://localhost:3000/api/category
+Content-Type: application/json
+
+{
+    "name": "maldito",
+    "surname": "maleante",
+    "email": "lawea",
+    "password": "123456"
+}

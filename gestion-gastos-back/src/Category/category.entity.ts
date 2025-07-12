@@ -6,7 +6,7 @@ export class Category extends BaseEntity{
   @PrimaryKey()
   categoryId!: number;
 
-  @Property ({ nullable: true})
+  @Property ({ nullable: false})
   categoryName!: string; 
 
   @Property ({ nullable: true})

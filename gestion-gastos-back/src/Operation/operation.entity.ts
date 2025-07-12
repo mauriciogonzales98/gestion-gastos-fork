@@ -1,9 +1,9 @@
 import { BaseEntity, DateTimeType, Entity, ManyToOne, PrimaryKey } from "@mikro-orm/core";
 import { Property } from "@mikro-orm/core";
-import { User } from "../usuario/user.entity";
-import { Category } from "../Category/category.entity";
-import { Tag } from "../Tag/tag.entity";
-import { Wallet } from "../Wallet/wallet.entity";
+import { User } from "../User/user.entity.js";
+import { Category } from "../Category/category.entity.js";
+import { Tag } from "../Tag/tag.entity.js";
+import { Wallet } from "../Wallet/wallet.entity.js";
 
 @Entity()
 export class Operation extends BaseEntity{
