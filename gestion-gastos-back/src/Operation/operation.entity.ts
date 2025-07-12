@@ -1,11 +1,9 @@
-import { BaseEntity, DateTimeType, Entity, PrimaryKey } from "@mikro-orm/core";
+import { BaseEntity, DateTimeType, Entity, ManyToOne, PrimaryKey } from "@mikro-orm/core";
 import { Property } from "@mikro-orm/core";
-
-// `idMovimiento` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-//   `montoMovimiento` DECIMAL(10, 2) NOT NULL,
-//   `fechaMovimiento` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-//   `descripcionMovimiento` VARCHAR(100) NULL,
-//Traducimos Movimiento a Operation
+import { User } from "../usuario/user.entity";
+import { Category } from "../Category/category.entity";
+import { Tag } from "../Tag/tag.entity";
+import { Wallet } from "../Wallet/wallet.entity";
 
 @Entity()
 export class Operation extends BaseEntity{
@@ -21,4 +19,15 @@ export class Operation extends BaseEntity{
   @Property ({ nullable: true})
   operationDescription!: string;
 
+  @ManyToOne({entity: () => User, nullable: false})
+  user!: User;
+
+  @ManyToOne({entity: () => Category, nullable: true})
+  category!: Category;
+
+  @ManyToOne({entity: () => Tag, nullable: true})
+  tag!: Tag;
+
+  @ManyToOne({entity: () => Wallet, nullable: true})
+  wallet!: Wallet;
 }
