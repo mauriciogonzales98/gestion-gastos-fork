@@ -9,7 +9,8 @@ Content-Type: application/json
 {
     "name": "Ocio",
     "icon": "",
-    "description": ""
+    "description": "",
+    "userid": 1
 }
 
 ### DELETE a category

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { Category } from './category.entity.js'
 import { orm } from '../shared/db/orm.js'
+import { User } from '../User/user.entity.js'
 
 const em = orm.em
 
@@ -13,6 +14,7 @@ function sanitizeCategoryInput(
     name: req.body.name,
     icon: req.body.icon,
     description: req.body.description
+    // userid: Number(req.body.userid)
   }
   //more checks here
 
@@ -51,8 +53,13 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
+    // const category = em.create(Category, {...req.body.sanitizedInput,
+    //   userid: req.body.sanitizeCategoryInput.userid
+    // })
     const category = em.create(Category, req.body.sanitizedInput)
-    await em.flush()
+    const user = await em.findOneOrFail(User, { id: req.body.userid })
+    category.user = user
+    await em.persistAndFlush(category)
     res.status(201).json({ message: 'category created', data: category })
   } catch (error: any) {
     res.status(500).json({ message: error.message })

@@ -18,7 +18,7 @@ create table if not exists `gestion_gastos`.`category` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL UNIQUE,
   `icon` VARCHAR(50) NULL,
-  `cdescription` VARCHAR(100) NULL,
+  `description` VARCHAR(100) NULL,
   `userid` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES `user`(`id`)
