@@ -10,9 +10,9 @@ function sanitizeCategoryInput(
   next: NextFunction
 ) {
   req.body.sanitizedInput = {
-    categoryName: req.body.categoryName,
-    categoryIcon: req.body.categoryIcon,
-    categoryDescription: req.body.categoryDescription
+    name: req.body.name,
+    icon: req.body.icon,
+    description: req.body.description
   }
   //more checks here
 
@@ -26,11 +26,11 @@ function sanitizeCategoryInput(
 
 async function findAll(req: Request, res: Response) {
   try {
-    const categorys = await em.find(
+    const categories = await em.find(
       Category,
       {}
     )
-    res.status(200).json({ message: 'found all categorys', data: categorys })
+    res.status(200).json({ message: 'found all categorys', data: categories })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -41,7 +41,7 @@ async function findOne(req: Request, res: Response) {
     const id = Number.parseInt(req.params.id)
     const category = await em.findOneOrFail(
       Category,
-      { categoryId: id }
+      { id: id }
     )
     res.status(200).json({ message: 'found category', data: category })
   } catch (error: any) {
@@ -62,7 +62,7 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const categoryToUpdate = await em.findOneOrFail(Category,  { categoryId: id } )
+    const categoryToUpdate = await em.findOneOrFail(Category,  { id: id } )
     em.assign(categoryToUpdate, req.body.sanitizedInput)
     await em.flush()
     res
@@ -78,7 +78,7 @@ async function remove(req: Request, res: Response) {
     const id = Number.parseInt(req.params.id)
     // const category = em.getReference(Category, id)
     // await em.removeAndFlush(category)
-    const categoryToRemove = await em.findOneOrFail(Category, { categoryId: id });
+    const categoryToRemove = await em.findOneOrFail(Category, { id: id });
     await em.removeAndFlush(categoryToRemove);
     res.status(200).json({ message: 'category removed' });
   } catch (error: any) {

@@ -8,16 +8,16 @@ import { Wallet } from "../Wallet/wallet.entity.js";
 @Entity()
 export class Operation extends BaseEntity{
   @PrimaryKey()
-  idOperation!: number;
+  id!: number;
 
   @Property ({ nullable: true})
-  operationAmount!: number; 
+  amount!: number; 
 
   @Property ({ nullable: true})
-  operationDate!: Date; //Revisar si es DateTimeType o Date
+ date!: Date; //Revisar si es DateTimeType o Date
 
   @Property ({ nullable: true})
-  operationDescription!: string;
+  description!: string;
 
   @ManyToOne({entity: () => User, nullable: false})
   user!: User;

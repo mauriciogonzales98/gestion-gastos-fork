@@ -6,52 +6,52 @@ create user if not exists dsw@'%' identified by 'dsw';
 grant all on gestion_gastos.* to dsw@'%';
 
 create table if not exists `gestion_gastos`.`user` (
-  `userId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
   `surname` VARCHAR(50) NULL,
   `email` VARCHAR(50) NULL,
   `password` VARCHAR(255) NULL,
-  PRIMARY KEY (`userId`)
+  PRIMARY KEY (`id`)
 );
 
 create table if not exists `gestion_gastos`.`category` (
-  `categoryId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `categoryName` VARCHAR(50) NULL UNIQUE,
-  `categoryIcon` VARCHAR(50) NULL,
-  `categoryDescription` VARCHAR(100) NULL,
-  `userId` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`categoryId`),
-  FOREIGN KEY (`userId`) REFERENCES `user`(`userId`)
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NULL UNIQUE,
+  `icon` VARCHAR(50) NULL,
+  `cdescription` VARCHAR(100) NULL,
+  `userid` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`userid`) REFERENCES `user`(`id`)
 );
 
 create table if not exists `gestion_gastos`.`wallet` (
-  `walletId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `coin` VARCHAR(50) NULL UNIQUE,
-  `totalSpend` DECIMAL(10, 2) NULL,
-  `totalIncome` DECIMAL(10, 2) NULL,
-  PRIMARY KEY (`walletId`)
+  `spend` DECIMAL(10, 2) NULL,
+  `income` DECIMAL(10, 2) NULL,
+  PRIMARY KEY (`id`)
 );
 
 create table if not exists `gestion_gastos`.`tag` (
-  `tagId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `tagName` VARCHAR(50) NULL UNIQUE,
-  `userId` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`tagId`),
-  FOREIGN KEY (`userId`) REFERENCES `user`(`userId`)
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NULL UNIQUE,
+  `userid` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`userid`) REFERENCES `user`(`id`)
 );
 
 create table if not exists `gestion_gastos`.`operation` (
-  `operationId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `operationAmount` DECIMAL(10, 2) NOT NULL,
-  `operationDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `operationDescription` VARCHAR(100) NULL,
-  `userId` INT UNSIGNED NOT NULL,
-  `categoryId` INT UNSIGNED NOT NULL,
-  `tagId` INT UNSIGNED NOT NULL,
-  `walletId` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`operationId`),
-  FOREIGN KEY (`userId`) REFERENCES `user`(`userId`),
-  FOREIGN KEY (`categoryId`) REFERENCES `category`(`categoryId`),
-  FOREIGN KEY (`tagId`) REFERENCES `tag`(`tagId`),
-  FOREIGN KEY (`walletId`) REFERENCES `wallet`(`walletId`)
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `amount` DECIMAL(10, 2) NOT NULL,
+  `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `description` VARCHAR(100) NULL,
+  `userid` INT UNSIGNED NOT NULL,
+  `categoryid` INT UNSIGNED NOT NULL,
+  `tagid` INT UNSIGNED NOT NULL,
+  `walletid` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`userid`) REFERENCES `user`(`id`),
+  FOREIGN KEY (`categoryid`) REFERENCES `category`(`id`),
+  FOREIGN KEY (`tagid`) REFERENCES `tag`(`id`),
+  FOREIGN KEY (`walletid`) REFERENCES `wallet`(`id`)
 );

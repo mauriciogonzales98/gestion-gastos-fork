@@ -12,16 +12,10 @@ import { User } from "../User/user.entity.js";
 @Entity()
 export class Tag extends BaseEntity{
   @PrimaryKey()
-  tagId!: number;
+  id!: number;
 
   @Property ({ nullable: false})
-  tagName!: string; 
-
-  @Property ({ nullable: false})
-  userId!: number;
-
-  @Property ({ nullable: true})
-  categoryDescription!: string;
+  name!: string; 
 
   @ManyToOne({ entity: () => User, nullable: false })
   user!: User;

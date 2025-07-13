@@ -4,15 +4,15 @@ import { Property } from "@mikro-orm/core";
 @Entity()
 export class Category extends BaseEntity{
   @PrimaryKey()
-  categoryId!: number;
+  id!: number;
 
   @Property ({ nullable: false})
-  categoryName!: string; 
+  name!: string; 
 
   @Property ({ nullable: true})
-  categoryIcon!: string;
+  icon!: string;
 
   @Property ({ nullable: true})
-  categoryDescription!: string;
+  description!: string;
 
 }
