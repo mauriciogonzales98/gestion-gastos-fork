@@ -1,23 +1,23 @@
 import { BaseEntity, DateTimeType, Entity, ManyToOne, PrimaryKey } from "@mikro-orm/core";
 import { Property } from "@mikro-orm/core";
-import { User } from "../usuario/user.entity";
-import { Category } from "../Category/category.entity";
-import { Tag } from "../Tag/tag.entity";
-import { Wallet } from "../Wallet/wallet.entity";
+import { User } from "../User/user.entity.js";
+import { Category } from "../Category/category.entity.js";
+import { Tag } from "../Tag/tag.entity.js";
+import { Wallet } from "../Wallet/wallet.entity.js";
 
 @Entity()
 export class Operation extends BaseEntity{
   @PrimaryKey()
-  idOperation!: number;
+  id!: number;
 
   @Property ({ nullable: true})
-  operationAmount!: number; 
+  amount!: number; 
 
   @Property ({ nullable: true})
-  operationDate!: Date; //Revisar si es DateTimeType o Date
+ date!: Date; //Revisar si es DateTimeType o Date
 
   @Property ({ nullable: true})
-  operationDescription!: string;
+  description!: string;
 
   @ManyToOne({entity: () => User, nullable: false})
   user!: User;

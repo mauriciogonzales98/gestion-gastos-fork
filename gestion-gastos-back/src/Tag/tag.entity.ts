@@ -5,21 +5,18 @@
 //   PRIMARY KEY (`tagId`),
 //   FOREIGN KEY (`userId`) REFERENCES `user`(`userId`)
 // );
-import { BaseEntity, Entity, PrimaryKey } from "@mikro-orm/core";
+import { BaseEntity, Entity, ManyToOne, PrimaryKey } from "@mikro-orm/core";
 import { Property } from "@mikro-orm/core";
+import { User } from "../User/user.entity.js";
 
 @Entity()
 export class Tag extends BaseEntity{
   @PrimaryKey()
-  tagId!: number;
+  id!: number;
 
   @Property ({ nullable: false})
-  tagName!: string; 
+  name!: string; 
 
-  @Property ({ nullable: false})
-  userId!: number;
-
-  @Property ({ nullable: true})
-  categoryDescription!: string;
-
+  @ManyToOne({ entity: () => User, nullable: false })
+  user!: User;
 }
