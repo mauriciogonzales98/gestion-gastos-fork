@@ -40,10 +40,12 @@ async function findAll(req: Request, res: Response) {
 
 async function findOne(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
+    const idToFind = Number(req.params.id)
+    console.log('idToFind', req.params.id)
     const category = await em.findOneOrFail(
       Category,
-      { id: id }
+      { id: idToFind },
+      { populate: ['user'] }
     )
     res.status(200).json({ message: 'found category', data: category })
   } catch (error: any) {
@@ -53,9 +55,6 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    // const category = em.create(Category, {...req.body.sanitizedInput,
-    //   userid: req.body.sanitizeCategoryInput.userid
-    // })
     const category = em.create(Category, req.body.sanitizedInput)
     const user = await em.findOneOrFail(User, { id: req.body.userid })
     category.user = user

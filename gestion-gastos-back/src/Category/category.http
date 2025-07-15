@@ -13,6 +13,15 @@ Content-Type: application/json
     "userid": 1
 }
 
+### GET one category
+# @name AnUser
+GET http://localhost:3000/api/category/1
+Content-Type: application/json
+
+{
+    "id": 1
+}
+
 ### DELETE a category
 # @name AnUser
 DELETE http://localhost:3000/api/category/{id}
