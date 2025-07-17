@@ -3,15 +3,11 @@ import Prueba from "./Prueba.jsx";
 import Login from "./components/Registration/Login.jsx";
 import React from "react";
 function App() {
-  const [showLogin, setShowLogin] = React.useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   return (
     <div>
-      {showLogin ? (
-        <Login />
-      ) : (
-        <Prueba onLoginClick={() => setShowLogin(true)} />
-      )}
+      {showLogin ? <Login /> : <Prueba onLoginClick={() => setShowLogin} />}
     </div>
   );
 }
