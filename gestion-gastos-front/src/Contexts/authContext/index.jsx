@@ -1,8 +1,8 @@
-import { auth } from "../../Firebase/Firebase";
-import React, { useContext, useState, useEffect } from "react";
+import { auth } from "../../Firebase/Firebase.js";
+import React, { useContext, useState, useEffect, createContext } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 
-const AuthContext = React.createContext();
+const AuthContext = createContext();
 
 export function useAuth() {
   return useContext(AuthContext);
