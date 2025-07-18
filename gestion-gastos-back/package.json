@@ -15,10 +15,12 @@
     "@mikro-orm/core": "6.4.16",
     "@mikro-orm/mysql": "^6.4.16",
     "@mikro-orm/sql-highlighter": "^1.0.1",
+    "cors": "^2.8.5",
     "express": "4.*",
     "mysql2": "^3.14.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.10",
     "tsc-watch": "^7.1.1",

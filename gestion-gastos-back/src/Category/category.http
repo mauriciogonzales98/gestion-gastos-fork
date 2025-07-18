@@ -1,9 +1,9 @@
 ### GET all categories
-http://localhost:3000/api/category
+http://localhost:3001/api/category
 
 ### POST a new category
 # @name AnUser
-POST http://localhost:3000/api/category
+POST http://localhost:3001/api/category
 Content-Type: application/json
 
 {
@@ -15,18 +15,20 @@ Content-Type: application/json
 
 ### GET one category
 # @name AnUser
-GET http://localhost:3000/api/category/1
+@id = 1
+GET http://localhost:3001/api/category/{{id}}
 Content-Type: application/json
 
-{
-    "id": 1
-}
+# {
+#     "id": 1
+# }
 
 ### DELETE a category
 # @name AnUser
-DELETE http://localhost:3000/api/category/{id}
+@id = 1
+DELETE http://localhost:3001/api/category/{{id}}
 Content-Type: application/json
 
-{
-    "id": "1"
-}
+# {
+#     "id": "1"
+# }
