@@ -4,7 +4,7 @@ import { Property } from "@mikro-orm/core";
 @Entity()
 export class User extends BaseEntity{
   @PrimaryKey()
-  userId!: number;
+  id!: number;
 
   @Property ({ nullable: true})
   name!: string; 
@@ -12,10 +12,10 @@ export class User extends BaseEntity{
   @Property ({ nullable: true})
   surname!: string;
 
-  @Property ({ nullable: true})
+  @Property ({ nullable: false, unique: true })
   email!: string;
 
-  @Property ({ nullable: true})
+  @Property ({ nullable: false})
   password!: string;
 
 }

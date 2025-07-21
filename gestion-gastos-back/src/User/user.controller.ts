@@ -10,6 +10,7 @@ function sanitizeCharacterInput(
   next: NextFunction
 ) {
   req.body.sanitizedInput = {
+    id: req.body.id,
     name: req.body.name,
     surname: req.body.surname,
     email: req.body.email,

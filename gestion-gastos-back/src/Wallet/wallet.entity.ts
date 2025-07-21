@@ -1,5 +1,7 @@
 import { BaseEntity, Entity, PrimaryKey } from "@mikro-orm/core";
 import { Property } from "@mikro-orm/core";
+import { ManyToOne } from "@mikro-orm/core";
+import { User } from "../User/user.entity.js";
 
 @Entity()
 export class Wallet extends BaseEntity{
@@ -10,8 +12,11 @@ export class Wallet extends BaseEntity{
   coin!: string; 
 
   @Property ({ nullable: true})
-  totalSpend!: number;
+  spend!: number;
 
   @Property ({ nullable: true})
-  totalIncome!: number;
+  income!: number;
+
+  @ManyToOne({entity:() => User, nullable: false})
+  user!: User;
 }
