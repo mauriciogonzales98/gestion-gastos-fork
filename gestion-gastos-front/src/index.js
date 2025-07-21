@@ -4,6 +4,7 @@ import "./index.css";
 import { AuthProvider } from "./Contexts/authContext/index.jsx";
 import App from "./App.jsx";
 import reportWebVitals from "./reportWebVitals.js";
+import { CategoryForm } from './components/CategoryForm/CategoryForm.js';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -13,6 +14,8 @@ root.render(
         <App />
       </div>
     </AuthProvider>
+    <CategoryForm />
+    <App />
   </React.StrictMode>
 );
 
