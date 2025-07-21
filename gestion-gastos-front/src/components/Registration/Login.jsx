@@ -1,6 +1,6 @@
 import { doEmailPasswordSignUp, doGoogleSignUp } from "../../Firebase/auth.js";
 import { useAuth } from "../../Contexts/authContext/index.jsx";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
 import { App } from "../../App.jsx";
 
@@ -12,16 +12,32 @@ const Login = () => {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    if (userLoggedIn) {
+      navigate("/Main");
+    }
+  }, [navigate, userLoggedIn]);
+
   // Email and Password Sign In
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
-      await doEmailPasswordSignUp(email, password);
+      try {
+        await doEmailPasswordSignUp(email, password);
+        navigate("/Main");
+      } catch (err) {
+        if (err.message === "Firebase: Error (auth/invalid-credential).") {
+          setErrorMessage("Invalid email or password");
+        } else {
+          setErrorMessage(err.message);
+        }
+        setIsSigningIn(false);
+      }
     }
   };
   // Google Sign In
-  const onGoogleSignIn = async () => {
+  const onGoogleSignIn = async (e) => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
@@ -35,9 +51,9 @@ const Login = () => {
   // Page
   return (
     <>
-      {/* {userLoggedIn && <Navigate to={"/home"} replace={true} />} */}
       <h1>Login Page</h1>
-      <button onClick={() => navigate("/")}>HOME</button>
+
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
 
       <form onSubmit={(e) => onSubmit(e)}>
         <label>Email:</label>
@@ -57,6 +73,8 @@ const Login = () => {
         <button type="submit">Login</button>
       </form>
       <button onClick={onGoogleSignIn}>Sign in with Google</button>
+      <label>¿No tiene una cuenta? </label>
+      <a href="/register">Regístrese aquí</a>
     </>
   );
 };
