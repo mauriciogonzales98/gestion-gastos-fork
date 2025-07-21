@@ -1,19 +1,25 @@
 import "./App.css";
-import Home from "./Home.jsx";
+import Home from "./components/Home.jsx";
 import Login from "./components/Registration/Login.jsx";
+import Main from "./components/Main.jsx";
+import NavBar from "./components/NavBar.jsx";
 import { React, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Register from "./components/Registration/Register.jsx";
+import { Navigate } from "react-router-dom";
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/Main" element={<Main />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

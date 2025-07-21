@@ -2,7 +2,7 @@ import { auth } from "../../Firebase/Firebase.js";
 import React, { useContext, useState, useEffect, createContext } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -35,7 +35,6 @@ export function AuthProvider({ children }) {
   };
   return (
     <AuthContext.Provider value={{ value }}>
-      {" "}
       {!loading && children}
     </AuthContext.Provider>
   );

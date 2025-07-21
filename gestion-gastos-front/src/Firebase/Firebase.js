@@ -8,7 +8,7 @@ const firebaseConfig = {
 
   projectId: "gestion-gastos-f2d5f",
 
-  storageBucket: "gestion-gastos-f2d5f.firebasestorage.app",
+  storageBucket: "gestion-gastos-f2d5f.firebasestorage.app.com",
 
   messagingSenderId: "1061304688994",
 
