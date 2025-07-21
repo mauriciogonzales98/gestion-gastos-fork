@@ -28,7 +28,7 @@ const Register = () => {
           email,
           password
         );
-        await updateProfile(userCredential.user, {
+        updateProfile(userCredential.user, {
           displayName: `${name} ${surname}`,
         });
         navigate("/Main");
