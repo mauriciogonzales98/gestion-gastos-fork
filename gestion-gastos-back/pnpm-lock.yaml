@@ -20,6 +20,9 @@ importers:
       express:
         specifier: 4.*
         version: 4.21.2
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
       mysql2:
         specifier: ^3.14.2
         version: 3.14.2
