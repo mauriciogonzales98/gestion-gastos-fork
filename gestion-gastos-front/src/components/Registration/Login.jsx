@@ -53,7 +53,14 @@ const Login = () => {
     <>
       <h1>Login Page</h1>
 
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {errorMessage && (
+        <p
+          className="error-message"
+          style={{ color: "brown", backgroundColor: "lightyellow" }}
+        >
+          {errorMessage}
+        </p>
+      )}
 
       <form onSubmit={(e) => onSubmit(e)}>
         <label>Email:</label>

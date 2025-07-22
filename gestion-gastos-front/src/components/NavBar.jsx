@@ -25,9 +25,8 @@ const NavBar = () => {
               {value.user && (
                 <button
                   onClick={() => {
-                    doSignOut().then(() => {
-                      navigate("/home");
-                    });
+                    doSignOut();
+                    navigate("/home");
                   }}
                 >
                   Sign Out

@@ -3,7 +3,6 @@ import { useAuth } from "../Contexts/authContext/index.jsx";
 import { AuthContext } from "../Contexts/authContext/index.jsx";
 const Main = () => {
   const navigate = useNavigate();
-  const { userLoggedIn } = useAuth();
   return (
     <>
       <AuthContext.Consumer>

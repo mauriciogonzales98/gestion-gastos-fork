@@ -43,7 +43,14 @@ const Register = () => {
     <>
       <div className="register-container">
         <h2>Register</h2>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        {errorMessage && (
+          <p
+            className="error-message"
+            style={{ color: "brown", backgroundColor: "lightyellow" }}
+          >
+            {errorMessage}
+          </p>
+        )}
 
         <form className="register-form" onSubmit={(e) => onSubmit(e)}>
           <div className="form-group">
