@@ -13,14 +13,17 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(true);
 
+  // initializeUser is called whenever the auth state of Firebase changes (when a user logs in or out,
+  // when they register, etc.)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, initializeUser);
     return unsubscribe;
   }, []);
 
-  async function initializeUser(user) {
+  function initializeUser(user) {
     if (user) {
       setUser({ ...user });
+      user;
       setLoggedIn(true);
     } else {
       setUser(null);

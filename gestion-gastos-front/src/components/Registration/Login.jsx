@@ -3,12 +3,13 @@ import { useAuth } from "../../Contexts/authContext/index.jsx";
 import { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
 import { App } from "../../App.jsx";
+import Form from "react-bootstrap/form";
 
 const Login = () => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -19,12 +20,14 @@ const Login = () => {
   }, [navigate, userLoggedIn]);
 
   // Email and Password Sign In
-  const onSubmit = async (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
+    const formData = new FormData(e.target);
+    const payload = Object.fromEntries(formData);
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        await doEmailPasswordSignUp(email, password);
+        await doEmailPasswordSignUp(payload.email, payload.password);
         navigate("/Main");
       } catch (err) {
         if (err.message === "Firebase: Error (auth/invalid-credential).") {
@@ -36,6 +39,23 @@ const Login = () => {
       }
     }
   };
+  // const onSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!isSigningIn) {
+  //     setIsSigningIn(true);
+  //     try {
+  //       await doEmailPasswordSignUp(email, password);
+  //       navigate("/Main");
+  //     } catch (err) {
+  //       if (err.message === "Firebase: Error (auth/invalid-credential).") {
+  //         setErrorMessage("Invalid email or password");
+  //       } else {
+  //         setErrorMessage(err.message);
+  //       }
+  //       setIsSigningIn(false);
+  //     }
+  //   }
+  // };
   // Google Sign In
   const onGoogleSignIn = async (e) => {
     e.preventDefault();
@@ -62,23 +82,26 @@ const Login = () => {
         </p>
       )}
 
-      <form onSubmit={(e) => onSubmit(e)}>
+      <form onSubmit={submitForm}>
         <label>Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+        <Form.Control
+          type="text"
+          id="email"
+          name="email"
+          //onChange={(e) => setName(e.target.value)}
           required
         />
         <label>Password:</label>
-        <input
+        <Form.Control
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          id="password"
+          name="password"
+          //onChange={(e) => setName(e.target.value)}
           required
         />
         <button type="submit">Login</button>
       </form>
+
       <button onClick={onGoogleSignIn}>Sign in with Google</button>
       <label>¿No tiene una cuenta? </label>
       <a href="/register">Regístrese aquí</a>

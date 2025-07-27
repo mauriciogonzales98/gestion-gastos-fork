@@ -10,11 +10,11 @@ const Main = () => {
           <>
             <h1> Su email es {value.user ? value.user.email : "Invitado"}</h1>
             <h2> Su ID es {value.user ? value.user.uid : "Invitado"}</h2>
-            <h3>
+            <h2>
               {" "}
-              Su nombre completo es{" "}
-              {value.user ? value.user.displayName : "Invitado"}
-            </h3>
+              Su nombre es {value.user.displayName} y su apellido es{" "}
+              {value.user.displaySurname}
+            </h2>
           </>
         )}
       </AuthContext.Consumer>
