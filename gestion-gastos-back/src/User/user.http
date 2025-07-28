@@ -10,7 +10,7 @@ Content-Type: application/json
     "name": "maldito",
     "surname": "maleante",
     "email": "lawea",
-    "password": "1236",
-    "id": 1233345 
+    "password": "123456",
+    "id": 12345 
     
 }

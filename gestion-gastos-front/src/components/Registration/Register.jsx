@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { doCreateUserWithEmailAndPassword } from "../../Firebase/auth.js";
 import Form from "react-bootstrap/Form";
 import { getAuth } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const Register = () => {
   // const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
+
+  //current user
 
   //current user
 
@@ -63,6 +66,23 @@ const Register = () => {
         setIsRegistering(false);
       }
     }
+  };
+  const commitToDB = async (e, user) => {
+    fetch(`http://localhost:3001/api/user`, {
+      method: "POST",
+      id: user.uid,
+      name: payload.name,
+      surname: payload.surname,
+      email: payload.email,
+      password: payload.password,
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          // exito
+          alert("Usuario creado");
+        }
+      });
   };
 
   return (
