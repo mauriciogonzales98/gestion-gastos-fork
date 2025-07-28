@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { doCreateUserWithEmailAndPassword } from "../../Firebase/auth.js";
 import Form from "react-bootstrap/Form";
+import { getAuth } from "firebase/auth";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -15,11 +16,34 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
 
+  //current user
+
   //Recieves the data from the Form
   const submitForm = async (e) => {
     e.preventDefault();
+    const commitToDB = async (e, user) => {
+      fetch(`http://localhost:3001/api/user`, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify(datosUsuario),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.success) {
+            // exito
+            alert("Usuario creado");
+          }
+        });
+    };
     const formData = new FormData(e.target);
     const payload = Object.fromEntries(formData);
+    let datosUsuario = {
+      name: payload.name,
+      surname: payload.surname,
+      email: payload.email,
+      password: payload.password,
+    };
+
     if (!isRegistering) {
       setIsRegistering(true);
       // Firebase realiza únicamente la autenticación del usuario, por lo que solo vamos a
@@ -29,6 +53,10 @@ const Register = () => {
       // y el resto de datos directamente del Form.
       try {
         await doCreateUserWithEmailAndPassword(payload.email, payload.password);
+        const user = getAuth.currentUser;
+
+        await commitToDB(e, user);
+
         navigate("/Main");
       } catch (err) {
         setErrorMessage(err.message);
