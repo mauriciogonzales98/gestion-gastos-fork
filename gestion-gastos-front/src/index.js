@@ -15,7 +15,6 @@ root.render(
       </div>
     </AuthProvider>
     <CategoryForm />
-    <App />
   </React.StrictMode>
 );
 
