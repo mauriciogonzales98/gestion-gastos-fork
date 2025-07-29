@@ -1,4 +1,5 @@
 import express from "express"; // Importing the express module
+import cors from "cors"; // Importing CORS middleware
 import "reflect-metadata";
 import { userRouter } from "./User/user.routes.js";
 import { categoryRouter } from "./Category/category.routes.js";
@@ -9,6 +10,17 @@ const app = express(); // Creating an express app
 
 // Create a route that sends a response when visiting the homepage
 app.use(express.json());
+
+app.use(cors());
+
+// Configuración más específica (recomendada)
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    // credentials: true
+  })
+);
 
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
