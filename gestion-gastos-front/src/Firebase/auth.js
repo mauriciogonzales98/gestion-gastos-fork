@@ -6,6 +6,9 @@ import {
   updatePassword,
   signInWithPopup,
   sendPasswordResetEmail,
+  deleteUser,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
 } from "firebase/auth";
 
 export const doEmailPasswordSignUp = async (email, password) => {
@@ -40,4 +43,16 @@ export const doSendEmailVerification = () => {
 
 export const doSignOut = () => {
   return auth.signOut();
+};
+
+export const doDeleteUser = async (user, email, password) => {
+  const credential = EmailAuthProvider.credential(email, password);
+  await reauthenticateWithCredential(user, credential);
+  await deleteUser(user)
+    .then(() => {
+      console.log("FB Auth: User deleted");
+    })
+    .catch((error) => {
+      console.log("FB Auth: Error deleting user:", error);
+    });
 };

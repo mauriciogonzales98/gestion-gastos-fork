@@ -7,10 +7,14 @@ POST http://localhost:3001/api/user
 Content-Type: application/json
 
 {
-    "name": "maldito",
+    "name": "el",
     "surname": "maleante",
-    "email": "lawea",
-    "password": "123456",
-    "id": 12345 
+    "email": "elmaleante@gmail.com",
+    "password": "OnePairOfPants123",
+    "id": 1
     
 }
+### DELETE character
+DELETE http://localhost:3001/api/user/1233349
+
+

@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { doCreateUserWithEmailAndPassword } from "../../Firebase/auth.js";
 import Form from "react-bootstrap/Form";
 import { getAuth } from "firebase/auth";
-import { getAuth } from "firebase/auth";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -25,22 +24,28 @@ const Register = () => {
   const submitForm = async (e) => {
     e.preventDefault();
     const commitToDB = async (e, user) => {
-      fetch(`http://localhost:3001/api/user`, {
-        method: "POST",
-        mode: "cors",
-        body: JSON.stringify(datosUsuario),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.success) {
-            // exito
-            alert("Usuario creado");
-          }
-        });
+      try {
+        await fetch(`http://localhost:3001/api/user`, {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(datosUsuario),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            if (res.success) {
+              console.log("Usuario creado en BE");
+            }
+          });
+      } catch (error) {
+        console.log(error);
+      }
     };
     const formData = new FormData(e.target);
     const payload = Object.fromEntries(formData);
-    let datosUsuario = {
+    const datosUsuario = {
       name: payload.name,
       surname: payload.surname,
       email: payload.email,
