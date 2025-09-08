@@ -19,6 +19,14 @@
     {
       "folderPath": "gestion-gastos-front\\src\\components\\Registration\\",
       "badge": "📝"
+    },
+    {
+      "folderPath": "gestion-gastos-front\\src\\Firebase\\",
+      "badge": "🔥"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\Firebase\\FirebaseAdmin\\",
+      "badge": "🔥"
     }
   ]
 }

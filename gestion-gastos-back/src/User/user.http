@@ -15,6 +15,6 @@ Content-Type: application/json
     
 }
 ### DELETE character
-DELETE http://localhost:3001/api/user/1233349
+DELETE http://localhost:3001/api/user/:id
 
 

@@ -1,5 +1,5 @@
-import { doEmailPasswordSignUp, doGoogleSignUp } from "../../Firebase/auth.js";
-import { useAuth } from "../../Contexts/authContext/index.jsx";
+import { fbEmailPasswordSignUp, fbGoogleSignUp } from "../../Firebase/auth.js";
+import { useAuth } from "../../Contexts/FBauthContext/index.jsx";
 import { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
 import { App } from "../../App.jsx";
@@ -27,7 +27,8 @@ const Login = () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        await doEmailPasswordSignUp(payload.email, payload.password);
+        //Firebase Auth Sign in
+        await fbEmailPasswordSignUp(payload.email, payload.password);
         navigate("/Main");
       } catch (err) {
         if (err.message === "Firebase: Error (auth/invalid-credential).") {
@@ -61,7 +62,7 @@ const Login = () => {
     e.preventDefault();
     if (!isSigningIn) {
       setIsSigningIn(true);
-      doGoogleSignUp().catch((err) => {
+      fbGoogleSignUp().catch((err) => {
         setErrorMessage(err.message);
         setIsSigningIn(false);
       });

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { doSignOut } from "../Firebase/auth";
-import { AuthContext } from "../Contexts/authContext";
+import { fbSignOut } from "../Firebase/auth";
+import { AuthContext } from "../Contexts/FBauthContext";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const NavBar = () => {
               {value.user && (
                 <button
                   onClick={() => {
-                    doSignOut();
+                    fbSignOut();
                     navigate("/home");
                   }}
                 >

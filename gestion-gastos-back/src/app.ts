@@ -11,8 +11,6 @@ const app = express(); // Creating an express app
 // Create a route that sends a response when visiting the homepage
 app.use(express.json());
 
-app.use(cors());
-
 // Configuración más específica (recomendada)
 app.use(
   cors({
@@ -24,6 +22,7 @@ app.use(
 
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
+  next();
 });
 
 app.use("/api/user", userRouter);

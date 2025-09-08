@@ -1,8 +1,31 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Contexts/authContext/index.jsx";
-import { AuthContext } from "../Contexts/authContext/index.jsx";
-import { doDeleteUser } from "../Firebase/auth.js";
-import { getAuth } from "firebase/auth";
+import { useAuth } from "../Contexts/FBauthContext/index.jsx";
+import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
+import { fbDeleteUser } from "../Firebase/auth.js";
+import { deleteUser, getAuth } from "firebase/auth";
+const userDeleteManager = async (user) => {
+  try {
+    const auth = getAuth();
+    // Esto borra el usuario de Firebase
+    fbDeleteUser(auth.user, auth.user.email, prompt("confirme su contraseña"));
+
+    //Borra el usuario de la base de datos
+    //Obtiene el token de identidad para autenticar al usuario,
+    //  refrescando el id para evitar su vencimiento durante el proceso.
+    const token = await auth.currentUser.getIdToken(true);
+    fetch(`http://localhost:3001/api/user/`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `bearer ${token}`,
+      },
+      body: JSON.stringify({ email: user.email }),
+    });
+    console.log("usuario eliminado de la base de datos");
+  } catch (err) {
+    console.error("FE: Error deleting user:", err);
+  }
+};
 const Main = () => {
   const navigate = useNavigate();
   return (
@@ -16,31 +39,8 @@ const Main = () => {
 
               {value.user && (
                 <button
-                  onClick={(currentUser) => {
-                    try {
-                      // Esto borra el usuario de Firebase
-                      const auth = getAuth();
-                      doDeleteUser(
-                        auth.currentUser,
-                        auth.currentUser.email,
-                        prompt("confirme su contraseña")
-                      );
-                      // Esto borra el usuario de la base de datos
-                      fetch(
-                        `http://localhost:3001/api/user/${currentUser.uid}`,
-                        {
-                          method: "DELETE",
-                          headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${value.token}`,
-                          },
-                          body: JSON.stringify({ uid: currentUser.uid }),
-                        }
-                      );
-                      console.log("usuario eliminado de la base de datos");
-                    } catch (err) {
-                      console.error("FE: Error deleting user:", err);
-                    }
+                  onClick={() => {
+                    userDeleteManager(value.user);
                   }}
                 >
                   BORRAR CUENTA

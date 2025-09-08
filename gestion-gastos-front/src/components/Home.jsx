@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Contexts/authContext";
+import { useAuth } from "../Contexts/FBauthContext";
 const Home = () => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();

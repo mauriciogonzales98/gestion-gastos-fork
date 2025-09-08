@@ -1,7 +1,7 @@
-import { useAuth } from "../../Contexts/authContext/index.jsx";
+import { useAuth } from "../../Contexts/FBauthContext/index.jsx";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { doCreateUserWithEmailAndPassword } from "../../Firebase/auth.js";
+import { fbCreateUserWithEmailAndPassword } from "../../Firebase/auth.js";
 import Form from "react-bootstrap/Form";
 import { getAuth } from "firebase/auth";
 
@@ -30,6 +30,7 @@ const Register = () => {
           mode: "cors",
           headers: {
             "Content-Type": "application/json",
+            //Authentication: `Bearer ${user.accessToken}`,
           },
           body: JSON.stringify(datosUsuario),
         })
@@ -37,6 +38,9 @@ const Register = () => {
           .then((res) => {
             if (res.success) {
               console.log("Usuario creado en BE");
+              console.log(user.id);
+            } else {
+              console.log("Error al crear usuario en BE");
             }
           });
       } catch (error) {
@@ -60,7 +64,7 @@ const Register = () => {
       // de guardar esos datos. Por eso, email y contraseña provienen de Firebase Auth (tienen que ser verificadas)
       // y el resto de datos directamente del Form.
       try {
-        await doCreateUserWithEmailAndPassword(payload.email, payload.password);
+        await fbCreateUserWithEmailAndPassword(payload.email, payload.password);
         const user = getAuth.currentUser;
 
         await commitToDB(e, user);
@@ -72,24 +76,6 @@ const Register = () => {
       }
     }
   };
-  const commitToDB = async (e, user) => {
-    fetch(`http://localhost:3001/api/user`, {
-      method: "POST",
-      id: user.uid,
-      name: payload.name,
-      surname: payload.surname,
-      email: payload.email,
-      password: payload.password,
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.success) {
-          // exito
-          alert("Usuario creado");
-        }
-      });
-  };
-
   return (
     <>
       <div className="register-container">
