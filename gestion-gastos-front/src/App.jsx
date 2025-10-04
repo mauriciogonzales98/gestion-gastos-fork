@@ -7,7 +7,6 @@ import { React, useState } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Register from "./components/Registration/Register.jsx";
 import { Navigate } from "react-router-dom";
-import cors from "cors";
 
 function App() {
   return (
@@ -24,11 +23,4 @@ function App() {
     </>
   );
 }
-App.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    // credentials: true
-  })
-);
 export default App;

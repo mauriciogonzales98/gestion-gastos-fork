@@ -66,6 +66,7 @@ const Login = () => {
         setErrorMessage(err.message);
         setIsSigningIn(false);
       });
+      navigate("/Main");
     }
   };
 

@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Contexts/FBauthContext/index.jsx";
 import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
 import { fbDeleteUser } from "../Firebase/auth.js";
-import { deleteUser, getAuth } from "firebase/auth";
+import { getAuth } from "firebase/auth";
+const auth = getAuth();
 const userDeleteManager = async (user) => {
   try {
-    const auth = getAuth();
     // Esto borra el usuario de Firebase
     fbDeleteUser(auth.user, auth.user.email, prompt("confirme su contraseña"));
 
