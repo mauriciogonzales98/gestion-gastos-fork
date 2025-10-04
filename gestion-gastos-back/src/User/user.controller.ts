@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "./user.entity.js";
 import { orm } from "../shared/db/orm.js";
-import { firebaseAdmin } from "Firebase/FirebaseAdmin/FirebaseAdmin.js";
-
+import fbAdmin from "../Firebase/FirebaseAdmin/FirebaseAdmin.js";
 const em = orm.em;
 
 function sanitizeCharacterInput(
@@ -62,11 +61,17 @@ async function add(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const token = req.get("authorization")?.split(" ")[1];
-    const decodedToken = await firebaseAdmin.getAuth().verifyIdToken(token);
+    if (token === undefined) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = await fbAdmin.auth().verifyIdToken(token);
     if (!token || !decodedToken) {
       return res.status(401).json({ message: `Unauthorized ${decodedToken}` });
     } else {
-      const email = decodedToken.getEmail();
+      const email = decodedToken.email;
+      if (!email) {
+        return res.status(400).json({ message: "No email found in token" });
+      }
 
       const user = em.nativeDelete(User, { email });
       await em.flush();

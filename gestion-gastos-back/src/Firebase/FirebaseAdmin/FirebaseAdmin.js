@@ -1,17 +1,8 @@
-import { App, initializeApp } from "firebase-admin/app";
+import serviceAccount from "./gestion-gastos-f2d5f-firebase-adminsdk-fbsvc-b92cae1d6d.json";
+import admin from "firebase-admin";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyArDrL2eQ_U6cWkXekmxsi0f2FxIb6xEOg",
-
-  authDomain: "gestion-gastos-f2d5f.firebaseapp.com",
-
-  projectId: "gestion-gastos-f2d5f",
-
-  storageBucket: "gestion-gastos-f2d5f.firebasestorage.app.com",
-
-  messagingSenderId: "1061304688994",
-
-  appId: "1:1061304688994:web:fbb8e0128bc90d027c8c3b",
-};
-const firebaseAdmin = initializeApp(firebaseConfig);
-export default { firebaseAdmin };
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+const fbAdmin = admin;
+export default fbAdmin;

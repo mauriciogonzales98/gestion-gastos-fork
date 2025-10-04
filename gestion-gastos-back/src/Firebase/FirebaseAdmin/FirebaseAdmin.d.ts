@@ -1,3 +1,3 @@
-declare module "Firebase/FirebaseAdmin/FirebaseAdmin.js" {
-  export const firebaseAdmin: any; // Replace 'any' with the actual type if known
-}
+import * as admin from "firebase-admin";
+const fbAdmin: typeof admin;
+export default fbAdmin;
