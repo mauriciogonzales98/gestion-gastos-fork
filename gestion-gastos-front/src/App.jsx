@@ -12,13 +12,17 @@ function App() {
   return (
     <>
       <BrowserRouter>
+      <div style={{ display: "flex", minHeight: "100vh" }}>
         <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/Main" element={<Main />} />
-        </Routes>
+        <div style={{ flex: 1, padding: "2rem" }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/Main" element={<Main />} />
+          </Routes>
+        </div>
+      </div>
       </BrowserRouter>
     </>
   );

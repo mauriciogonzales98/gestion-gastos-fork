@@ -4,35 +4,38 @@ import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
 import { fbDeleteUser } from "../Firebase/auth.js";
 import { getAuth } from "firebase/auth";
 const auth = getAuth();
-const userDeleteManager = async (user) => {
-  try {
-    // Esto borra el usuario de Firebase
-    fbDeleteUser(auth.user, auth.user.email, prompt("confirme su contraseña"));
+// const userDeleteManager = async (user) => {
+//   try {
+//     // Esto borra el usuario de Firebase
+//     fbDeleteUser(auth.user, auth.user.email, prompt("confirme su contraseña"));
 
-    //Borra el usuario de la base de datos
-    //Obtiene el token de identidad para autenticar al usuario,
-    //  refrescando el id para evitar su vencimiento durante el proceso.
-    const token = await auth.currentUser.getIdToken(true);
-    fetch(`http://localhost:3001/api/user/`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `bearer ${token}`,
-      },
-      body: JSON.stringify({ email: user.email }),
-    });
-    console.log("usuario eliminado de la base de datos");
-  } catch (err) {
-    console.error("FE: Error deleting user:", err);
-  }
-};
+//     //Borra el usuario de la base de datos
+//     //Obtiene el token de identidad para autenticar al usuario,
+//     //  refrescando el id para evitar su vencimiento durante el proceso.
+//     const token = await auth.currentUser.getIdToken(true);
+//     fetch(`http://localhost:3001/api/user/`, {
+//       method: "DELETE",
+//       headers: {
+//         "Content-Type": "application/json",
+//         authorization: `bearer ${token}`,
+//       },
+//       body: JSON.stringify({ email: user.email }),
+//     });
+//     console.log("usuario eliminado de la base de datos");
+//   } catch (err) {
+//     console.error("FE: Error deleting user:", err);
+//   }
+// };
 const Main = () => {
   const navigate = useNavigate();
   return (
-    <>
+    <div>
       <button onClick={() => navigate("/")}>HOME</button>
       <div>
-        <AuthContext.Consumer>
+        <h1>Main Page - Protected Route</h1>
+      </div>
+      <div>
+        {/* <AuthContext.Consumer>
           {({ value }) => (
             <>
               {value.user && <h1>Borrar Cuenta</h1>}
@@ -48,9 +51,9 @@ const Main = () => {
               )}
             </>
           )}
-        </AuthContext.Consumer>
+        </AuthContext.Consumer> */}
       </div>
-    </>
+    </div>
   );
 };
 export default Main;
