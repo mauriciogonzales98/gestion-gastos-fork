@@ -19,7 +19,8 @@
     "express": "~4.21.2",
     "firebase-admin": "^13.5.0",
     "mysql2": "^3.14.3",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "ts-node-esm": "^0.0.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

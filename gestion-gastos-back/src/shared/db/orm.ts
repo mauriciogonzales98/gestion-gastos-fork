@@ -1,5 +1,5 @@
 import { MikroORM } from "@mikro-orm/core";
-import { defineConfig } from "@mikro-orm/core";
+import { defineConfig } from "@mikro-orm/mysql";
 import { SqlHighlighter } from "@mikro-orm/sql-highlighter";
 
 export const orm = await MikroORM.init(
