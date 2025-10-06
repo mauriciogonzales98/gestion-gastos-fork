@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "./user.entity.js";
 import { orm } from "../shared/db/orm.js";
-import fbAdmin from "../Firebase/FirebaseAdmin/FirebaseAdmin.js";
+import fbAdmin from "../Firebase/FirebaseAdmin/firebaseAdmin.js";
 const em = orm.em;
 
 function sanitizeCharacterInput(

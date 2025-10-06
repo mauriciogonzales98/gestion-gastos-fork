@@ -1,5 +1,5 @@
 import { MikroORM } from "@mikro-orm/core";
-import { defineConfig } from "@mikro-orm/core";
+import { defineConfig } from "@mikro-orm/mysql";
 import { SqlHighlighter } from "@mikro-orm/sql-highlighter";
 
 export const orm = await MikroORM.init(
@@ -9,7 +9,7 @@ export const orm = await MikroORM.init(
     dbName: "gestion_gastos",
     // type: 'mysql',
     // clientUrl: 'mysql://dsw:dsw@localhost:3306/basedeprueba',
-    clientUrl: "mysql://dsw:dsw@localhost:3306/gestion_gastos.",
+    clientUrl: "mysql://dsw:dsw@localhost:3306/gestion_gastos",
     highlighter: new SqlHighlighter(),
     debug: true,
     schemaGenerator: {
