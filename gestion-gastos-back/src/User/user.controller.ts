@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { User } from "./user.entity.js";
 import { orm } from "../shared/db/orm.js";
 import fbAdmin from "../Firebase/FirebaseAdmin/firebaseAdmin.js";
+import { userRouter } from "./user.routes.js";
 const em = orm.em;
 
 function sanitizeCharacterInput(
@@ -60,23 +61,16 @@ async function add(req: Request, res: Response) {
 
 async function remove(req: Request, res: Response) {
   try {
-    const token = req.get("authorization")?.split(" ")[1];
-    if (token === undefined) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    const decodedToken = await fbAdmin.auth().verifyIdToken(token);
-    if (!token || !decodedToken) {
-      return res.status(401).json({ message: `Unauthorized ${decodedToken}` });
-    } else {
-      const email = decodedToken.email;
-      if (!email) {
-        return res.status(400).json({ message: "No email found in token" });
-      }
+    const firebaseUser = (req as any).firebaseUser;
 
-      const user = em.nativeDelete(User, { email });
-      await em.flush();
-      res.status(200).json({ message: "usuario eliminado", data: user });
+    const email = firebaseUser.uid;
+    if (!email) {
+      return res.status(400).json({ message: "No email found in token" });
     }
+
+    const user = em.nativeDelete(User, { email });
+    await em.flush();
+    res.status(200).json({ message: "usuario eliminado", data: user });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

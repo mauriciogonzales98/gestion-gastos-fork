@@ -4,12 +4,8 @@ import admin, { ServiceAccount } from "firebase-admin";
 
 const raw = process.env.FIREBASE_SERVICE_ACCOUNT!;
 const parsed = JSON.parse(raw);
-console.log("PRE_________________________");
-console.log(parsed.private_key);
 parsed.private_key = parsed.private_key.replace(/\\n/g, "\n");
 
-console.log("POST_________________________");
-console.log(parsed.private_key);
 admin.initializeApp({
   credential: admin.credential.cert(parsed),
 });

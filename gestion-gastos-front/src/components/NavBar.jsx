@@ -35,6 +35,7 @@ const NavBar = () => {
               {!value.user && (
                 <button onClick={() => navigate("/login")}>Sign In</button>
               )}
+              {value.user && <span>Hola, {value.user.email}</span>}
             </>
           )}
         </AuthContext.Consumer>

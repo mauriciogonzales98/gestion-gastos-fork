@@ -30,7 +30,7 @@ const Register = () => {
           mode: "cors",
           headers: {
             "Content-Type": "application/json",
-            //Authentication: `Bearer ${user.accessToken}`,
+            Authentication: `Bearer ${user.accessToken}`,
           },
           body: JSON.stringify(datosUsuario),
         })
@@ -40,7 +40,7 @@ const Register = () => {
               console.log("Usuario creado en BE");
               console.log(user.id);
             } else {
-              console.log("Error al crear usuario en BE");
+              console.log("Error al crear usuario en BE", res.message);
             }
           });
       } catch (error) {
