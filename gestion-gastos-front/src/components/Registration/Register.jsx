@@ -36,11 +36,14 @@ const Register = () => {
         })
           .then((res) => res.json())
           .then((res) => {
-            if (res.success) {
+            if (res && res.success !== false) {
               console.log("Usuario creado en BE");
-              console.log(user.id);
+              console.log(user.uid);
             } else {
-              console.log("Error al crear usuario en BE", res.message);
+              console.log(
+                "Error al crear usuario en BE",
+                res?.message || "Unknown error"
+              );
             }
           });
       } catch (error) {
@@ -65,7 +68,7 @@ const Register = () => {
       // y el resto de datos directamente del Form.
       try {
         await fbCreateUserWithEmailAndPassword(payload.email, payload.password);
-        const user = getAuth.currentUser;
+        const user = getAuth().currentUser;
 
         await commitToDB(e, user);
 
