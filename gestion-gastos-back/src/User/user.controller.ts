@@ -62,12 +62,10 @@ async function add(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const firebaseUser = (req as any).firebaseUser;
-
-    const email = firebaseUser.uid;
+    const email = firebaseUser.email;
     if (!email) {
       return res.status(400).json({ message: "No email found in token" });
     }
-
     const user = em.nativeDelete(User, { email });
     await em.flush();
     res.status(200).json({ message: "usuario eliminado", data: user });

@@ -60,10 +60,13 @@ const Login = () => {
   // Google Sign In
   const onGoogleSignIn = async (e) => {
     e.preventDefault();
+
     if (!isSigningIn) {
       setIsSigningIn(true);
+
       fbGoogleSignUp().catch((err) => {
         setErrorMessage(err.message);
+
         setIsSigningIn(false);
       });
       navigate("/Main");
