@@ -12,12 +12,6 @@ import { getAuth, getRedirectResult } from "firebase/auth";
 // con email y contraseña como con Google.
 const Register = () => {
   const navigate = useNavigate();
-  // // States
-  // const [name, setName] = useState("");
-  // const [surname, setSurname] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   console.log("Estado de isRegistering: ", isRegistering);

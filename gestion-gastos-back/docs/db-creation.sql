@@ -1,53 +1,55 @@
-create database if not exists gestion_gastos;
+CREATE DATABASE IF NOT EXISTS gestion_gastos;
 
-use gestion_gastos;
+USE gestion_gastos;
 
-create user if not exists dsw@'%' identified by 'dsw';
-grant all on gestion_gastos.* to dsw@'%';
+CREATE USER IF NOT EXISTS dsw@'%' IDENTIFIED BY 'dsw';
+GRANT ALL ON gestion_gastos.* TO dsw@'%';
 
-create table if not exists `gestion_gastos`.`user` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `gestion_gastos`.`user` (
+  `id` VARCHAR(28) NOT NULL UNIQUE,
   `name` VARCHAR(50) NULL,
   `surname` VARCHAR(50) NULL,
-  `email` VARCHAR(50) NULL,
+  `email` VARCHAR(50) NOT NULL UNIQUE,
   `password` VARCHAR(255) NULL,
   PRIMARY KEY (`id`)
 );
 
-create table if not exists `gestion_gastos`.`category` (
+CREATE TABLE IF NOT EXISTS `gestion_gastos`.`category` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NULL UNIQUE,
+  `name` VARCHAR(50) NULL,
   `icon` VARCHAR(50) NULL,
   `description` VARCHAR(100) NULL,
-  `userid` INT UNSIGNED NOT NULL,
+  `userid` VARCHAR(28) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES `user`(`id`)
 );
 
-create table if not exists `gestion_gastos`.`wallet` (
+CREATE TABLE IF NOT EXISTS `gestion_gastos`.`wallet` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `coin` VARCHAR(50) NULL UNIQUE,
+  `coin` VARCHAR(50) NULL,
   `spend` DECIMAL(10, 2) NULL,
   `income` DECIMAL(10, 2) NULL,
-  PRIMARY KEY (`id`)
-);
-
-create table if not exists `gestion_gastos`.`tag` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NULL UNIQUE,
-  `userid` INT UNSIGNED NOT NULL,
+  `userid` VARCHAR(28) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES `user`(`id`)
 );
 
-create table if not exists `gestion_gastos`.`operation` (
+CREATE TABLE IF NOT EXISTS `gestion_gastos`.`tag` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+  `name` VARCHAR(50) NULL,
+  `userid` VARCHAR(28) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`userid`) REFERENCES `user`(`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `gestion_gastos`.`operation` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `amount` DECIMAL(10, 2) NOT NULL,
   `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description` VARCHAR(100) NULL,
-  `userid` INT UNSIGNED NOT NULL,
+  `userid` VARCHAR(28) NOT NULL,
   `categoryid` INT UNSIGNED NOT NULL,
-  `tagid` INT UNSIGNED NOT NULL,
+  `tagid` INT UNSIGNED NULL,
   `walletid` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES `user`(`id`),

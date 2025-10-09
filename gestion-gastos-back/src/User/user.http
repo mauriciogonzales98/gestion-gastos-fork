@@ -7,11 +7,11 @@ POST http://localhost:3001/api/user
 Content-Type: application/json
 
 {
-    "name": "el",
-    "surname": "maleante",
-    "email": "elmaleante@gmail.com",
+    "name": "el2",
+    "surname": "maleante2",
+    "email": "elmaleante2@gmail.com",
     "password": "OnePairOfPants123",
-    "id": 1
+    "id": 2
     
 }
 ### DELETE character
