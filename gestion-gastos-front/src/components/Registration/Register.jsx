@@ -7,36 +7,27 @@ import { getAuth } from "firebase/auth";
 
 const Register = () => {
   const navigate = useNavigate();
-  // // States
-  // const [name, setName] = useState("");
-  // const [surname, setSurname] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
 
-  //current user
-
-  //current user
-
-  //Recieves the data from the Form
-  const submitForm = async (e) => {
-    e.preventDefault();
-    const commitToDB = async (e, user) => {
+  
+  const commitToDB = async (user, datosUsuario) => {
       try {
-        await fetch(`http://localhost:3001/api/user`, {
+        const token = await user.getIdToken();
+
+        datosUsuario.id = user.uid;
+        await fetch('http://localhost:3001/api/user', {
           method: "POST",
           mode: "cors",
           headers: {
             "Content-Type": "application/json",
-            Authentication: `Bearer ${user.accessToken}`,
+            Authentication: `Bearer ${token}`,
           },
           body: JSON.stringify(datosUsuario),
         })
           .then((res) => res.json())
           .then((res) => {
-            if (res.success) {
+            if (res.ok) {
               console.log("Usuario creado en BE");
               console.log(user.id);
             } else {
@@ -47,6 +38,10 @@ const Register = () => {
         console.log(error);
       }
     };
+  
+  const submitForm = async (e) => {
+    e.preventDefault();
+
     const formData = new FormData(e.target);
     const payload = Object.fromEntries(formData);
     const datosUsuario = {
@@ -54,20 +49,16 @@ const Register = () => {
       surname: payload.surname,
       email: payload.email,
       password: payload.password,
+      id: null
     };
 
     if (!isRegistering) {
       setIsRegistering(true);
-      // Firebase realiza únicamente la autenticación del usuario, por lo que solo vamos a
-      // darle el email y la contraseña, y nos va a devolver el UID. El backend almacena también
-      // name y surname como atributos separados, pero Firebase Auth no tiene la capacidad (ni la necesidad)
-      // de guardar esos datos. Por eso, email y contraseña provienen de Firebase Auth (tienen que ser verificadas)
-      // y el resto de datos directamente del Form.
       try {
         await fbCreateUserWithEmailAndPassword(payload.email, payload.password);
-        const user = getAuth.currentUser;
+        const user = getAuth().currentUser;
 
-        await commitToDB(e, user);
+        await commitToDB(user, datosUsuario);
 
         navigate("/Main");
       } catch (err) {

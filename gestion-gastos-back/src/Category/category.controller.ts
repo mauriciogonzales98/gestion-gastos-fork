@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { Category } from './category.entity.js'
 import { orm } from '../shared/db/orm.js'
 import { User } from '../User/user.entity.js'
+import { CategoryService } from '../Services/category.service.js'
 
 const em = orm.em
 
@@ -12,9 +13,8 @@ function sanitizeCategoryInput(
 ) {
   req.body.sanitizedInput = {
     name: req.body.name,
-    icon: req.body.icon? req.body.icon : "",
+    icon: req.body.icon || "",
     description: req.body.description
-    // userid: Number(req.body.userid)
   }
   //more checks here
 
@@ -27,14 +27,46 @@ function sanitizeCategoryInput(
 }
 
 async function findAll(req: Request, res: Response) {
-  try {
-    const categories = await em.find(
-      Category,
-      {}
-    )
-    res.status(200).json({ message: 'found all categorys', data: categories })
+  try { 
+    const firebaseUser = (req as any).firebaseUser;
+    
+    if (!firebaseUser || !firebaseUser.uid) {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Usuario no autenticado' 
+      });
+    }
+
+    const userId = firebaseUser.uid;
+
+    let user = await em.findOne(User, { id: userId });
+
+    if (!user) {
+      user = em.create(User, {
+        id: userId,
+        email: firebaseUser.email || `${userId}@firebaseuser.com`,
+        name: firebaseUser.name || '',
+        surname: '',
+        password: 'firebase-auth'
+      });
+      await em.flush();
+    }
+
+    const categories = await em.find(Category, { 
+      user: { id: userId } 
+    });
+
+    return res.status(200).json({ 
+      success: true,
+      message: 'Categorías encontradas', 
+      data: categories 
+    });
+    
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 }
 
@@ -55,13 +87,9 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    // console.log('req.body', req.body);
-    // if (!req.body?.userid) {
-    //   return res.status(400).json({ message: 'User ID is required' });
-    // }
     const category = em.create(Category, req.body.sanitizedInput);
     const user = await em.findOneOrFail(User, { id: req.body.userid });
-    // console.log('category', user);
+
     category.user = user;
     await em.persistAndFlush(category);
     res.status(201).json({ message: 'category created', data: category });

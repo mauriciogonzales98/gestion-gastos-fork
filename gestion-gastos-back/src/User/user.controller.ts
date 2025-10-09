@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "./user.entity.js";
+import { Wallet } from "../Wallet/wallet.entity.js";
+import { CategoryService } from "../Services/category.service.js";
 import { orm } from "../shared/db/orm.js";
 import fbAdmin from "../Firebase/FirebaseAdmin/firebaseAdmin.js";
 import { userRouter } from "./user.routes.js";
@@ -53,8 +55,22 @@ async function add(req: Request, res: Response) {
   try {
     const user = em.create(User, req.body.sanitizedInput);
     await em.flush();
+    
+    const newWallet = new Wallet();
+    newWallet.coin = "Pesos";
+    newWallet.spend = 0;
+    newWallet.income = 0
+    newWallet.user = user;
+    
+    em.persist(newWallet);
+    await em.flush();
+    
+    const cat = await CategoryService.createDefaultCategories(em, user);
+    await em.flush();
+
     res.status(201).json({ message: "usuario creado", data: user });
-  } catch (error: any) {
+  } 
+  catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }

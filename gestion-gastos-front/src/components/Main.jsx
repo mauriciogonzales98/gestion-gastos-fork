@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Contexts/FBauthContext/index.jsx";
 import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
 import { fbDeleteUser } from "../Firebase/auth.js";
+import CategoryList from "./CategoryForm/CategoryList.jsx";
 import { getAuth } from "firebase/auth";
 
 const userDeleteManager = async (user) => {
@@ -48,6 +49,7 @@ const Main = () => {
       <div>
         <h1>Main Page - Protected Route</h1>
       </div>
+      <CategoryList />
       <div>
         {/* <AuthContext.Consumer>
           {({ value }) => (

@@ -22,7 +22,6 @@ app.use(
 
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
-  next();
 });
 
 app.use("/api/user", userRouter);

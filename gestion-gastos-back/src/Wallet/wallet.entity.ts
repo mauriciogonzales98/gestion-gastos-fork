@@ -17,6 +17,6 @@ export class Wallet extends BaseEntity{
   @Property ({ nullable: true})
   income!: number;
 
-  @ManyToOne({entity:() => User, nullable: false})
+  @ManyToOne({entity:() => User, nullable: false, fieldName: 'userid'})
   user!: User;
 }
