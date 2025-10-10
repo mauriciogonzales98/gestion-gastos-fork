@@ -3,6 +3,7 @@ import { useAuth } from "../Contexts/FBauthContext/index.jsx";
 import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
 import { fbDeleteUser } from "../Firebase/auth.js";
 import CategoryList from "./CategoryForm/CategoryList.jsx";
+import { useEffect } from "react";
 import {
   getAuth,
   reauthenticateWithCredential,
@@ -24,12 +25,13 @@ const userDeleteManager = async () => {
       console.error("No user is currently signed in.");
       throw new Error("No hay usuario autenticado");
     }
-
+    let password = null;
     if (!isGoogleUser) {
       // Pide contraseña por seguridad
-      const password = prompt(
+      password = prompt(
         "Por favor ingresa tu contraseña para confirmar la eliminación de tu cuenta:"
       );
+      console.log("la password ingresada fue: ", password);
       if (!password) {
         throw new Error("Se requiere contraseña para eliminar la cuenta");
       }
@@ -114,7 +116,7 @@ const Main = () => {
       <CategoryList />
       <div>
         <AuthContext.Consumer>
-          {({ value }) => (
+          {( value ) => (
             <>
               {value.user && <h1>Borrar Cuenta</h1>}
 

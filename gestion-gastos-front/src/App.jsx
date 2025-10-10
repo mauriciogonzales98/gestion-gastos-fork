@@ -15,6 +15,7 @@ function App() {
         <div style={{ flex: 1, padding: "2rem" }}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/main" element={<Main />} />
