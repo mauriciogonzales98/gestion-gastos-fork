@@ -1,21 +1,18 @@
 import { fbEmailPasswordSignUp, fbGoogleSignUp } from "../../Firebase/auth.js";
 import { useAuth } from "../../Contexts/FBauthContext/index.jsx";
-import { useState, useEffect, Children } from "react";
+import React, { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
-import { App } from "../../App.jsx";
 import Form from "react-bootstrap/form";
 
 const Login = () => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (userLoggedIn) {
-      navigate("/Main");
+      navigate("/main");
     }
   }, [navigate, userLoggedIn]);
 
@@ -29,7 +26,6 @@ const Login = () => {
       try {
         //Firebase Auth Sign in
         await fbEmailPasswordSignUp(payload.email, payload.password);
-        navigate("/Main");
       } catch (err) {
         if (err.message === "Firebase: Error (auth/invalid-credential).") {
           setErrorMessage("Invalid email or password");
@@ -40,36 +36,21 @@ const Login = () => {
       }
     }
   };
-  // const onSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (!isSigningIn) {
-  //     setIsSigningIn(true);
-  //     try {
-  //       await doEmailPasswordSignUp(email, password);
-  //       navigate("/Main");
-  //     } catch (err) {
-  //       if (err.message === "Firebase: Error (auth/invalid-credential).") {
-  //         setErrorMessage("Invalid email or password");
-  //       } else {
-  //         setErrorMessage(err.message);
-  //       }
-  //       setIsSigningIn(false);
-  //     }
-  //   }
-  // };
+
   // Google Sign In
   const onGoogleSignIn = async (e) => {
     e.preventDefault();
 
     if (!isSigningIn) {
       setIsSigningIn(true);
-
-      fbGoogleSignUp().catch((err) => {
+      try {
+        await fbGoogleSignUp()
+      }
+      catch (err) {
         setErrorMessage(err.message);
-
-        setIsSigningIn(false);
-      });
-      navigate("/Main");
+      }
+      setIsSigningIn(false);
+      // navigate("/Main");
     }
   };
 
@@ -93,7 +74,6 @@ const Login = () => {
           type="text"
           id="email"
           name="email"
-          //onChange={(e) => setName(e.target.value)}
           required
         />
         <label>Password:</label>
@@ -101,7 +81,6 @@ const Login = () => {
           type="password"
           id="password"
           name="password"
-          //onChange={(e) => setName(e.target.value)}
           required
         />
         <button type="submit">Login</button>
@@ -114,5 +93,4 @@ const Login = () => {
   );
 };
 
-//Export
 export default Login;

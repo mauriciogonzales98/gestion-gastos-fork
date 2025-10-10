@@ -1,12 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { fbSignOut } from "../Firebase/auth";
-import { AuthContext } from "../Contexts/FBauthContext";
+import { AuthContext, useAuth } from "../Contexts/FBauthContext";
 import { BiLogOut } from 'react-icons/bi';
 import { FiHome } from 'react-icons/fi';
 import styles from './NavBar.module.css';
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const { userLoggedIn } = useAuth();
+
+  const ClickHandler = () => {
+    if (userLoggedIn) {
+      navigate("/main");
+    }
+    else navigate("/");
+  }
+
   return (
     <div className={styles.container}>
       <h1 className = {styles.title}
@@ -15,13 +24,13 @@ const NavBar = () => {
         GG - Gestion de Gastos
       </h1>
       <nav className= {styles.navbar}>
-        <button className = {styles.homeicon} onClick={() => navigate("/Main")}><FiHome/></button>
         <AuthContext.Consumer>
-          {({ value }) => (
+          {( value ) => (
             <>
-            <div>
-              { value.user && <span> Welcome, {value.user.email}</span> }
-            </div>
+            <div> { value.user && <span> Welcome, {value.user.email}</span> } </div>
+
+            <button className = {styles.homeicon} onClick={ClickHandler}><FiHome/></button>
+
             <div>
               {value.user && (
                   <button className = {styles.signout} 
@@ -32,11 +41,11 @@ const NavBar = () => {
                   ><BiLogOut/></button>
                 )}
             </div>
-            <div>
+            {/* <div>
               {!value.user && (
                 <button onClick={() => navigate("/login")}>Sign In</button>
               )}
-            </div>
+            </div> */}
             </>
           )}
         </AuthContext.Consumer>

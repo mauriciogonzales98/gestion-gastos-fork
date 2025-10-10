@@ -39,22 +39,20 @@ async function findAll(req: Request, res: Response) {
 
     const userId = firebaseUser.uid;
 
-    let user = await em.findOne(User, { id: userId });
+    const user = await em.findOne(User, { id: userId });
 
-    if (!user) {
-      user = em.create(User, {
-        id: userId,
-        email: firebaseUser.email || `${userId}@firebaseuser.com`,
-        name: firebaseUser.name || '',
-        surname: '',
-        password: 'firebase-auth'
-      });
-      await em.flush();
-    }
+    // if (!user) {
+    //   user = em.create(User, {
+    //     id: userId,
+    //     email: firebaseUser.email || `${userId}@firebaseuser.com`,
+    //     name: firebaseUser.name || '',
+    //     surname: '',
+    //     password: 'firebase-auth'
+    //   });
+    //   await em.flush();
+    // }
 
-    const categories = await em.find(Category, { 
-      user: { id: userId } 
-    });
+    const categories = await em.find(Category, { user: { id: userId } });
 
     return res.status(200).json({ 
       success: true,

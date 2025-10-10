@@ -4,6 +4,7 @@ import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
 import { fbDeleteUser } from "../Firebase/auth.js";
 import CategoryList from "./CategoryForm/CategoryList.jsx";
 import { getAuth } from "firebase/auth";
+import { useEffect } from "react";
 
 const userDeleteManager = async (user) => {
   try {
@@ -41,34 +42,27 @@ const userDeleteManager = async (user) => {
     console.error("FE: Error deleting user:", err);
   }
 };
+
 const Main = () => {
   const navigate = useNavigate();
+  const { loggedIn } = useAuth();
+
+  useEffect(() => {
+    if (!loggedIn) {
+      navigate("/home");
+    }
+  }, [loggedIn, navigate]);
+
+  if(!loggedIn){
+    return null;
+  }
+
   return (
     <div>
-      <button onClick={() => navigate("/")}>HOME</button>
       <div>
         <h1>Main Page - Protected Route</h1>
       </div>
       <CategoryList />
-      <div>
-        {/* <AuthContext.Consumer>
-          {({ value }) => (
-            <>
-              {value.user && <h1>Borrar Cuenta</h1>}
-
-              {value.user && (
-                <button
-                  onClick={() => {
-                    userDeleteManager(value.user);
-                  }}
-                >
-                  BORRAR CUENTA
-                </button>
-              )}
-            </>
-          )}
-        </AuthContext.Consumer> */}
-      </div>
     </div>
   );
 };

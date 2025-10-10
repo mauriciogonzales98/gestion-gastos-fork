@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
   // States
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   // initializeUser is called whenever the auth state of Firebase changes (when a user logs in or out, when they register, etc.)
   useEffect(() => {
@@ -22,8 +22,8 @@ export function AuthProvider({ children }) {
 
   function initializeUser(user) {
     if (user) {
-      setUser({ ...user });
-      user;
+      setUser( user );
+
       setLoggedIn(true);
     } else {
       setUser(null);
@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
     loggedIn,
   };
   return (
-    <AuthContext.Provider value={{ value }}>
+    <AuthContext.Provider value={ value }>
       {!loading && children}
     </AuthContext.Provider>
   );
