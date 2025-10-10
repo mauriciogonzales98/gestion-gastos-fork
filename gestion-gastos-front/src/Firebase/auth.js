@@ -45,9 +45,8 @@ export const fbSignOut = () => {
   return auth.signOut();
 };
 
-export const fbDeleteUser = async (user, email, password) => {
-  const credential = EmailAuthProvider.credential(email, password);
-  await reauthenticateWithCredential(user, credential);
+// fbDeleteUser no autentica al usuario antes de borrarlo, hay que hacerlo antes
+export const fbDeleteUser = async (user) => {
   await deleteUser(user)
     .then(() => {
       console.log("FB Auth: User deleted");
