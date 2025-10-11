@@ -2,7 +2,11 @@
 import { Request, Response, NextFunction } from "express";
 import fbAdmin from "./firebaseAdmin.js";
 
-const firebaseAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const firebaseAuthMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -11,8 +15,10 @@ const firebaseAuthMiddleware = (req: Request, res: Response, next: NextFunction)
   }
 
   const token = authHeader.split(" ")[1];
-  
-  fbAdmin.auth().verifyIdToken(token)
+
+  fbAdmin
+    .auth()
+    .verifyIdToken(token)
     .then((decodedToken) => {
       (req as any).firebaseUser = decodedToken;
       next();

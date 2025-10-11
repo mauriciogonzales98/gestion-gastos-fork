@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getAuth } from "firebase/auth";
 import CategoryIcon from "./CategoryIcon";
 
@@ -8,24 +8,27 @@ const CategoryList = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-
-    const fetchCategories = async (e) => {
+    console.log("llamando useEffect...");
+    const fetchCategories = async () => {
+      console.log("fetching categories...");
       try {
         setLoading(true);
         setError(null);
-        
+
         const auth = getAuth();
         const user = auth.currentUser;
-        
-        if (!user) { throw new Error("Usuario no autenticado"); }
+
+        if (!user) {
+          throw new Error("Usuario no autenticado");
+        }
 
         const token = await user.getIdToken();
-        
-        const response = await fetch('http://localhost:3001/api/category/', {
-          method: 'GET',
+
+        const response = await fetch(`http://localhost:3001/api/category/`, {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -34,13 +37,12 @@ const CategoryList = () => {
         }
 
         const data = await response.json();
-        
+
         if (data.success) {
           setCategories(data.data);
         } else {
           throw new Error(data.message || "Error al cargar categorías");
         }
-        
       } catch (err) {
         console.error("Error fetching categories:", err);
         setError(err.message);
@@ -55,7 +57,7 @@ const CategoryList = () => {
   // Estados de carga y error
   if (loading) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
+      <div style={{ padding: "20px", textAlign: "center" }}>
         <div>Cargando categorías...</div>
       </div>
     );
@@ -63,11 +65,11 @@ const CategoryList = () => {
 
   if (error) {
     return (
-      <div style={{ padding: '20px', color: 'red' }}>
+      <div style={{ padding: "20px", color: "red" }}>
         <div>Error: {error}</div>
-        <button 
+        <button
           onClick={() => window.location.reload()}
-          style={{ marginTop: '10px', padding: '5px 10px' }}
+          style={{ marginTop: "10px", padding: "5px 10px" }}
         >
           Reintentar
         </button>
@@ -77,50 +79,49 @@ const CategoryList = () => {
 
   // Renderizar categorías
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: "20px" }}>
       <h2>Mis Categorías ({categories.length})</h2>
-      
+
       {categories.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>
+        <div style={{ textAlign: "center", padding: "40px" }}>
           <p>No tienes categorías</p>
-          <button 
+          <button
             onClick={() => window.location.reload()}
-            style={{ 
-              padding: '10px 20px', 
-              backgroundColor: '#007bff', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '5px' 
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
             }}
           >
             Recargar
           </button>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {categories.map(category => (
-            <div 
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {categories.map((category) => (
+            <div
               key={category.id}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '15px',
-                padding: '12px',
-                backgroundColor: '#f8f9fa',
-                border: '1px solid #dee2e6',
-                borderRadius: '8px'
+                display: "flex",
+                alignItems: "center",
+                gap: "15px",
+                padding: "12px",
+                backgroundColor: "#f8f9fa",
+                border: "1px solid #dee2e6",
+                borderRadius: "8px",
               }}
             >
-              <CategoryIcon iconName={category.icon}
+              <CategoryIcon
+                iconName={category.icon}
                 size={24}
                 color="#495957"
-              />  
+              />
               <div>
-                <div style={{ fontWeight: 'bold' }}>
-                  {category.name}
-                </div>
+                <div style={{ fontWeight: "bold" }}>{category.name}</div>
                 {category.description && (
-                  <div style={{ fontSize: '0.9em', color: '#666' }}>
+                  <div style={{ fontSize: "0.9em", color: "#666" }}>
                     {category.description}
                   </div>
                 )}

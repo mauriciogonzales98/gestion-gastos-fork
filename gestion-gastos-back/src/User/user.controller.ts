@@ -32,7 +32,7 @@ function sanitizeCharacterInput(
 async function findAll(req: Request, res: Response) {
   try {
     const users = await em.find(User, {});
-    res.status(200).json({ message: "found all characters", data: users });
+    res.status(200).json({ message: "found all users", data: users });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -55,22 +55,21 @@ async function add(req: Request, res: Response) {
   try {
     const user = em.create(User, req.body.sanitizedInput);
     await em.flush();
-    
+
     const newWallet = new Wallet();
     newWallet.coin = "Pesos";
     newWallet.spend = 0;
-    newWallet.income = 0
+    newWallet.income = 0;
     newWallet.user = user;
-    
+
     em.persist(newWallet);
     await em.flush();
-    
+
     const cat = await CategoryService.createDefaultCategories(em, user);
     await em.flush();
 
     res.status(201).json({ message: "usuario creado", data: user });
-  } 
-  catch (error: any) {
+  } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }

@@ -11,6 +11,7 @@ import {
   reauthenticateWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
+import StrongPasswordInput from "./Registration/PasswordInputs.jsx";
 
 const userDeleteManager = async () => {
   const auth = getAuth();
@@ -22,7 +23,7 @@ const userDeleteManager = async () => {
     //Obtiene el token de identidad para autenticar al usuario,
     //  refrescando el id para evitar su vencimiento durante el proceso.
     if (!user) {
-      console.error("No user is currently signed in.");
+      console.error("No hay usuario logueado.");
       throw new Error("No hay usuario autenticado");
     }
     let password = null;
@@ -46,7 +47,7 @@ const userDeleteManager = async () => {
         console.log("Provider obtenido)");
 
         // Forzar la selección de cuenta para re-autenticación
-        //provider.setCustomParameters({ prompt: "select_account" });
+        provider.setCustomParameters({ prompt: "select_account" });
 
         console.log("Parametros seteados correctamente");
 
@@ -104,7 +105,7 @@ const Main = () => {
     }
   }, [loggedIn, navigate]);
 
-  if(!loggedIn){
+  if (!loggedIn) {
     return null;
   }
 
@@ -116,7 +117,7 @@ const Main = () => {
       <CategoryList />
       <div>
         <AuthContext.Consumer>
-          {( value ) => (
+          {(value) => (
             <>
               {value.user && <h1>Borrar Cuenta</h1>}
 
@@ -124,11 +125,13 @@ const Main = () => {
                 <button
                   onClick={() => {
                     userDeleteManager();
+                    isDeletingAccount = true;
                   }}
                 >
                   BORRAR CUENTA
                 </button>
               )}
+              {isDeletingAccount && <StrongPasswordInput />}
             </>
           )}
         </AuthContext.Consumer>
