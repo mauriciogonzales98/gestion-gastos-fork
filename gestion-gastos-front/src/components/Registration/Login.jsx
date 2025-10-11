@@ -3,7 +3,7 @@ import { useAuth } from "../../Contexts/FBauthContext/index.jsx";
 import React, { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/form";
-
+import { PasswordInput } from "./PasswordInputs.jsx";
 const Login = () => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
@@ -44,9 +44,8 @@ const Login = () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        await fbGoogleSignUp()
-      }
-      catch (err) {
+        await fbGoogleSignUp();
+      } catch (err) {
         setErrorMessage(err.message);
       }
       setIsSigningIn(false);
@@ -70,14 +69,10 @@ const Login = () => {
 
       <form onSubmit={submitForm}>
         <label>Email:</label>
+        <Form.Control type="text" id="email" name="email" required />
+        <label> Password:</label>{" "}
         <Form.Control
-          type="text"
-          id="email"
-          name="email"
-          required
-        />
-        <label>Password:</label>
-        <Form.Control
+          as={PasswordInput}
           type="password"
           id="password"
           name="password"

@@ -7,6 +7,7 @@ import {
 } from "../../Firebase/auth.js";
 import Form from "react-bootstrap/Form";
 import { getAuth, getRedirectResult } from "firebase/auth";
+import StrongPasswordInput, { PasswordInput } from "./PasswordInputs.jsx";
 
 // Esta función envía los datos del usuario al BE, se utiliza tanto al registrarse
 // con email y contraseña como con Google.
@@ -161,7 +162,8 @@ const Register = () => {
           <Form.Group>
             <label htmlFor="password">Password</label>
             <Form.Control
-              type="text"
+              as={StrongPasswordInput}
+              type="password"
               id="password"
               name="password"
               //onChange={(e) => setPassword(e.target.value)}
@@ -171,9 +173,11 @@ const Register = () => {
           <Form.Group>
             <label htmlFor="confirmPassword">Confirm Password</label>
             <Form.Control
-              type="text"
+              as={PasswordInput}
+              type="password"
               id="confirmPassword"
               name="confirmPassword"
+              placeholder="Enter the same password"
               //onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
@@ -185,7 +189,7 @@ const Register = () => {
           <a href="/login">Iniciar sesión</a>
         </p>
         <p>
-          ¿Preferís venderle tus datos a google?
+          ¿Preferís venderle tus datos a Google?
           <button onClick={onGoogleRegister}>Registrarse con Google</button>
         </p>
       </div>
