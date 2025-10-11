@@ -16,6 +16,13 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   console.log("Estado de isRegistering: ", isRegistering);
+  const [formData, setFormData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
   // Envía la información al BE
   const commitToDB = async (e, user, datosUsuario) => {
@@ -26,7 +33,7 @@ const Register = () => {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.accessToken}`,
+          Authorization: `Bearer ${user.getIdToken()}`,
         },
         body: JSON.stringify(datosUsuario),
       })
@@ -86,16 +93,23 @@ const Register = () => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
-    const payload = Object.fromEntries(formData);
+
+    const payload = Object.fromEntries(formData.entries());
+
+    //DEBUG
+    console.log("Payload del form: ", payload);
+
+    if (payload.password !== payload.confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return;
+    }
     if (!isRegistering) {
       setIsRegistering(true);
       try {
-        await fbCreateUserWithEmailAndPassword(
-          //estos dos datos solían ser payload.email y payload.password, los cambié por las dudas, pero podrían romper algo.
-          payload.email,
-          payload.password
-        );
+        await fbCreateUserWithEmailAndPassword(payload.email, payload.password);
+
         const user = getAuth().currentUser;
+
         const datosUsuario = {
           id: user.uid,
           name: payload.name,
@@ -104,7 +118,6 @@ const Register = () => {
           password: payload.password,
         };
 
-        //await commitToDBFromEmailAndPassword(e, user, datosUsuario);
         await commitToDB(e, user, datosUsuario);
         navigate("/Main");
       } catch (err) {
@@ -162,7 +175,8 @@ const Register = () => {
           <Form.Group>
             <label htmlFor="password">Password</label>
             <Form.Control
-              as={StrongPasswordInput}
+              // value={formData.password}
+              // onChange={handleInputChange}
               type="password"
               id="password"
               name="password"
@@ -173,7 +187,8 @@ const Register = () => {
           <Form.Group>
             <label htmlFor="confirmPassword">Confirm Password</label>
             <Form.Control
-              as={PasswordInput}
+              // value={formData.confirmPassword}
+              // onChange={handleInputChange}
               type="password"
               id="confirmPassword"
               name="confirmPassword"

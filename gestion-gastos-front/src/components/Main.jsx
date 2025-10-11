@@ -3,7 +3,7 @@ import { useAuth } from "../Contexts/FBauthContext/index.jsx";
 import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
 import { fbDeleteUser } from "../Firebase/auth.js";
 import CategoryList from "./CategoryForm/CategoryList.jsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   getAuth,
   reauthenticateWithCredential,
@@ -98,6 +98,7 @@ const userDeleteManager = async () => {
 const Main = () => {
   const navigate = useNavigate();
   const { loggedIn } = useAuth();
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   useEffect(() => {
     if (!loggedIn) {
@@ -125,7 +126,7 @@ const Main = () => {
                 <button
                   onClick={() => {
                     userDeleteManager();
-                    isDeletingAccount = true;
+                    setIsDeletingAccount(true);
                   }}
                 >
                   BORRAR CUENTA
