@@ -27,6 +27,18 @@
     {
       "folderPath": "gestion-gastos-back\\src\\Firebase\\FirebaseAdmin\\",
       "badge": "🔥"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\Category\\",
+      "badge": "🧾"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\shared\\db\\",
+      "badge": "🐬"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\Operation\\",
+      "badge": "🪙"
     }
   ]
 }
