@@ -8,8 +8,8 @@ export const orm = await MikroORM.init(
     entitiesTs: ["src/**/*.entity.ts"],
     dbName: "gestion_gastos",
     // type: 'mysql',
-    // clientUrl: 'mysql://dsw:dsw@localhost:3306/basedeprueba',
-    clientUrl: "mysql://dsw:dsw@localhost:3307/gestion_gastos.",
+    //clientUrl: "mysql://dsw:dsw@localhost:3307/gestion_gastos.",
+    clientUrl: "mysql://dsw:dsw@localhost:3306/gestion_gastos",
     highlighter: new SqlHighlighter(),
     debug: true,
     schemaGenerator: {
