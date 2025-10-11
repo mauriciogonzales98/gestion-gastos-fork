@@ -111,7 +111,8 @@ const ValidationItem = ({ isValid, text }) => (
     <span>{text}</span>
   </li>
 );
-const StrongPasswordInput = () => {
+//  React.forwardRef((props, ref) =>
+const StrongPasswordInput = React.forwardRef((props, ref) => {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [validationState, setValidationState] = useState({
@@ -209,10 +210,10 @@ const StrongPasswordInput = () => {
       </div>
     </div>
   );
-};
+});
 
 // Esta es una versión más simple del componente completo, para la confimación de contraseña, el login, etc.
-export const PasswordInput = () => {
+export const PasswordInput = React.forwardRef((props, ref) => {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const togglePasswordVisibility = () => {
@@ -247,6 +248,6 @@ export const PasswordInput = () => {
       </div>
     </div>
   );
-};
+});
 
 export default StrongPasswordInput;
