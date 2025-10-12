@@ -1,0 +1,65 @@
+
+.container {
+  background-image: url(bgim2.png);
+    background-size: cover;        
+  background-position: center; 
+  background-repeat: no-repeat; 
+  background-attachment: fixed; 
+  color: #e9e8ee;
+  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.title {
+  color: #12824c;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.description {
+  color: #e9e8ee;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.primaryButton {
+  background-color: #12824c;
+  color: #e9e8ee;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.primaryButton:hover {
+  background-color: #0f6b3f;
+}
+
+.secondaryButton {
+  background-color: #296bbc;
+  color: #e9e8ee;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.secondaryButton:hover {
+  background-color: #1e4f8a;
+}

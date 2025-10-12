@@ -2,8 +2,10 @@ import { fbEmailPasswordSignUp, fbGoogleSignUp } from "../../Firebase/auth.js";
 import { useAuth } from "../../Contexts/FBauthContext/index.jsx";
 import React, { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
-import Form from "react-bootstrap/form";
+import Form from "react-bootstrap/Form";
 import { PasswordInput } from "./PasswordInputs.jsx";
+import styles from './Login.module.css'
+
 const Login = () => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
@@ -56,8 +58,9 @@ const Login = () => {
   // Page
   return (
     <>
-      <h1>Login Page</h1>
-
+      <div className={styles.title}>
+        <h1>Login Page</h1>
+      </div>
       {errorMessage && (
         <p
           className="error-message"
@@ -66,24 +69,37 @@ const Login = () => {
           {errorMessage}
         </p>
       )}
-
-      <form onSubmit={submitForm}>
-        <label>Email:</label>
-        <Form.Control type="text" id="email" name="email" required />
-        <label> Password:</label>{" "}
-        <Form.Control
-          as={PasswordInput}
-          type="password"
-          id="password"
-          name="password"
-          required
-        />
-        <button type="submit">Login</button>
+      <form onSubmit={submitForm} className={styles.form}>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Email:</label>
+          <Form.Control 
+          type="text" 
+          id="email" 
+          name="email" 
+          required className={styles.input} />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Password:</label>
+          <Form.Control
+            as={PasswordInput}
+            type="password"
+            id="password"
+            name="password"
+            required className={styles.input}
+          />
+        </div>
+        <button type="submit" className={styles.submitButton}>Sign In</button>
       </form>
-
-      <button onClick={onGoogleSignIn}>Sign in with Google</button>
-      <label>¿No tiene una cuenta? </label>
-      <a href="/register">Regístrese aquí</a>
+        <label>O </label>
+        <button
+        className={styles.googleButton}
+        onClick={onGoogleSignIn}
+        >
+        Continuar con Google
+      </button>
+      <div>
+        ¿No tiene una cuenta? <a href="/register">Regístrese aquí</a>
+      </div>
     </>
   );
 };

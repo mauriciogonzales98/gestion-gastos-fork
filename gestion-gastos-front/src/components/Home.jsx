@@ -1,6 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Contexts/FBauthContext";
 import { useEffect } from "react";
+import styles from "./Home.module.css";
+import Login from "./Registration/Login.jsx";
+
+
 const Home = () => {
 
   const navigate = useNavigate();
@@ -13,17 +17,10 @@ const Home = () => {
   }, [loggedIn, navigate]);
 
   return (
-    <>
-      <h1>Bienvenido a GG</h1>
-      <p>En esta aplicación podrás gestionar tus gastos de forma sencilla</p>
-
-      {!loggedIn && (
-        <>
-          <button onClick={() => navigate("/login")}>Iniciar Sesión</button>
-          <button onClick={() => navigate("/register")}>Registrarse</button>
-        </>
-      )}
-    </>
+    <div className={styles.container}>
+      <h1 className={styles.title}>¡Bienvenido a Gestión de Gastos!</h1>
+      <p className={styles.description}>En esta aplicación podrás gestionar tus gastos de forma sencilla</p>
+    </div>
   );
 };
 export default Home;
