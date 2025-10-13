@@ -137,7 +137,7 @@ const Login = () => {
           {friendlyErrorMessage}
         </p>
       )}
-      <form onSubmit={submitForm} className={styles.form}>
+      <form onSubmit={submitLoginForm} className={styles.form}>
         <h1 className={styles.title}>Inicia Sesión</h1>
         <div className={styles.formGroup}>
           <label className={styles.label}>Email:</label>
