@@ -3,8 +3,15 @@ import Home from "./components/Home.jsx";
 import Login from "./components/Registration/Login.jsx";
 import Main from "./components/Main.jsx";
 import NavBar from "./components/NavBar.jsx";
+import PageNotFound from "./components/PageNotFound.jsx";
 import React from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Switch,
+  useNavigate,
+} from "react-router-dom";
 import Register from "./components/Registration/Register.jsx";
 import { useAuth } from "./Contexts/FBauthContext";
 
@@ -33,6 +40,7 @@ return (
             <Route path="/" element={<HomeWithLogin />} />
             <Route path="/register" element={<Register />} />
             <Route path="/main" element={<Main />} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>
       </div>

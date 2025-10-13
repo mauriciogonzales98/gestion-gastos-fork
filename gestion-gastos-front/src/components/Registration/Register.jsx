@@ -180,6 +180,7 @@ const Register = () => {
               type="password"
               id="password"
               name="password"
+              placeholder="protip: No uses 12345678"
               //onChange={(e) => setPassword(e.target.value)}
               required
             />
