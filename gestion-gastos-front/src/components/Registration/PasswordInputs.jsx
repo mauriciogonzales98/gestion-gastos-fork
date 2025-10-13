@@ -180,7 +180,7 @@ const StrongPasswordInput = React.forwardRef((props, ref) => {
             aria-label="Toggle password visibility"
           >
             {showPassword ? (
-              <EyeOffIcon className="h-4 w-4" />
+              <EyeOffIcon className={style.button} />
             ) : (
               <EyeIcon className="h-4 w-4" />
             )}

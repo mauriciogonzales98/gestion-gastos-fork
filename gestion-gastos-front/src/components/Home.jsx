@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Contexts/FBauthContext";
 import { useEffect } from "react";
 import styles from "./Home.module.css";
-import Login from "./Registration/Login.jsx";
 
 
 const Home = () => {

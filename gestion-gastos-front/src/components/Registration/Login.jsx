@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import { PasswordInput } from "./PasswordInputs.jsx";
 import styles from './Login.module.css'
-
-
+import logo from './ggs2.png'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -61,6 +60,9 @@ const Login = () => {
   return (
     <>
       <div className={styles.container}>
+        <div className={styles.logo}>
+        <img src={logo} /> 
+      </div>
       </div>
       {errorMessage && (
         <p
@@ -78,6 +80,7 @@ const Login = () => {
           type="text" 
           id="email" 
           name="email" 
+          placeholder="Ingrese su correo electrónico"
           className={styles.input} 
           />
         </div>
@@ -88,18 +91,23 @@ const Login = () => {
             type="password"
             id="password"
             name="password"
+            placeholder="Ingrese su contraseña"
             className={styles.input}
           />
         </div>
         <button type="submit" className={styles.submitButton}>Iniciar Sesión</button>
-        <div className={styles.divider}>O</div>
+        <div className={styles.divider}>
+          <div className={styles.dividerLine}></div>
+          <span className={styles.dividerText}>O</span>
+          <div className={styles.dividerLine}></div>
+        </div>
         <button
         className={styles.googleButton}
         onClick={onGoogleSignIn}
         >
         Continuar con Google
       </button>
-      <div>
+      <div className={styles.subtitle}>
         ¿No tiene una cuenta? <a href="/register">Regístrese aquí</a>
       </div>
       </form>

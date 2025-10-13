@@ -26,9 +26,9 @@ function App() {
 
 return (
     <BrowserRouter>
-      <div style={{ display: "flex", minHeight: "100vh" }}>
+      <div className="app-container">
         {loggedIn && <NavBar />}
-        <div style={{ flex: 1 }}>
+        <div className="main-content">
           <Routes>
             <Route path="/" element={<HomeWithLogin />} />
             <Route path="/register" element={<Register />} />

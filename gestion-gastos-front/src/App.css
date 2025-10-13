@@ -1,8 +1,13 @@
 .App {
   text-align: center;
-  background-color: transparent;
+  background-color: #e9e8ee;
   min-height: 100vh;
-  color: #e9e8ee;
+}
+
+.app-container{ 
+  display: flex;
+  min-height: 100vh;
+  background: #e0e0e0;
 }
 
 .App-logo {
@@ -40,32 +45,29 @@
   }
 }
 
-.app-container {
-  display: flex;
-  min-height: 100vh;
-}
-
 .main-content {
   flex: 1;
 }
 
 .split-layout {
-  display: flex !important;
+  display: flex;
   min-height: 100vh;
-  width: 100vw;
-  margin: 0;        
-  padding: 0;       
-  box-sizing: border-box;
-} 
+  width: 100%;
+  background: #050a06; 
+}
 
 .left-panel{
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;      
-  margin: 0;      
-  box-sizing: border-box;
+  padding: 30px 40px;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(73, 239, 159, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(87, 160, 249, 0.1) 0%, transparent 50%),
+    #88c895;
+  position: relative;
+  overflow: hidden;
 }
 .right-panel > * {
   width: 100%;
