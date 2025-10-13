@@ -7,8 +7,6 @@ import {
   signInWithPopup,
   sendPasswordResetEmail,
   deleteUser,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
 } from "firebase/auth";
 
 export const fbEmailPasswordSignUp = async (email, password) => {

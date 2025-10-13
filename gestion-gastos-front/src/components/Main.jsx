@@ -1,104 +1,30 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Contexts/FBauthContext/index.jsx";
 import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
-import { fbDeleteUser } from "../Firebase/auth.js";
+import { getAuth } from "firebase/auth";
+
 import CategoryList from "./CategoryForm/CategoryList.jsx";
+
 import { useEffect, useState } from "react";
-import {
-  getAuth,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
-  reauthenticateWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
-import StrongPasswordInput from "./Registration/PasswordInputs.jsx";
+import DeleteAccount from "./UserDeleteManager.jsx";
 
-const userDeleteManager = async () => {
-  const auth = getAuth();
-  const user = auth.currentUser;
-  const isGoogleUser = user.providerData.some(
-    (provider) => provider.providerId === "google.com"
-  );
-  try {
-    //Obtiene el token de identidad para autenticar al usuario,
-    //  refrescando el id para evitar su vencimiento durante el proceso.
-    if (!user) {
-      console.error("No hay usuario logueado.");
-      throw new Error("No hay usuario autenticado");
-    }
-    let password = null;
-    if (!isGoogleUser) {
-      // Pide contraseña por seguridad
-      password = prompt(
-        "Por favor ingresa tu contraseña para confirmar la eliminación de tu cuenta:"
-      );
-      console.log("la password ingresada fue: ", password);
-      if (!password) {
-        throw new Error("Se requiere contraseña para eliminar la cuenta");
-      }
-    }
-    // Autentica al usuario a través de Firebase Auth
+import { PasswordInput } from "./Registration/PasswordInputs.jsx";
+import ChangePassword from "./PasswordChangeManager.jsx";
 
-    if (isGoogleUser) {
-      try {
-        console.log("obteniendo provider");
-        const provider = new GoogleAuthProvider();
-
-        console.log("Provider obtenido)");
-
-        // Forzar la selección de cuenta para re-autenticación
-        provider.setCustomParameters({ prompt: "select_account" });
-
-        console.log("Parametros seteados correctamente");
-
-        await reauthenticateWithPopup(user, provider);
-        console.log("reautenticando...");
-
-        console.log("Usuario de Google re-autenticado");
-      } catch (error) {
-        console.error("Error re-autenticando con Google:", error);
-        throw new Error(
-          "Necesitas re-autenticarte con Google para eliminar tu cuenta"
-        );
-      }
-    } else {
-      const credential = EmailAuthProvider.credential(user.email, password);
-      await reauthenticateWithCredential(user, credential);
-    }
-
-    // Refresca y obtiene el token de identidad
-    const token = await user.getIdToken(true);
-
-    // Fetch que elimina al usuario del BE
-    const response = await fetch(`http://localhost:3001/api/user/${user.uid}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      console.log("usuario eliminado de la base de datos");
-
-      // Esto borra el usuario de Firebase, se llama una vez el usuario fue elminado del BE
-      await fbDeleteUser(user);
-    } else {
-      const errorData = await response.json();
-      console.error(
-        "FE: Error eliminando usuario de la base de datos:",
-        errorData
-      );
-    }
-  } catch (err) {
-    console.error("FE: Error eliminando usuario:", err);
-  }
-};
+// Variables para userDeleteManager y passwordChangeManager
+// BORRADO DE CUENTA
 
 const Main = () => {
   const navigate = useNavigate();
   const { loggedIn } = useAuth();
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Determina si el usuario está registrado por Google para evitar que intente cambiar la contraseña.
+  const isGoogleUser = getAuth().currentUser?.providerData.some(
+    (provider) => provider.providerId === "google.com"
+  );
 
   useEffect(() => {
     if (!loggedIn) {
@@ -112,27 +38,71 @@ const Main = () => {
 
   return (
     <div>
+      <h1>Main Page - Protected Route</h1>
       <div>
-        <h1>Main Page - Protected Route</h1>
+        {errorMessage && (
+          <p
+            className="error-message"
+            style={{ color: "brown", backgroundColor: "lightyellow" }}
+          >
+            {errorMessage}
+          </p>
+        )}
       </div>
+
       <CategoryList />
+      {/*Comienzo del JSX para borrado de cuenta*/}
       <div>
         <AuthContext.Consumer>
           {(value) => (
             <>
-              {value.user && <h1>Borrar Cuenta</h1>}
-
-              {value.user && (
-                <button
-                  onClick={() => {
-                    userDeleteManager();
-                    setIsDeletingAccount(true);
-                  }}
-                >
+              <div>
+                {/* Botón que abre el formulario */}
+                <button onClick={() => setIsDeletingAccount(true)}>
                   BORRAR CUENTA
                 </button>
+
+                {/* Formulario de eliminación */}
+                {isDeletingAccount && (
+                  <DeleteAccount
+                    setIsDeletingAccount={setIsDeletingAccount}
+                    errorMessage={errorMessage}
+                    setErrorMessage={setErrorMessage}
+                    onSuccess={() => navigate("/")}
+                    onCancel={() => setIsDeletingAccount(false)}
+                    isGoogleUser={isGoogleUser}
+                  />
+                )}
+              </div>
+
+              {/*Comienzo del JSX para cambio de contraseña*/}
+              {value.user && <h1>Cambiar Contraseña</h1>}
+              {value.user && !isChangingPassword && (
+                <button
+                  onClick={() => {
+                    // Evita que los usuarios de Google modifiquen su contraseña
+                    //Seguramente deba ir en otro lado.
+                    if (isGoogleUser) {
+                      setErrorMessage(
+                        "Los usuarios de Google no necesitan modificar su contraseña"
+                      );
+                      return;
+                    }
+                    setIsChangingPassword(true);
+                  }}
+                >
+                  Cambiar Contraseña
+                </button>
               )}
-              {isDeletingAccount && <StrongPasswordInput />}
+              {isChangingPassword && (
+                <ChangePassword
+                  setIsChangingPassword={setIsChangingPassword}
+                  errorMessage={errorMessage}
+                  setErrorMessage={setErrorMessage}
+                  onSuccess={() => navigate("/")}
+                  onCancel={() => setIsChangingPassword(false)}
+                />
+              )}
             </>
           )}
         </AuthContext.Consumer>
