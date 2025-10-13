@@ -3,14 +3,10 @@ import { useAuth } from "../Contexts/FBauthContext/index.jsx";
 import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
 import { fbDeleteUser } from "../Firebase/auth.js";
 import CategoryList from "./CategoryForm/CategoryList.jsx";
-import { useEffect } from "react";
-import {
-  getAuth,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
-  reauthenticateWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
+import OperationForm from "./Operation/OperationForm.jsx";
+import Wallet from "./Wallet/Wallet.jsx";
+import { useEffect, useState } from "react";
+import { getAuth } from "firebase/auth";
 
 const userDeleteManager = async () => {
   const auth = getAuth();
@@ -19,15 +15,12 @@ const userDeleteManager = async () => {
     (provider) => provider.providerId === "google.com"
   );
   try {
-    //Obtiene el token de identidad para autenticar al usuario,
-    //  refrescando el id para evitar su vencimiento durante el proceso.
     if (!user) {
       console.error("No user is currently signed in.");
       throw new Error("No hay usuario autenticado");
     }
     let password = null;
     if (!isGoogleUser) {
-      // Pide contraseña por seguridad
       password = prompt(
         "Por favor ingresa tu contraseña para confirmar la eliminación de tu cuenta:"
       );
@@ -36,23 +29,15 @@ const userDeleteManager = async () => {
         throw new Error("Se requiere contraseña para eliminar la cuenta");
       }
     }
-    // Autentica al usuario a través de Firebase Auth
 
     if (isGoogleUser) {
       try {
         console.log("obteniendo provider");
         const provider = new GoogleAuthProvider();
-
         console.log("Provider obtenido)");
-
-        // Forzar la selección de cuenta para re-autenticación
-        //provider.setCustomParameters({ prompt: "select_account" });
-
         console.log("Parametros seteados correctamente");
-
         await reauthenticateWithPopup(user, provider);
         console.log("reautenticando...");
-
         console.log("Usuario de Google re-autenticado");
       } catch (error) {
         console.error("Error re-autenticando con Google:", error);
@@ -65,10 +50,8 @@ const userDeleteManager = async () => {
       await reauthenticateWithCredential(user, credential);
     }
 
-    // Refresca y obtiene el token de identidad
     const token = await user.getIdToken(true);
 
-    // Fetch que elimina al usuario del BE
     const response = await fetch(`http://localhost:3001/api/user/${user.uid}`, {
       method: "DELETE",
       headers: {
@@ -79,8 +62,6 @@ const userDeleteManager = async () => {
 
     if (response.ok) {
       console.log("usuario eliminado de la base de datos");
-
-      // Esto borra el usuario de Firebase, se llama una vez el usuario fue elminado del BE
       await fbDeleteUser(user);
     } else {
       const errorData = await response.json();
@@ -96,34 +77,122 @@ const userDeleteManager = async () => {
 
 const Main = () => {
   const navigate = useNavigate();
-  const { loggedIn } = useAuth();
+  const { loggedIn, user } = useAuth();
+  const [wallets, setWallets] = useState([]);
+  const [selectedWalletId, setSelectedWalletId] = useState(null);
+  const [loadingWallets, setLoadingWallets] = useState(true);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const getToken = async () => {
+      if (user) {
+        try {
+          const auth = getAuth();
+          const currentUser = auth.currentUser;
+          if (currentUser) {
+            const userToken = await currentUser.getIdToken();
+            setToken(userToken);
+          }
+        } catch (error) {
+          console.error('Error getting token:', error);
+        }
+      }
+    };
+
+    getToken();
+  }, [user]);
 
   useEffect(() => {
     if (!loggedIn) {
       navigate("/home");
+      return;
     }
-  }, [loggedIn, navigate]);
+
+    if (user && token) {
+      const loadWallets = async () => {
+        try {
+          setLoadingWallets(true);
+          const response = await fetch('http://localhost:3001/api/wallet', {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            }
+          });
+          if (response.ok) {
+            const walletsData = await response.json();
+            setWallets(walletsData);
+            
+            if (walletsData.length > 0 && !selectedWalletId) {
+              setSelectedWalletId(walletsData[0].id);
+            }
+          } else {
+            throw new Error('Error al cargar wallets');
+          }
+        } catch (error) {
+          console.error('Error loading wallets:', error);
+        } finally {
+          setLoadingWallets(false);
+        }
+      };
+
+      loadWallets();
+    }
+  }, [loggedIn, navigate, user, selectedWalletId, token]);
 
   if(!loggedIn){
     return null;
   }
 
+  const handleWalletSelect = (walletId) => {
+    setSelectedWalletId(walletId);
+  };
+
   return (
-    <div>
-      <div>
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <h1>Main Page - Protected Route</h1>
+        {user && <p style={{ color: '#666' }}>Bienvenido, {user.email}</p>}
       </div>
-      <CategoryList />
-      <div>
+
+      <Wallet
+        wallets={wallets}
+        selectedWalletId={selectedWalletId}
+        onWalletSelect={handleWalletSelect}
+        loading={loadingWallets}
+      />
+
+      <div style={{ display: 'flex', marginBottom: '30px', justifyContent: 'center'}}>
+        <div style={ {width: '1200px',maxWidth: '100%'}}>
+          <OperationForm walletId={selectedWalletId} token={token} />
+        </div>
+      </div>
+      
+      <div style={{ 
+        padding: '20px', 
+        backgroundColor: '#f8f9fa', 
+        borderRadius: '8px',
+        textAlign: 'center'
+      }}>
         <AuthContext.Consumer>
           {( value ) => (
             <>
-              {value.user && <h1>Borrar Cuenta</h1>}
-
+              {value.user && <h2 style={{ color: '#dc3545', marginBottom: '15px' }}>Zona de Peligro</h2>}
               {value.user && (
                 <button
                   onClick={() => {
-                    userDeleteManager();
+                    if (window.confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+                      userDeleteManager();
+                    }
+                  }}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: '#dc3545',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    fontSize: '16px'
                   }}
                 >
                   BORRAR CUENTA
@@ -136,4 +205,5 @@ const Main = () => {
     </div>
   );
 };
+
 export default Main;

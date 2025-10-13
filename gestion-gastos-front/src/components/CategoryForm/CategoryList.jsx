@@ -8,8 +8,7 @@ const CategoryList = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-
-    const fetchCategories = async (e) => {
+    const fetchCategories = async () => {
       try {
         setLoading(true);
         setError(null);
@@ -78,11 +77,13 @@ const CategoryList = () => {
   // Renderizar categorías
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Mis Categorías ({categories.length})</h2>
+      <h2 style={{ marginBottom: '20px', textAlign: 'center' }}>
+        Mis Categorías ({categories.length})
+      </h2>
       
       {categories.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '40px' }}>
-          <p>No tienes categorías</p>
+          <p>No tienes categorías creadas</p>
           <button 
             onClick={() => window.location.reload()}
             style={{ 
@@ -90,40 +91,77 @@ const CategoryList = () => {
               backgroundColor: '#007bff', 
               color: 'white', 
               border: 'none', 
-              borderRadius: '5px' 
+              borderRadius: '5px',
+              marginTop: '10px'
             }}
           >
             Recargar
           </button>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 100px))',
+          gap: '15px',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
           {categories.map(category => (
             <div 
               key={category.id}
               style={{
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                gap: '15px',
-                padding: '12px',
+                gap: '8px',
+                padding: '15px 5px',
                 backgroundColor: '#f8f9fa',
                 border: '1px solid #dee2e6',
-                borderRadius: '8px'
+                borderRadius: '12px',
+                textAlign: 'center',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                width: '90px',
+                height: '90px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#e9ecef';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#f8f9fa';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              <CategoryIcon iconName={category.icon}
-                size={24}
-                color="#495957"
-              />  
-              <div>
-                <div style={{ fontWeight: 'bold' }}>
-                  {category.name}
-                </div>
-                {category.description && (
-                  <div style={{ fontSize: '0.9em', color: '#666' }}>
-                    {category.description}
-                  </div>
-                )}
+              {/* Icono redondo */}
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                backgroundColor: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px solid #dee2e6',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}>
+                <CategoryIcon 
+                  iconName={category.icon} 
+                  size={24} 
+                  color="#495057" 
+                />
+              </div>
+              
+              {/* Nombre de la categoría */}
+              <div style={{ 
+                fontWeight: 'bold', 
+                fontSize: '0.85rem',
+                color: '#495057',
+                lineHeight: '1.2',
+                maxWidth: '80px',
+                wordWrap: 'break-word'
+              }}>
+                {category.name}
               </div>
             </div>
           ))}

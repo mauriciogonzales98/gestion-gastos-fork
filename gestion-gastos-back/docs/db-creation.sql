@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`category` (
 
 CREATE TABLE IF NOT EXISTS `gestion_gastos`.`wallet` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NOT NULL,
   `coin` VARCHAR(50) NULL,
   `spend` DECIMAL(10, 2) NULL,
   `income` DECIMAL(10, 2) NULL,
@@ -47,8 +48,9 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`operation` (
   `amount` DECIMAL(10, 2) NOT NULL,
   `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description` VARCHAR(100) NULL,
+  `type` ENUM('gasto', 'ingreso') NOT NULL DEFAULT 'gasto',
   `userid` VARCHAR(28) NOT NULL,
-  `categoryid` INT UNSIGNED NOT NULL,
+  `categoryid` INT UNSIGNED NULL,
   `tagid` INT UNSIGNED NULL,
   `walletid` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
