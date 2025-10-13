@@ -1,7 +1,8 @@
 
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background-color: none;
+ /* background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%); */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,7 +21,7 @@
 
 .title {
   color: var(--text-primary);
-  font-size: 2rem;
+  font-size: 1rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   text-align: center;
@@ -51,7 +52,7 @@
 }
 
 .input {
-  background: var(--bg-secondary);
+  background: #7dedb7;
   color: var(--text-primary);
   border: 2px solid var(--border);
   border-radius: 10px;
@@ -71,8 +72,8 @@
 }
 
 .submitButton {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-  color: white;
+  background: #12824c ;
+  color: #050a06;
   border: none;
   padding: 16px;
   border-radius: 10px;
@@ -115,7 +116,7 @@
 }
 
 .googleButton {
-  background: var(--bg-secondary);
+  background: #e9e8ee;
   color: var(--text-primary);
   border: 2px solid var(--border);
   padding: 14px;

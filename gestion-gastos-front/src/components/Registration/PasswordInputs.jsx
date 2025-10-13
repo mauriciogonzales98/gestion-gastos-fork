@@ -213,37 +213,30 @@ const StrongPasswordInput = React.forwardRef((props, ref) => {
 });
 
 // Esta es una versión más simple del componente completo, para la confimación de contraseña, el login, etc.
-export const PasswordInput = React.forwardRef((props, ref) => {
+export const PasswordInput = React.forwardRef(({ className, ...props }, ref) => {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
   return (
     <div className="w-full max-w-sm space-y-2">
-      <label
-        htmlFor="password"
-        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-      ></label>
       <div className="relative">
         <input
+          ref={ref}
           id="password"
           type={showPassword ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-10"
+          className={className} // <-- Aquí se aplica el estilo del módulo
+          {...props}
         />
         <button
           type="button"
           onClick={togglePasswordVisibility}
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
+          className="absolute inset-y-0 right-0 flex items-center pr-3"
           aria-label="Toggle password visibility"
         >
-          {showPassword ? (
-            <EyeOffIcon className="h-4 w-4" />
-          ) : (
-            <EyeIcon className="h-4 w-4" />
-          )}
+          {showPassword ? <EyeOffIcon /> : <EyeIcon />}
         </button>
       </div>
     </div>

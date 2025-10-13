@@ -11,14 +11,11 @@ import { useAuth } from "./Contexts/FBauthContext";
 function HomeWithLogin() {
   return (
     <div className="split-layout">
-      {/* Home a la izquierda */}
       <div className="left-panel">
-        <Home />
-      </div>
-      
-      {/* Login a la derecha */}
-      <div className="right-panel">
         <Login />
+      </div>
+      <div className="right-panel">
+        <Home />
       </div>
     </div>
   );
@@ -31,7 +28,7 @@ return (
     <BrowserRouter>
       <div style={{ display: "flex", minHeight: "100vh" }}>
         {loggedIn && <NavBar />}
-        <div style={{ flex: 1, padding: "2rem" }}>
+        <div style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<HomeWithLogin />} />
             <Route path="/register" element={<Register />} />

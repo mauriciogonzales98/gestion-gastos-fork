@@ -1,12 +1,9 @@
 
 .container {
-  background-image: url(bgim2.png);
-    background-size: cover;        
-  background-position: center; 
-  background-repeat: no-repeat; 
-  background-attachment: fixed; 
+  background: radial-gradient(circle, #0f2a0f 10%, #0a1f0a 100%);
   color: #e9e8ee;
-  padding: 2rem;
+  padding: 0rem;
+  margin: 0rem;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

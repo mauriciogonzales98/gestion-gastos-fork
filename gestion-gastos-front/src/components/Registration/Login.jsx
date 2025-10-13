@@ -6,6 +6,8 @@ import Form from "react-bootstrap/Form";
 import { PasswordInput } from "./PasswordInputs.jsx";
 import styles from './Login.module.css'
 
+
+
 const Login = () => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
@@ -58,8 +60,7 @@ const Login = () => {
   // Page
   return (
     <>
-      <div className={styles.title}>
-        <h1>Login Page</h1>
+      <div className={styles.container}>
       </div>
       {errorMessage && (
         <p
@@ -70,13 +71,15 @@ const Login = () => {
         </p>
       )}
       <form onSubmit={submitForm} className={styles.form}>
+        <h1 className={styles.title}>Inicia Sesión</h1>
         <div className={styles.formGroup}>
           <label className={styles.label}>Email:</label>
           <Form.Control 
           type="text" 
           id="email" 
           name="email" 
-          required className={styles.input} />
+          className={styles.input} 
+          />
         </div>
         <div className={styles.formGroup}>
           <label className={styles.label}>Password:</label>
@@ -85,12 +88,11 @@ const Login = () => {
             type="password"
             id="password"
             name="password"
-            required className={styles.input}
+            className={styles.input}
           />
         </div>
-        <button type="submit" className={styles.submitButton}>Sign In</button>
-      </form>
-        <label>O </label>
+        <button type="submit" className={styles.submitButton}>Iniciar Sesión</button>
+        <div className={styles.divider}>O</div>
         <button
         className={styles.googleButton}
         onClick={onGoogleSignIn}
@@ -100,6 +102,7 @@ const Login = () => {
       <div>
         ¿No tiene una cuenta? <a href="/register">Regístrese aquí</a>
       </div>
+      </form>
     </>
   );
 };
