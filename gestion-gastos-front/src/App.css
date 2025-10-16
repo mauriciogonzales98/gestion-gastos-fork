@@ -6,7 +6,7 @@
 
 .app-container{ 
   display: flex;
-  min-height: 100vh;
+  min-height: 100%;
   background: #0a2217;
 }
 
@@ -47,6 +47,8 @@
 
 .main-content {
   flex: 1;
+  overflow: auto;
+  height: 100vh;
 }
 
 .split-layout {
