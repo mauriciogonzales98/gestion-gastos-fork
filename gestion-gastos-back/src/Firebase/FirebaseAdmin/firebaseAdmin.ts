@@ -12,4 +12,3 @@ admin.initializeApp({
 
 const fbAdmin = admin;
 export default fbAdmin;
-// abcdefghi

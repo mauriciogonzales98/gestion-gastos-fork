@@ -3,7 +3,6 @@ import { User } from "./user.entity.js";
 import { Wallet } from "../Wallet/wallet.entity.js";
 import { CategoryService } from "../Services/category.service.js";
 import { orm } from "../shared/db/orm.js";
-import fbAdmin from "../Firebase/FirebaseAdmin/firebaseAdmin.js";
 import { userRouter } from "./user.routes.js";
 const em = orm.em;
 
@@ -32,7 +31,7 @@ function sanitizeCharacterInput(
 async function findAll(req: Request, res: Response) {
   try {
     const users = await em.find(User, {});
-    res.status(200).json({ message: "found all characters", data: users });
+    res.status(200).json({ message: "found all users", data: users });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -55,23 +54,34 @@ async function add(req: Request, res: Response) {
   try {
     const user = em.create(User, req.body.sanitizedInput);
     await em.flush();
-    
+
     const newWallet = new Wallet();
     newWallet.name = "ARS";
     newWallet.coin = "Pesos";
     newWallet.spend = 0;
-    newWallet.income = 0
+    newWallet.income = 0;
     newWallet.user = user;
-    
+
     em.persist(newWallet);
     await em.flush();
-    
+
     const cat = await CategoryService.createDefaultCategories(em, user);
     await em.flush();
 
     res.status(201).json({ message: "usuario creado", data: user });
-  } 
-  catch (error: any) {
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function update(req: Request, res: Response) {
+  try {
+    const id = req.params.id;
+    const user = em.getReference(User, id);
+    em.assign(user, req.body);
+    await em.flush();
+    res.status(200).json({ message: "user updated" });
+  } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
@@ -90,4 +100,4 @@ async function remove(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
-export { sanitizeCharacterInput, findAll, findOne, add, remove };
+export { sanitizeCharacterInput, findAll, findOne, add, update, remove };
