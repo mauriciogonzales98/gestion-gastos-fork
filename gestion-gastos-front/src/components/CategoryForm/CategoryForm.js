@@ -1,58 +1,74 @@
-export function CategoryForm() {
+import React from "react";
+import styles from "./CategoryForm.module.css";
 
-  // function onClick(){
-  //   console.log("Button clicked");
-  //   console.log("me estoy mostrando dos veces");
-    
-  // }
-      
+export function CategoryForm() {
   const submitForm = async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
 
-    
-    try{
+    try {
       const response = await fetch('http://localhost:3001/api/category', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-          // 'Authorization': 'Bearer ' + localStorage.getItem('token'),
         },
         body: JSON.stringify(data)
-      })
+      });
       
       console.log(response);
       const result = await response.json();
       
-      // console.log(result);
       if (!response.ok) throw new Error('Network response was not ok');
       
       console.log("Form submitted successfully:", result);
       alert("Categoría guardada correctamente");
-    }
-    catch (error) {
+    } catch (error) {
       alert(error.message);
       console.error("Error submitting form:", error);
     }
   }
 
   return (
-    <div>
-      <h1>Category Form</h1>
-      <form onSubmit={submitForm}>
-        <h4>Nombre</h4>
-        <input type="text" name="name" placeholder="Ingrese el nombre de la categoría" />
-        <h4>Descripción</h4>
-        <input type="text" name="description" placeholder="Ingrese una descripción" />
+    <div className={styles.container}>
+      <h1 className={styles.title}>Category Form</h1>
+      <form onSubmit={submitForm} className={styles.form}>
+        <div className={styles.fieldGroup}>
+          <h4 className={styles.sectionTitle}>Nombre</h4>
+          <input 
+            type="text" 
+            name="name" 
+            placeholder="Ingrese el nombre de la categoría" 
+            className={styles.input}
+          />
+        </div>
+        
+        <div className={styles.fieldGroup}>
+          <h4 className={styles.sectionTitle}>Descripción</h4>
+          <input 
+            type="text" 
+            name="description" 
+            placeholder="Ingrese una descripción" 
+            className={styles.input}
+          />
+        </div>
+        
         {/* este campo hay que borralo */}
-        <h4>Id usuario</h4> 
-        <input type="text" name="userid" placeholder="Ingrese el id del usuarip" />
-        <span></span>
-        <button type="submit" >Guardar</button>
+        <div className={styles.fieldGroup}>
+          <h4 className={styles.sectionTitle}>Id usuario</h4>
+          <input 
+            type="text" 
+            name="userid" 
+            placeholder="Ingrese el id del usuario" 
+            className={styles.input}
+          />
+        </div>
+        
+        <button type="submit" className={styles.submitButton}>
+          Guardar
+        </button>
       </form>
-      {/* Add form elements here */}
     </div>
   );
 }

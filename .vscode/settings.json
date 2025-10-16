@@ -1,0 +1,56 @@
+{
+  "folder-color.pathColors": [
+    {
+      "folderPath": "gestion-gastos-front\\",
+      "color": "foldercolorizer.color_00cc00"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\",
+      "color": "foldercolorizer.color_ff6699"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\User\\",
+      "badge": "👨",
+      "color": "default"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\Wallet\\",
+      "badge": "💰",
+      "color": "default"
+    },
+    {
+      "folderPath": "gestion-gastos-front\\src\\components\\Registration\\",
+      "badge": "📝",
+      "color": "default"
+    },
+    {
+      "folderPath": "gestion-gastos-front\\src\\Firebase\\",
+      "badge": "🔥",
+      "color": "default"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\Firebase\\FirebaseAdmin\\",
+      "badge": "🔥",
+      "color": "default"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\Category\\",
+      "badge": "🧾",
+      "color": "default"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\shared\\db\\",
+      "badge": "🐬",
+      "color": "default"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\Operation\\",
+      "badge": "🪙",
+      "color": "default"
+    }
+  ],
+
+  "workbench.colorCustomizations": {
+    "tab.activeBorder": "#51ff01"
+  }
+}

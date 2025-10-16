@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.emptyMessage {
+  color: #666;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  color: #333;
+  font-weight: 500;
+}
+
+.buttonSelected {
+  border: 2px solid #333;
+  background: #f0f0f0;
+  font-weight: 700;
+}
+
+.label {
+  font-size: 14px;
+}

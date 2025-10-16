@@ -1,11 +1,30 @@
-import { Router } from 'express'
-import { sanitizeCategoryInput, findAll, findOne, add, update, remove } from './category.controller.js'
+import { Router } from "express";
+import {
+  sanitizeCategoryInput,
+  findAll,
+  findOne,
+  add,
+  update,
+  remove,
+} from "./category.controller.js";
 
-export const categoryRouter = Router()
+import firebaseAuthMiddleware from "../Firebase/FirebaseAdmin/firebaseAuthMiddleware.js";
 
-categoryRouter.get('/', findAll)
-categoryRouter.get('/:id', findOne)
-categoryRouter.post('/', sanitizeCategoryInput, add)
-categoryRouter.put('/:id', sanitizeCategoryInput, update)
-categoryRouter.patch('/:id', sanitizeCategoryInput, update)
-categoryRouter.delete('/:id', remove)
+export const categoryRouter = Router();
+
+categoryRouter.get("/", firebaseAuthMiddleware, findAll as any);
+categoryRouter.get("/:id", firebaseAuthMiddleware, findOne);
+categoryRouter.post("/", firebaseAuthMiddleware, sanitizeCategoryInput, add);
+categoryRouter.put(
+  "/:id",
+  firebaseAuthMiddleware,
+  sanitizeCategoryInput,
+  update
+);
+categoryRouter.patch(
+  "/:id",
+  firebaseAuthMiddleware,
+  sanitizeCategoryInput,
+  update
+);
+categoryRouter.delete("/:id", firebaseAuthMiddleware, remove);
