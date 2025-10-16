@@ -15,7 +15,7 @@ const Home = () => {
       }
   }, [loggedIn, navigate]);
 
-  return (
+return (
     <div className={styles.container}>
       <h1 className={styles.title}>¡Bienvenido a Gestión de Gastos!</h1>
       <p className={styles.description}>En esta aplicación podrás gestionar tus gastos de forma sencilla</p>

@@ -139,18 +139,20 @@ const Login = () => {
       )}
       <form onSubmit={submitLoginForm} className={styles.form}>
         <h1 className={styles.title}>Inicia Sesión</h1>
+
         <div className={styles.formGroup}>
           <label className={styles.label}>Email:</label>
           <Form.Control 
-          type="text" 
-          id="email" 
-          name="email" 
-          placeholder="Ingrese su correo electrónico"
-          className={styles.input} 
+            type="text" 
+            id="email" 
+            name="email" 
+            placeholder="Ingrese su correo electrónico"
+            className={styles.input} 
           />
         </div>
+
         <div className={styles.formGroup}>
-          <label className={styles.label}>Password:</label>
+          <label className={styles.label}>Contraseña:</label>
           <Form.Control
             as={PasswordInput}
             type="password"
@@ -160,21 +162,27 @@ const Login = () => {
             className={styles.input}
           />
         </div>
+
         <button type="submit" className={styles.submitButton}>Iniciar Sesión</button>
+
         <div className={styles.divider}>
           <div className={styles.dividerLine}></div>
           <span className={styles.dividerText}>O</span>
           <div className={styles.dividerLine}></div>
         </div>
+
         <button
-        className={styles.googleButton}
-        onClick={onGoogleSignIn}
+          className={styles.googleButton}
+          onClick={onGoogleSignIn}
+          type="button"
         >
-        Continuar con Google
-      </button>
-      <div className={styles.subtitle}>
-        ¿No tiene una cuenta? <a href="/register">Regístrese aquí</a>
-      </div>
+          Continuar con Google
+        </button>
+
+        <div className={styles.linkContainer}>
+          ¿No tiene una cuenta? 
+          <a href="/register" className={styles.link}>Regístrese aquí</a>
+        </div>
       </form>
     </>
   );

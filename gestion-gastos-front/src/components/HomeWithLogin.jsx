@@ -1,6 +1,7 @@
 import React from 'react';
 import Login from './Registration/Login.jsx';
 import Home from './Home.jsx';
+// import '../App.css'
 import './Home.module.css';
 import './Registration/Login.module.css';
 
