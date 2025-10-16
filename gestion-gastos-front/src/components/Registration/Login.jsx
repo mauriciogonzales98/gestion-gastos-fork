@@ -2,9 +2,12 @@ import { fbEmailPasswordSignUp, fbGoogleSignUp } from "../../Firebase/auth.js";
 import { useAuth } from "../../Contexts/FBauthContext/index.jsx";
 import React, { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
-import Form from "react-bootstrap/form";
 import { getAuth } from "firebase/auth";
+import Form from "react-bootstrap/Form";
 import { PasswordInput } from "./PasswordInputs.jsx";
+import styles from './Login.module.css'
+import logo from './ggs2.png'
+
 const Login = () => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
@@ -115,7 +118,16 @@ const Login = () => {
   // Page
   return (
     <>
-      <h1>Login Page</h1>
+      <div className={styles.container}>
+        <div className={styles.logo}>
+        <img src={logo} /> 
+      </div>
+      </div>
+      {friendlyErrorMessage && (
+        <>
+          <h1>Login Page</h1>
+        </>
+      )}
 
       {friendlyErrorMessage && (
         <p
@@ -125,18 +137,53 @@ const Login = () => {
           {friendlyErrorMessage}
         </p>
       )}
+      <form onSubmit={submitLoginForm} className={styles.form}>
+        <h1 className={styles.title}>Inicia Sesión</h1>
 
-      <form onSubmit={submitLoginForm}>
-        <label>Email:</label>
-        <Form.Control type="text" id="email" name="email" required />
-        <label> Password:</label>{" "}
-        <Form.Control type="password" id="password" name="password" required />
-        <button type="submit">Login</button>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Email:</label>
+          <Form.Control 
+            type="text" 
+            id="email" 
+            name="email" 
+            placeholder="Ingrese su correo electrónico"
+            className={styles.input} 
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Contraseña:</label>
+          <Form.Control
+            as={PasswordInput}
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Ingrese su contraseña"
+            className={styles.input}
+          />
+        </div>
+
+        <button type="submit" className={styles.submitButton}>Iniciar Sesión</button>
+
+        <div className={styles.divider}>
+          <div className={styles.dividerLine}></div>
+          <span className={styles.dividerText}>O</span>
+          <div className={styles.dividerLine}></div>
+        </div>
+
+        <button
+          className={styles.googleButton}
+          onClick={onGoogleSignIn}
+          type="button"
+        >
+          Continuar con Google
+        </button>
+
+        <div className={styles.linkContainer}>
+          ¿No tiene una cuenta? 
+          <a href="/register" className={styles.link}>Regístrese aquí</a>
+        </div>
       </form>
-
-      <button onClick={onGoogleSignIn}>Sign in with Google</button>
-      <label>¿No tiene una cuenta? </label>
-      <a href="/register">Regístrese aquí</a>
     </>
   );
 };
