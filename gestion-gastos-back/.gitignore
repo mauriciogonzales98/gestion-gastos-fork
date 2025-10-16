@@ -24,6 +24,8 @@ dist/
 gestion-gastos-f2d5f-firebase-adminsdk-fbsvc-b92cae1d6d.json
 .env
 
+./src/shared/db/orm.ts
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

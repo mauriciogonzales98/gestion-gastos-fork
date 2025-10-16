@@ -2,11 +2,16 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Contexts/FBauthContext/index.jsx";
 import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
 import { getAuth } from "firebase/auth";
+import { useEffect, useState } from "react";
 
-import CategoryList from "./CategoryForm/CategoryList.jsx";
+import DeleteAccount from "./UserUpdate.jsx/UserDeleteManager.jsx";
+import { PasswordInput } from "./Registration/PasswordInputs.jsx";
+import ChangePassword from "./UserUpdate.jsx/PasswordChangeManager.jsx";
+import ChangeEmail from "./UserUpdate.jsx/EmailChangeManager.jsx";
+
+import OperationForm from "./Operation/OperationForm.jsx";
 import OperationList from "./Operation/OperationList.jsx";
 import Wallet from "./Wallet/Wallet.jsx";
-import { useEffect, useState } from "react";
 
 const userDeleteManager = async () => {
   const auth = getAuth();
@@ -75,14 +80,6 @@ const userDeleteManager = async () => {
   }
 };
 
-import { useEffect, useState } from "react";
-import DeleteAccount from "./UserUpdate.jsx/UserDeleteManager.jsx";
-
-import { PasswordInput } from "./Registration/PasswordInputs.jsx";
-import ChangePassword from "./UserUpdate.jsx/PasswordChangeManager.jsx";
-import ChangeEmail from "./UserUpdate.jsx/EmailChangeManager.jsx";
-
-// Variables para userDeleteManager y passwordChangeManager
 // BORRADO DE CUENTA
 
 const Main = () => {
