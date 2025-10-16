@@ -2,7 +2,7 @@
   "compilerOptions": {
     "incremental": true,
     "target": "es2020",
-    "module": "ES2022",
+    "module": "es2022",
     "moduleResolution": "bundler",
     "sourceMap": true,
     "outDir": "./dist",
@@ -12,8 +12,10 @@
     "alwaysStrict": true,
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "resolveJsonModule": true
   },
+
   "include": ["src/**/*", "**/*.ts"],
   "exclude": ["node_modules"]
 }

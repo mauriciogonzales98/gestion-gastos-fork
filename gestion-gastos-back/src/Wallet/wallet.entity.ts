@@ -6,7 +6,10 @@ import { User } from "../User/user.entity.js";
 @Entity()
 export class Wallet extends BaseEntity{
   @PrimaryKey()
-  idWallet!: number;
+  id!: number;
+
+  @Property({ length: 50, nullable: false })
+  name!: string; 
 
   @Property ({ nullable: true})
   coin!: string; 
@@ -17,6 +20,6 @@ export class Wallet extends BaseEntity{
   @Property ({ nullable: true})
   income!: number;
 
-  @ManyToOne({entity:() => User, nullable: false})
+  @ManyToOne({entity:() => User, nullable: false, fieldName: 'userid'})
   user!: User;
 }

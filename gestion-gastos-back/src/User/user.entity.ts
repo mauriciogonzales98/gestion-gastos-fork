@@ -2,20 +2,19 @@ import { BaseEntity, Entity, PrimaryKey } from "@mikro-orm/core";
 import { Property } from "@mikro-orm/core";
 
 @Entity()
-export class User extends BaseEntity{
+export class User extends BaseEntity {
   @PrimaryKey()
-  id!: number;
+  id!: string;
 
-  @Property ({ nullable: true})
-  name!: string; 
+  @Property({ nullable: true })
+  name!: string;
 
-  @Property ({ nullable: true})
+  @Property({ nullable: true })
   surname!: string;
 
-  @Property ({ nullable: false, unique: true })
+  @Property({ nullable: false, unique: true })
   email!: string;
 
-  @Property ({ nullable: false})
+  @Property({ nullable: true })
   password!: string;
-
 }

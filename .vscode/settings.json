@@ -1,0 +1,32 @@
+{
+  "folder-color.pathColors": [
+    {
+      "folderPath": "gestion-gastos-front\\",
+      "color": "foldercolorizer.color_00cc00"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\",
+      "color": "foldercolorizer.color_ff6699"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\User\\",
+      "badge": "👨"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\Wallet\\",
+      "badge": "💰"
+    },
+    {
+      "folderPath": "gestion-gastos-front\\src\\components\\Registration\\",
+      "badge": "📝"
+    },
+    {
+      "folderPath": "gestion-gastos-front\\src\\Firebase\\",
+      "badge": "🔥"
+    },
+    {
+      "folderPath": "gestion-gastos-back\\src\\Firebase\\FirebaseAdmin\\",
+      "badge": "🔥"
+    }
+  ]
+}

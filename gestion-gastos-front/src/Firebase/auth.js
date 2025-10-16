@@ -6,38 +6,52 @@ import {
   updatePassword,
   signInWithPopup,
   sendPasswordResetEmail,
+  deleteUser,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
 } from "firebase/auth";
 
-export const doEmailPasswordSignUp = async (email, password) => {
+export const fbEmailPasswordSignUp = async (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
-export const doCreateUserWithEmailAndPassword = async (email, password) => {
+export const fbCreateUserWithEmailAndPassword = async (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password);
 };
 
-export const doGoogleSignUp = async () => {
+export const fbGoogleSignUp = async () => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
   return result;
 };
 
-export const doPasswordReset = (email) => {
+export const fbPasswordReset = (email) => {
   return auth.sendPasswordResetEmail(email);
 };
 
-export const doPasswordChange = (password) => {
+export const fbPasswordChange = (password) => {
   return updatePassword(auth.currentUser, password);
 };
 
-export const doSendPasswordResetEmail = (email) => {
+export const fbSendPasswordResetEmail = (email) => {
   return sendPasswordResetEmail(auth, email);
 };
 
-export const doSendEmailVerification = () => {
+export const fbSendEmailVerification = () => {
   return auth.currentUser.sendEmailVerification();
 };
 
-export const doSignOut = () => {
+export const fbSignOut = () => {
   return auth.signOut();
+};
+
+// fbDeleteUser no autentica al usuario antes de borrarlo, hay que hacerlo antes
+export const fbDeleteUser = async (user) => {
+  await deleteUser(user)
+    .then(() => {
+      console.log("FB Auth: User deleted");
+    })
+    .catch((error) => {
+      console.log("FB Auth: Error deleting user:", error);
+    });
 };

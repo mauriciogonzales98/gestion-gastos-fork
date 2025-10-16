@@ -1,31 +1,31 @@
-import { doEmailPasswordSignUp, doGoogleSignUp } from "../../Firebase/auth.js";
-import { useAuth } from "../../Contexts/authContext/index.jsx";
-import { useState, useEffect, Children } from "react";
+import { fbEmailPasswordSignUp, fbGoogleSignUp } from "../../Firebase/auth.js";
+import { useAuth } from "../../Contexts/FBauthContext/index.jsx";
+import React, { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
-import { App } from "../../App.jsx";
+import Form from "react-bootstrap/form";
 
 const Login = () => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (userLoggedIn) {
-      navigate("/Main");
+      navigate("/main");
     }
   }, [navigate, userLoggedIn]);
 
   // Email and Password Sign In
-  const onSubmit = async (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
+    const formData = new FormData(e.target);
+    const payload = Object.fromEntries(formData);
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        await doEmailPasswordSignUp(email, password);
-        navigate("/Main");
+        //Firebase Auth Sign in
+        await fbEmailPasswordSignUp(payload.email, payload.password);
       } catch (err) {
         if (err.message === "Firebase: Error (auth/invalid-credential).") {
           setErrorMessage("Invalid email or password");
@@ -36,15 +36,21 @@ const Login = () => {
       }
     }
   };
+
   // Google Sign In
   const onGoogleSignIn = async (e) => {
     e.preventDefault();
+
     if (!isSigningIn) {
       setIsSigningIn(true);
-      doGoogleSignUp().catch((err) => {
+      try {
+        await fbGoogleSignUp()
+      }
+      catch (err) {
         setErrorMessage(err.message);
-        setIsSigningIn(false);
-      });
+      }
+      setIsSigningIn(false);
+      // navigate("/Main");
     }
   };
 
@@ -53,25 +59,33 @@ const Login = () => {
     <>
       <h1>Login Page</h1>
 
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {errorMessage && (
+        <p
+          className="error-message"
+          style={{ color: "brown", backgroundColor: "lightyellow" }}
+        >
+          {errorMessage}
+        </p>
+      )}
 
-      <form onSubmit={(e) => onSubmit(e)}>
+      <form onSubmit={submitForm}>
         <label>Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+        <Form.Control
+          type="text"
+          id="email"
+          name="email"
           required
         />
         <label>Password:</label>
-        <input
+        <Form.Control
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          id="password"
+          name="password"
           required
         />
         <button type="submit">Login</button>
       </form>
+
       <button onClick={onGoogleSignIn}>Sign in with Google</button>
       <label>¿No tiene una cuenta? </label>
       <a href="/register">Regístrese aquí</a>
@@ -79,5 +93,4 @@ const Login = () => {
   );
 };
 
-//Export
 export default Login;
