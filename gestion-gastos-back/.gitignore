@@ -7,7 +7,7 @@ node_modules/*
 
 # compiled output
 dist/
-
+.env
 
 # testing
 /coverage
