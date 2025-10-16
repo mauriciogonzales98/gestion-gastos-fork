@@ -1,0 +1,52 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(#050a06,#1b8188) ;
+  padding: 1rem;
+  color: #e9e8ee;
+  width: 220px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  color: #12824c;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  word-break: break-word;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.welcome {
+  color: #12824c;
+  margin-top: 1rem;
+}
+
+.signout {
+  background: #12824c;
+  color: #e9e8ee;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  justify-items: bottom;
+  margin-top: 1rem;
+}
+
+.homeicon{
+  background: #12824c;
+  color: #050a06;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  justify-content: end;
+  border-radius: 5px;
+  margin-top: 1rem;
+}

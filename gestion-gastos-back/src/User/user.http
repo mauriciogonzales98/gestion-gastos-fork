@@ -1,14 +1,20 @@
 ### GET all characters
-http://localhost:3000/api/user
+http://localhost:3001/api/user
 
 ### POST a character
 # @name AnUser
-POST http://localhost:3000/api/user
+POST http://localhost:3001/api/user
 Content-Type: application/json
 
 {
-    "name": "maldito",
-    "surname": "maleante",
-    "email": "lawea",
-    "password": "123456"
+    "name": "el2",
+    "surname": "maleante2",
+    "email": "elmaleante2@gmail.com",
+    "password": "OnePairOfPants123",
+    "id": 2
+    
 }
+### DELETE character
+DELETE http://localhost:3001/api/user/:id
+
+

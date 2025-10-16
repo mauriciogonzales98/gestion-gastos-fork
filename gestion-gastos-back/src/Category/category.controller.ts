@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from 'express'
-import { Category } from './category.entity.js'
-import { orm } from '../shared/db/orm.js'
-import { User } from '../User/user.entity.js'
+import { Request, Response, NextFunction } from "express";
+import { Category } from "./category.entity.js";
+import { orm } from "../shared/db/orm.js";
+import { User } from "../User/user.entity.js";
+import { CategoryService } from "../Services/category.service.js";
 
-const em = orm.em
+const em = orm.em;
 
 function sanitizeCategoryInput(
   req: Request,
@@ -12,59 +13,72 @@ function sanitizeCategoryInput(
 ) {
   req.body.sanitizedInput = {
     name: req.body.name,
-    icon: req.body.icon? req.body.icon : "",
-    description: req.body.description
-    // userid: Number(req.body.userid)
-  }
+    icon: req.body.icon || "",
+    description: req.body.description,
+  };
   //more checks here
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
-      delete req.body.sanitizedInput[key]
+      delete req.body.sanitizedInput[key];
     }
-  })
-  next()
+  });
+  next();
 }
 
 async function findAll(req: Request, res: Response) {
   try {
-    const categories = await em.find(
-      Category,
-      {}
-    )
-    res.status(200).json({ message: 'found all categorys', data: categories })
+    const firebaseUser = (req as any).firebaseUser;
+
+    if (!firebaseUser || !firebaseUser.uid) {
+      return res.status(401).json({
+        success: false,
+        message: "Usuario no autenticado",
+      });
+    }
+
+    const userId = firebaseUser.uid;
+
+    const user = await em.findOne(User, { id: userId });
+
+    const categories = await em.find(Category, { user: { id: userId } });
+
+    return res.status(200).json({
+      success: true,
+      message: "Categorías encontradas",
+      data: categories,
+    });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 }
 
 async function findOne(req: Request, res: Response) {
   try {
-    const idToFind = Number(req.params.id)
-    console.log('idToFind', req.params.id)
+    const idToFind = Number(req.params.id);
+    console.log("idToFind", req.params.id);
     const category = await em.findOneOrFail(
       Category,
       { id: idToFind },
-      { populate: ['user'] }
-    )
-    res.status(200).json({ message: 'found category', data: category })
+      { populate: ["user"] }
+    );
+    res.status(200).json({ message: "found category", data: category });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
 
 async function add(req: Request, res: Response) {
   try {
-    // console.log('req.body', req.body);
-    // if (!req.body?.userid) {
-    //   return res.status(400).json({ message: 'User ID is required' });
-    // }
     const category = em.create(Category, req.body.sanitizedInput);
     const user = await em.findOneOrFail(User, { id: req.body.userid });
-    // console.log('category', user);
+
     category.user = user;
     await em.persistAndFlush(category);
-    res.status(201).json({ message: 'category created', data: category });
+    res.status(201).json({ message: "category created", data: category });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -72,29 +86,29 @@ async function add(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const categoryToUpdate = await em.findOneOrFail(Category,  { id: id } )
-    em.assign(categoryToUpdate, req.body.sanitizedInput)
-    await em.flush()
+    const id = Number.parseInt(req.params.id);
+    const categoryToUpdate = await em.findOneOrFail(Category, { id: id });
+    em.assign(categoryToUpdate, req.body.sanitizedInput);
+    await em.flush();
     res
       .status(200)
-      .json({ message: 'category updated', data: categoryToUpdate })
+      .json({ message: "category updated", data: categoryToUpdate });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
 
 async function remove(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    // const category = em.getReference(Category, id)
-    // await em.removeAndFlush(category)
+    const id = Number.parseInt(req.params.id);
+    const category = em.getReference(Category, id);
+    await em.removeAndFlush(category);
     const categoryToRemove = await em.findOneOrFail(Category, { id: id });
     await em.removeAndFlush(categoryToRemove);
-    res.status(200).json({ message: 'category removed' });
+    res.status(200).json({ message: "category removed" });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
 
-export { sanitizeCategoryInput, findAll, findOne, add, update, remove }
+export { sanitizeCategoryInput, findAll, findOne, add, update, remove };
