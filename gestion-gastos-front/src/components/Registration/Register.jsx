@@ -68,13 +68,13 @@ const Register = () => {
         console.log("Resultado de getAuth().currentUser: ", user);
         if (user) {
           // This is the registered user
+
           // Esto asume usuarios con un solo nombre y un solo apellido para el parseo.
           const datosUsuario = {
             id: user.uid,
             name: user.displayName ? user.displayName.split(" ")[0] : "",
             surname: user.displayName ? user.displayName.split(" ")[1] : "",
             email: user.email,
-            password: null,
           };
           await commitToDB(e, user, datosUsuario);
         }
@@ -115,7 +115,6 @@ const Register = () => {
           name: payload.name,
           surname: payload.surname,
           email: payload.email,
-          password: payload.password,
         };
 
         await commitToDB(e, user, datosUsuario);

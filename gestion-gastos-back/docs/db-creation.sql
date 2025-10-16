@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`user` (
   `name` VARCHAR(50) NULL,
   `surname` VARCHAR(50) NULL,
   `email` VARCHAR(50) NOT NULL UNIQUE,
-  `password` VARCHAR(255) NULL,
   PRIMARY KEY (`id`)
 );
 

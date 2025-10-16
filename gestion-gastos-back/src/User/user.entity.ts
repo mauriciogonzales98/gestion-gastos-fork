@@ -14,7 +14,4 @@ export class User extends BaseEntity {
 
   @Property({ nullable: false, unique: true })
   email!: string;
-
-  @Property({ nullable: true })
-  password!: string;
 }

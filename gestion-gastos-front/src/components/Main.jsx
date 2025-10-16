@@ -6,10 +6,11 @@ import { getAuth } from "firebase/auth";
 import CategoryList from "./CategoryForm/CategoryList.jsx";
 
 import { useEffect, useState } from "react";
-import DeleteAccount from "./UserDeleteManager.jsx";
+import DeleteAccount from "./UserUpdate.jsx/UserDeleteManager.jsx";
 
 import { PasswordInput } from "./Registration/PasswordInputs.jsx";
-import ChangePassword from "./PasswordChangeManager.jsx";
+import ChangePassword from "./UserUpdate.jsx/PasswordChangeManager.jsx";
+import ChangeEmail from "./UserUpdate.jsx/EmailChangeManager.jsx";
 
 // Variables para userDeleteManager y passwordChangeManager
 // BORRADO DE CUENTA
@@ -19,6 +20,7 @@ const Main = () => {
   const { loggedIn } = useAuth();
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isChangingEmail, setIsChangingEmail] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   // Determina si el usuario está registrado por Google para evitar que intente cambiar la contraseña.
@@ -103,6 +105,39 @@ const Main = () => {
                   onCancel={() => setIsChangingPassword(false)}
                 />
               )}
+
+              {/* Comienzo del JSX para cambio de email
+
+
+              {value.user && <h1>Cambiar Email</h1>}
+              {value.user && !isChangingEmail && (
+                <button
+                  onClick={() => {
+                    // Evita que los usuarios de Google modifiquen su email
+                    //También debería ir en otro lado.
+                    if (isGoogleUser) {
+                      setErrorMessage(
+                        "Los usuarios logueados con Google no pueden modificar su email"
+                      );
+                      return;
+                    }
+                    setIsChangingEmail(true);
+                  }}
+                >
+                  Cambiar Email
+                </button>
+              )}
+              {isChangingEmail && (
+                <ChangeEmail
+                  setIsChangingEmail={setIsChangingEmail}
+                  errorMessage={errorMessage}
+                  setErrorMessage={setErrorMessage}
+                  onSuccess={() => navigate("/")}
+                  onCancel={() => setIsChangingEmail(false)}
+                />
+              )}
+              
+              */}
             </>
           )}
         </AuthContext.Consumer>

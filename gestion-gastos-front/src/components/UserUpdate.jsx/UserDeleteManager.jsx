@@ -6,7 +6,7 @@ import {
   reauthenticateWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
-import { fbDeleteUser } from "../Firebase/auth.js";
+import { fbDeleteUser } from "../../Firebase/auth.js";
 import Form from "react-bootstrap/Form";
 
 const DeleteAccount = ({
@@ -38,7 +38,7 @@ const DeleteAccount = ({
 
     try {
       if (!user) {
-        throw new Error("No hay usuario autenticado");
+        throw new Error("No hay usuario logueado");
       }
 
       // Re-autenticación
@@ -71,7 +71,7 @@ const DeleteAccount = ({
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Error del servidor");
-      }
+      } else console.log("Borrado del BE exitoso");
 
       // Eliminar de Firebase Auth
       await fbDeleteUser(user);

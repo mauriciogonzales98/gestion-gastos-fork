@@ -3,7 +3,6 @@ import { User } from "./user.entity.js";
 import { Wallet } from "../Wallet/wallet.entity.js";
 import { CategoryService } from "../Services/category.service.js";
 import { orm } from "../shared/db/orm.js";
-import fbAdmin from "../Firebase/FirebaseAdmin/firebaseAdmin.js";
 import { userRouter } from "./user.routes.js";
 const em = orm.em;
 
@@ -74,6 +73,18 @@ async function add(req: Request, res: Response) {
   }
 }
 
+async function update(req: Request, res: Response) {
+  try {
+    const id = req.params.id;
+    const user = em.getReference(User, id);
+    em.assign(user, req.body);
+    await em.flush();
+    res.status(200).json({ message: "user updated" });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 async function remove(req: Request, res: Response) {
   try {
     const firebaseUser = (req as any).firebaseUser;
@@ -88,4 +99,4 @@ async function remove(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
-export { sanitizeCharacterInput, findAll, findOne, add, remove };
+export { sanitizeCharacterInput, findAll, findOne, add, update, remove };

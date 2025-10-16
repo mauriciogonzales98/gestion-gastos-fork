@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   sendPasswordResetEmail,
   deleteUser,
+  updateEmail,
 } from "firebase/auth";
 
 export const fbEmailPasswordSignUp = async (email, password) => {
@@ -23,6 +24,9 @@ export const fbGoogleSignUp = async () => {
   return result;
 };
 
+// export const fbUpdateEmail = (email) => {
+//   return updateEmail(auth, email);
+// };
 export const fbPasswordReset = (email) => {
   return auth.sendPasswordResetEmail(email);
 };

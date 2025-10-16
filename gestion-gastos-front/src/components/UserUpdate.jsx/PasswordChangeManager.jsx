@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fbPasswordChange } from "../Firebase/auth.js";
+import { fbPasswordChange } from "../../Firebase/auth.js";
 import {
   getAuth,
   EmailAuthProvider,
@@ -48,7 +48,7 @@ const ChangePassword = ({
       return;
     }
 
-    //Cambia la contraseña en Firebase Auth
+    //Cambia la contraseña en Firebase Auth33
     try {
       await fbPasswordChange(payload.newPassword);
     } catch (err) {
