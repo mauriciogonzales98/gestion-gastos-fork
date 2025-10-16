@@ -1,0 +1,124 @@
+.emptyState {
+  text-align: center;
+  padding: 40px;
+}
+
+.emptyTitle {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.emptyText {
+  color: #999;
+  font-size: 16px;
+}
+
+.container {
+  margin-top: 30px;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.operationItem {
+  padding: 15px 20px;
+  margin: 10px 0;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 5px solid #28a745;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.operationItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.operationItem.expense {
+  border-left-color: #dc3545;
+}
+
+.operationContent {
+  flex: 1;
+}
+
+.operationDescription {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.operationDetails {
+  color: #666;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.operationAmount {
+  font-weight: bold;
+  font-size: 16px;
+  color: #28a745;
+}
+
+.operationAmount.expense {
+  color: #dc3545;
+}
+
+.operationCategory {
+  margin-left: 15px;
+}
+
+.operationDate {
+  margin-left: 15px;
+}
+
+.operationType {
+  margin-left: 15px;
+  padding: 3px 10px;
+  background-color: #d4edda;
+  color: #155724;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.operationType.expense {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.deleteButton {
+  padding: 8px 15px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+.deleteButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: scale(1);
+}

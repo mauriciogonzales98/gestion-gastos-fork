@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './WalletSelector.module.css';
 
 function normalizeWallets(input) {
   const arr = Array.isArray(input)
@@ -33,20 +34,12 @@ function normalizeWallets(input) {
 }
 
 const WalletSelector = ({ wallets, selectedWalletId, onWalletSelect, loading }) => {
-  // Validar que wallets sea un array
-
   const safeWallets = normalizeWallets(wallets);
   const selectedWallet = safeWallets.find(w => w.id === selectedWalletId);
 
   if (loading) {
     return (
-      <div style={{ 
-        padding: '20px', 
-        textAlign: 'center',
-        backgroundColor: '#f8f9fa',
-        borderRadius: '8px',
-        marginBottom: '20px'
-      }}>
+      <div className={styles.loadingContainer}>
         <div>Cargando wallets...</div>
       </div>
     );
@@ -54,24 +47,9 @@ const WalletSelector = ({ wallets, selectedWalletId, onWalletSelect, loading }) 
 
   if (!safeWallets || safeWallets.length === 0) {
     return (
-      <div style={{ 
-        padding: '20px', 
-        backgroundColor: '#fff3cd', 
-        borderRadius: '8px',
-        marginBottom: '20px',
-        textAlign: 'center'
-      }}>
-        <p style={{ margin: '0 0 10px 0' }}>No tienes wallets creadas.</p>
-        <button 
-          style={{ 
-            padding: '8px 16px', 
-            backgroundColor: '#007bff', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
+      <div className={styles.emptyState}>
+        <p className={styles.emptyText}>No tienes wallets creadas.</p>
+        <button className={styles.createButton}>
           Crear Primera Wallet
         </button>
       </div>
@@ -79,31 +57,16 @@ const WalletSelector = ({ wallets, selectedWalletId, onWalletSelect, loading }) 
   }
 
   return (
-    <div style={{ 
-      margin: '20px 0', 
-      padding: '20px', 
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      borderRadius: '12px',
-      color: 'white',
-      boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+    <div className={styles.container}>
+      <div className={styles.header}>
         <div>
-          <label style={{ fontWeight: 'bold', marginRight: '10px', fontSize: '18px' }}>
+          <label className={styles.label}>
             Seleccionar Wallet:
           </label>
           <select 
             value={selectedWalletId || ''} 
             onChange={(e) => onWalletSelect(parseInt(e.target.value))}
-            style={{
-              padding: '10px 15px',
-              borderRadius: '6px',
-              border: 'none',
-              fontSize: '16px',
-              backgroundColor: 'white',
-              color: '#333',
-              minWidth: '200px'
-            }}
+            className={styles.select}
           >
             <option value="">Selecciona una wallet</option>
             {safeWallets.map(wallet => (
@@ -115,16 +78,11 @@ const WalletSelector = ({ wallets, selectedWalletId, onWalletSelect, loading }) 
         </div>
 
         {selectedWallet && (
-          <div style={{ 
-            padding: '12px 20px', 
-            backgroundColor: 'rgba(255,255,255,0.2)', 
-            borderRadius: '8px',
-            backdropFilter: 'blur(10px)'
-          }}>
-            <div style={{ fontWeight: 'bold', fontSize: '16px' }}>
+          <div className={styles.selectedWallet}>
+            <div className={styles.walletName}>
               Wallet seleccionada: {selectedWallet.name}
             </div>
-            <div style={{ fontSize: '14px', opacity: '0.9' }}>
+            <div className={styles.walletBalance}>
               Balance: ${selectedWallet.balance || '0.00'}
             </div>
           </div>

@@ -119,8 +119,7 @@ const Main = () => {
       });
       if(response.ok){
         const operationsData = await response.json();
-        console.log("Operations loaded:", operationsData.data);
-        setOperations(operationsData.data);
+        setOperations(operationsData.data.reverse());
       }
     }
     catch(error){

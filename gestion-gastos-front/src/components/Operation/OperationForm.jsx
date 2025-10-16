@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import CategoryIcon from "../CategoryForm/CategoryIcon";
-import CategoryList from "../CategoryForm/CategoryList";
 import CategoryButtons from "../CategoryForm/CategoryButtons";
+import styles from "./OperationForm.module.css";
 
 const OperationForm = ({ walletId, token, onOperationAdded }) => {
   const [operationType, setOperationType] = useState("gasto");
@@ -58,7 +57,9 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
       categoryid: parseInt(selectedCategoryId) || null,
       date: new Date().toISOString()
     };
+    
     console.log('Submitting operation:', operationData);
+    
     try {
       const response = await fetch('http://localhost:3001/api/operation/', {
         method: 'POST',
@@ -76,12 +77,10 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
         setDescription("");
         setSelectedCategoryId("");
         
-        // ✅ LLAMAR A LA FUNCIÓN CALLBACK PARA ACTUALIZAR LA LISTA
         if (onOperationAdded) {
           onOperationAdded();
         }
         
-        // Limpiar mensaje después de 3 segundos
         setTimeout(() => setMessage(""), 3000);
       } else {
         const errorData = await response.json();
@@ -95,98 +94,64 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
     }
   };
 
+  const getMessageStyle = () => {
+    return message.includes('✅') ? styles.messageSuccess : styles.messageError;
+  };
+
+  const getSubmitButtonStyle = () => {
+    if (!walletId || loading) return '';
+    return operationType === "gasto" ? styles.submitButtonExpense : styles.submitButtonIncome;
+  };
+
   return (
-    <div style={{ 
-      padding: '25px', 
-      background: 'white', 
-      borderRadius: '12px', 
-      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-      height: 'fit-content',
-      textAlign: 'left'
-    }}>
-      <h2 style={{ marginBottom: '20px', color: '#333' }}>Registrar Operación</h2>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Registrar Operación</h2>
       
       {message && (
-        <div style={{ 
-          padding: '12px', 
-          borderRadius: '6px', 
-          marginBottom: '15px',
-          backgroundColor: message.includes('✅') ? '#d4edda' : '#f8d7da',
-          color: message.includes('✅') ? '#155724' : '#721c24',
-          border: `1px solid ${message.includes('✅') ? '#c3e6cb' : '#f5c6cb'}`
-        }}>
+        <div className={`${styles.message} ${getMessageStyle()}`}>
           {message}
         </div>
       )}
 
       {!walletId ? (
-        <div style={{ 
-          padding: '20px', 
-          background: '#fff3cd', 
-          borderRadius: '8px',
-          marginBottom: '20px',
-          textAlign: 'center'
-        }}>
-          <p style={{ margin: 0, color: '#856404' }}>
+        <div className={styles.walletAlert}>
+          <p className={styles.walletAlertText}>
             ⚠️ Selecciona una wallet para registrar operaciones
           </p>
         </div>
       ) : (
-        <div style={{ 
-          padding: '12px', 
-          background: '#d1edff', 
-          borderRadius: '6px',
-          marginBottom: '20px',
-          textAlign: 'center'
-        }}>
-          <p style={{ margin: 0, color: '#0c5460', fontWeight: 'bold' }}>
+        <div className={styles.walletReady}>
+          <p className={styles.walletReadyText}>
             ✅ Listo para registrar operaciones
           </p>
         </div>
       )}
 
-      <div style={{ marginBottom: '20px' }}>
-        <label style={{ marginRight: '15px', fontWeight: 'bold', color: '#555' }}>Tipo de Operación:</label>
+      <div className={styles.typeSelector}>
+        <span className={styles.typeLabel}>Tipo de Operación:</span>
         <button 
           type="button"
           onClick={() => setOperationType("gasto")}
-          style={{ 
-            backgroundColor: operationType === "gasto" ? "#dc3545" : "#6c757d",
-            color: "white",
-            border: "none",
-            padding: "10px 20px",
-            marginRight: "10px",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: "bold",
-            transition: 'all 0.3s ease'
-          }}
+          className={`${styles.typeButton} ${
+            operationType === "gasto" ? styles.typeButtonExpense : styles.typeButtonActive
+          }`}
         >
           💸 Gasto
         </button>
         <button 
           type="button"
           onClick={() => setOperationType("ingreso")}
-          style={{ 
-            backgroundColor: operationType === "ingreso" ? "#28a745" : "#6c757d",
-            color: "white",
-            border: "none",
-            padding: "10px 20px",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: "bold",
-            transition: 'all 0.3s ease'
-          }}
+          className={`${styles.typeButton} ${
+            operationType === "ingreso" ? styles.typeButtonIncome : styles.typeButtonActive
+          }`}
         >
           💰 Ingreso
         </button>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>
             Monto:
           </label>
           <input 
@@ -195,22 +160,15 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
             onChange={(e) => setAmount(e.target.value)}
             required 
             disabled={!walletId || loading}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '2px solid #e9ecef',
-              borderRadius: '6px',
-              fontSize: '16px',
-              transition: 'border-color 0.3s ease'
-            }}
+            className={styles.input}
             step="0.01"
             min="0.01"
             placeholder="0.00"
           />
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>
             Descripción:
           </label>
           <input 
@@ -218,21 +176,14 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             disabled={!walletId || loading}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '2px solid #e9ecef',
-              borderRadius: '6px',
-              fontSize: '16px',
-              transition: 'border-color 0.3s ease'
-            }}
+            className={styles.input}
             placeholder="Descripción de la operación"
             maxLength="100"
           />
         </div>
 
-        <div style={{ marginBottom: "25px" }}>
-          <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold", color: "#555" }}>
+        <div className={styles.categorySection}>
+          <label className={styles.label}>
             Categoría (opcional):
           </label>
           <CategoryButtons
@@ -245,19 +196,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
         <button 
           type="submit" 
           disabled={!walletId || loading || !amount}
-          style={{
-            backgroundColor: !walletId || loading ? '#6c757d' : (operationType === "gasto" ? "#dc3545" : "#28a745"),
-            color: "white",
-            border: "none",
-            padding: "14px 30px",
-            borderRadius: "6px",
-            cursor: !walletId || loading ? "not-allowed" : "pointer",
-            fontSize: "16px",
-            fontWeight: "bold",
-            width: '100%',
-            transition: 'all 0.3s ease',
-            opacity: !walletId || loading ? 0.6 : 1
-          }}
+          className={`${styles.submitButton} ${getSubmitButtonStyle()}`}
         >
           {loading ? '⏳ Procesando...' : 
            walletId ? 
