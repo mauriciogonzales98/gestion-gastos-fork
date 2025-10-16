@@ -3,7 +3,7 @@ import CategoryIcon from "../CategoryForm/CategoryIcon";
 import CategoryList from "../CategoryForm/CategoryList";
 import CategoryButtons from "../CategoryForm/CategoryButtons";
 
-const OperationForm = ({ walletId, token }) => {
+const OperationForm = ({ walletId, token, onOperationAdded }) => {
   const [operationType, setOperationType] = useState("gasto");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -75,6 +75,11 @@ const OperationForm = ({ walletId, token }) => {
         setAmount("");
         setDescription("");
         setSelectedCategoryId("");
+        
+        // ✅ LLAMAR A LA FUNCIÓN CALLBACK PARA ACTUALIZAR LA LISTA
+        if (onOperationAdded) {
+          onOperationAdded();
+        }
         
         // Limpiar mensaje después de 3 segundos
         setTimeout(() => setMessage(""), 3000);
@@ -227,16 +232,15 @@ const OperationForm = ({ walletId, token }) => {
         </div>
 
         <div style={{ marginBottom: "25px" }}>
-    <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold", color: "#555" }}>
-      Categoría (opcional):
-    </label>
-
-    <CategoryButtons
-      categories={categories}
-      selectedId={selectedCategoryId}
-      onSelect={setSelectedCategoryId}
-    />
-  </div>
+          <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold", color: "#555" }}>
+            Categoría (opcional):
+          </label>
+          <CategoryButtons
+            categories={categories}
+            selectedId={selectedCategoryId}
+            onSelect={setSelectedCategoryId}
+          />
+        </div>
 
         <button 
           type="submit" 

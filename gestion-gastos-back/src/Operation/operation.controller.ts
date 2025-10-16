@@ -45,12 +45,44 @@ async function findAll(req: Request, res: Response) {
 
     const user = await em.findOne(User, { id: userId });
 
-    const categories = await em.find(Operation, { user: { id: userId } });
+    const operations = await em.find(Operation, { user: { id: userId } });
 
     return res.status(200).json({
       success: true,
       message: 'Movimientos encontradas', 
-      data: categories 
+      data: operations 
+    });
+    
+  } catch (error: any) {
+    return res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
+  }
+}
+
+async function findAllFromWallet(req: Request, res: Response) {
+  try { 
+    const firebaseUser = (req as any).firebaseUser;
+    
+    if (!firebaseUser || !firebaseUser.uid) {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Usuario no autenticado' 
+      });
+    }
+
+    const userId = firebaseUser.uid;
+
+    const user = await em.findOne(User, { id: userId });
+
+    const operations = await em.find(Operation, { user: { id: userId }, wallet: { id: Number(req.params.walletId) } });
+    
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Movimientos encontrados', 
+      data: operations 
     });
     
   } catch (error: any) {
@@ -138,4 +170,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeOperationInput, findAll, findOne, add, update, remove }
+export { sanitizeOperationInput, findAll, findOne, add, update, remove, findAllFromWallet }

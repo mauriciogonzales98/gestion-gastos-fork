@@ -4,6 +4,7 @@ import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
 import { fbDeleteUser } from "../Firebase/auth.js";
 import CategoryList from "./CategoryForm/CategoryList.jsx";
 import OperationForm from "./Operation/OperationForm.jsx";
+import OperationList from "./Operation/OperationList.jsx";
 import Wallet from "./Wallet/Wallet.jsx";
 import { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
@@ -82,6 +83,8 @@ const Main = () => {
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [loadingWallets, setLoadingWallets] = useState(true);
   const [token, setToken] = useState(null);
+  const [operations, setOperations] = useState([]);
+  const [loadingOperations, setLoadingOperations] = useState(false);
 
   useEffect(() => {
     const getToken = async () => {
@@ -101,6 +104,32 @@ const Main = () => {
 
     getToken();
   }, [user]);
+
+
+  const loadOperations = async (walletId) => {
+    if (!walletId || !token) return;
+    try{
+      setLoadingOperations(true);
+      const response = await fetch(`http://localhost:3001/api/operation/wallet/${walletId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if(response.ok){
+        const operationsData = await response.json();
+        console.log("Operations loaded:", operationsData.data);
+        setOperations(operationsData.data);
+      }
+    }
+    catch(error){
+      console.error("Error loading operations:", error);
+    }
+    finally{
+      setLoadingOperations(false);
+    }
+  };
 
   useEffect(() => {
     if (!loggedIn) {
@@ -140,6 +169,12 @@ const Main = () => {
     }
   }, [loggedIn, navigate, user, selectedWalletId, token]);
 
+  useEffect(() => {
+    if (selectedWalletId) {
+      loadOperations(selectedWalletId);
+    }
+  }, [selectedWalletId, token]);
+
   if(!loggedIn){
     return null;
   }
@@ -165,9 +200,13 @@ const Main = () => {
       <div style={{ display: 'flex', marginBottom: '30px', justifyContent: 'center'}}>
         <div style={ {width: '1200px',maxWidth: '100%'}}>
           <OperationForm walletId={selectedWalletId} token={token} />
-        </div>
+        </div> 
       </div>
-      
+
+      <div>
+        <OperationList operations={operations}/>
+      </div>
+
       <div style={{ 
         padding: '20px', 
         backgroundColor: '#f8f9fa', 
