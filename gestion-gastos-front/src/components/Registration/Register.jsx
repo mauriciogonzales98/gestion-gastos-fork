@@ -7,6 +7,7 @@ import {
 } from "../../Firebase/auth.js";
 import Form from "react-bootstrap/Form";
 import { getAuth, getRedirectResult } from "firebase/auth";
+import StrongPasswordInput, { PasswordInput } from "./PasswordInputs.jsx";
 
 // Esta función envía los datos del usuario al BE, se utiliza tanto al registrarse
 // con email y contraseña como con Google.
@@ -15,6 +16,13 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   console.log("Estado de isRegistering: ", isRegistering);
+  const [formData, setFormData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
   // Envía la información al BE
   const commitToDB = async (e, user, datosUsuario) => {
@@ -25,7 +33,7 @@ const Register = () => {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.accessToken}`,
+          Authorization: `Bearer ${user.getIdToken()}`,
         },
         body: JSON.stringify(datosUsuario),
       })
@@ -60,13 +68,13 @@ const Register = () => {
         console.log("Resultado de getAuth().currentUser: ", user);
         if (user) {
           // This is the registered user
+
           // Esto asume usuarios con un solo nombre y un solo apellido para el parseo.
           const datosUsuario = {
             id: user.uid,
             name: user.displayName ? user.displayName.split(" ")[0] : "",
             surname: user.displayName ? user.displayName.split(" ")[1] : "",
             email: user.email,
-            password: null,
           };
           await commitToDB(e, user, datosUsuario);
         }
@@ -85,25 +93,30 @@ const Register = () => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
-    const payload = Object.fromEntries(formData);
+
+    const payload = Object.fromEntries(formData.entries());
+
+    //DEBUG
+    console.log("Payload del form: ", payload);
+
+    if (payload.password !== payload.confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return;
+    }
     if (!isRegistering) {
       setIsRegistering(true);
       try {
-        await fbCreateUserWithEmailAndPassword(
-          //estos dos datos solían ser payload.email y payload.password, los cambié por las dudas, pero podrían romper algo.
-          payload.email,
-          payload.password
-        );
+        await fbCreateUserWithEmailAndPassword(payload.email, payload.password);
+
         const user = getAuth().currentUser;
+
         const datosUsuario = {
           id: user.uid,
           name: payload.name,
           surname: payload.surname,
           email: payload.email,
-          password: payload.password,
         };
 
-        //await commitToDBFromEmailAndPassword(e, user, datosUsuario);
         await commitToDB(e, user, datosUsuario);
         navigate("/Main");
       } catch (err) {
@@ -161,9 +174,12 @@ const Register = () => {
           <Form.Group>
             <label htmlFor="password">Password</label>
             <Form.Control
-              type="text"
+              // value={formData.password}
+              // onChange={handleInputChange}
+              type="password"
               id="password"
               name="password"
+              placeholder="protip: No uses 12345678"
               //onChange={(e) => setPassword(e.target.value)}
               required
             />
@@ -171,9 +187,12 @@ const Register = () => {
           <Form.Group>
             <label htmlFor="confirmPassword">Confirm Password</label>
             <Form.Control
-              type="text"
+              // value={formData.confirmPassword}
+              // onChange={handleInputChange}
+              type="password"
               id="confirmPassword"
               name="confirmPassword"
+              placeholder="Enter the same password"
               //onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
@@ -185,7 +204,7 @@ const Register = () => {
           <a href="/login">Iniciar sesión</a>
         </p>
         <p>
-          ¿Preferís venderle tus datos a google?
+          ¿Preferís venderle tus datos a Google?
           <button onClick={onGoogleRegister}>Registrarse con Google</button>
         </p>
       </div>
