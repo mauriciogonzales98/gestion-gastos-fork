@@ -36,7 +36,7 @@ const NavBar = () => {
                   <button className = {styles.signout} 
                     onClick={() => {
                       fbSignOut();
-                      navigate("/home");
+                      navigate("/");
                     }}
                   ><BiLogOut/></button>
                 )}

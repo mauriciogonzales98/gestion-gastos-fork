@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getAuth } from "firebase/auth";
 import CategoryIcon from "./CategoryIcon";
 import styles from "./CategoryList.module.css";
@@ -13,19 +13,21 @@ const CategoryList = () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         const auth = getAuth();
         const user = auth.currentUser;
-        
-        if (!user) { throw new Error("Usuario no autenticado"); }
+
+        if (!user) {
+          throw new Error("Usuario no autenticado");
+        }
 
         const token = await user.getIdToken();
-        
-        const response = await fetch('http://localhost:3001/api/category/', {
-          method: 'GET',
+
+        const response = await fetch(`http://localhost:3001/api/category/`, {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -34,13 +36,12 @@ const CategoryList = () => {
         }
 
         const data = await response.json();
-        
+
         if (data.success) {
           setCategories(data.data);
         } else {
           throw new Error(data.message || "Error al cargar categorías");
         }
-        
       } catch (err) {
         console.error("Error fetching categories:", err);
         setError(err.message);
@@ -65,7 +66,7 @@ const CategoryList = () => {
     return (
       <div className={styles.errorContainer}>
         <div>Error: {error}</div>
-        <button 
+        <button
           onClick={() => window.location.reload()}
           className={styles.retryButton}
         >

@@ -11,7 +11,7 @@ export enum OperationType {
 }
 
 @Entity()
-export class Operation extends BaseEntity{
+export class Operation extends BaseEntity {
   @PrimaryKey()
   id!: number;
 

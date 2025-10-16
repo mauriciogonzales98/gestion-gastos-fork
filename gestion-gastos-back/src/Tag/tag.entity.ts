@@ -10,13 +10,18 @@ import { Property } from "@mikro-orm/core";
 import { User } from "../User/user.entity.js";
 
 @Entity()
-export class Tag extends BaseEntity{
+export class Tag extends BaseEntity {
   @PrimaryKey()
   id!: number;
 
-  @Property ({ nullable: false})
-  name!: string; 
+  @Property({ nullable: false })
+  name!: string;
 
-  @ManyToOne({ entity: () => User, nullable: false })
+  @ManyToOne({
+    entity: () => User,
+    nullable: false,
+    deleteRule: "cascade",
+    updateRule: "cascade",
+  })
   user!: User;
 }
