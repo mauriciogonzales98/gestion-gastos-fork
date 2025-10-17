@@ -96,11 +96,12 @@ const Main = () => {
   const [token, setToken] = useState(null);
   const [operations, setOperations] = useState([]);
   const [loadingOperations, setLoadingOperations] = useState(false);
-  
+
   // Determina si el usuario está registrado por Google para evitar que intente cambiar la contraseña.
   const isGoogleUser = getAuth().currentUser?.providerData.some(
     (provider) => provider.providerId === "google.com"
   );
+  const currentUser = getAuth().currentUser;
 
   useEffect(() => {
     const getToken = async () => {
@@ -113,7 +114,7 @@ const Main = () => {
             setToken(userToken);
           }
         } catch (error) {
-          console.error('Error getting token:', error);
+          console.error("Error getting token:", error);
         }
       }
     };
@@ -121,27 +122,27 @@ const Main = () => {
     getToken();
   }, [user]);
 
-
   const loadOperations = async (walletId) => {
     if (!walletId || !token) return;
-    try{
+    try {
       setLoadingOperations(true);
-      const response = await fetch(`http://localhost:3001/api/operation/wallet/${walletId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if(response.ok){
+      const response = await fetch(
+        `http://localhost:3001/api/operation/wallet/${walletId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.ok) {
         const operationsData = await response.json();
         setOperations(operationsData.data.reverse());
       }
-    }
-    catch(error){
+    } catch (error) {
       console.error("Error loading operations:", error);
-    }
-    finally{
+    } finally {
       setLoadingOperations(false);
     }
   };
@@ -156,25 +157,25 @@ const Main = () => {
       const loadWallets = async () => {
         try {
           setLoadingWallets(true);
-          const response = await fetch('http://localhost:3001/api/wallet', {
+          const response = await fetch("http://localhost:3001/api/wallet", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
-            }
+            },
           });
           if (response.ok) {
             const walletsData = await response.json();
             setWallets(walletsData);
-            
+
             if (walletsData.length > 0 && !selectedWalletId) {
               setSelectedWalletId(walletsData[0].id);
             }
           } else {
-            throw new Error('Error al cargar wallets');
+            throw new Error("Error al cargar wallets");
           }
         } catch (error) {
-          console.error('Error loading wallets:', error);
+          console.error("Error loading wallets:", error);
         } finally {
           setLoadingWallets(false);
         }
@@ -199,10 +200,17 @@ const Main = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
-      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+    <div
+      style={{
+        padding: "20px",
+        maxWidth: "1200px",
+        margin: "0 auto",
+        textAlign: "center",
+      }}
+    >
+      <div style={{ textAlign: "center", marginBottom: "30px" }}>
         <h1>Main Page - Protected Route</h1>
-        {user && <p style={{ color: '#666' }}>Bienvenido, {user.email}</p>}
+        {user && <p style={{ color: "#666" }}>Bienvenido, {user.email}</p>}
       </div>
 
       <Wallet
@@ -210,24 +218,33 @@ const Main = () => {
         selectedWalletId={selectedWalletId}
         onWalletSelect={handleWalletSelect}
         loading={loadingWallets}
+        user={currentUser}
       />
 
-      <div style={{ display: 'flex', marginBottom: '30px', justifyContent: 'center'}}>
-        <div style={ {width: '1200px',maxWidth: '100%'}}>
+      <div
+        style={{
+          display: "flex",
+          marginBottom: "30px",
+          justifyContent: "center",
+        }}
+      >
+        <div style={{ width: "1200px", maxWidth: "100%" }}>
           <OperationForm walletId={selectedWalletId} token={token} />
-        </div> 
+        </div>
       </div>
 
       <div>
-        <OperationList operations={operations}/>
+        <OperationList operations={operations} />
       </div>
 
-      <div style={{ 
-        padding: '20px', 
-        backgroundColor: '#f8f9fa', 
-        borderRadius: '8px',
-        textAlign: 'center'
-      }}>
+      <div
+        style={{
+          padding: "20px",
+          backgroundColor: "#f8f9fa",
+          borderRadius: "8px",
+          textAlign: "center",
+        }}
+      >
         <AuthContext.Consumer>
           {(value) => (
             <>
@@ -286,18 +303,13 @@ const Main = () => {
               {value.user && !isChangingEmail && (
                 <button
                   onClick={() => {
-                    if (window.confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+                    if (
+                      window.confirm(
+                        "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer."
+                      )
+                    ) {
                       userDeleteManager();
                     }
-                  }}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    fontSize: '16px'
                   }}
                 >
                   Cambiar Email

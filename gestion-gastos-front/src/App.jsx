@@ -5,6 +5,7 @@ import Main from "./components/Main.jsx";
 import NavBar from "./components/NavBar.jsx";
 import PageNotFound from "./components/PageNotFound.jsx";
 import HomeWithLogin from "./components/HomeWithLogin.jsx";
+import CreateWallet from "./components/Wallet/CreateWallet.jsx";
 import React from "react";
 import {
   BrowserRouter,
@@ -19,7 +20,7 @@ import { useAuth } from "./Contexts/FBauthContext";
 function App() {
   const { loggedIn } = useAuth();
 
-return (
+  return (
     <BrowserRouter>
       <div className="app-container">
         {loggedIn && <NavBar />}
@@ -31,6 +32,8 @@ return (
             <Route path="/register" element={<Register />} />
             <Route path="/main" element={<Main />} />
             <Route path="*" element={<PageNotFound />} />
+            <Route path="/create-wallet" element={<CreateWallet />} />
+            <Route path="/create-wallet" element={<CreateWallet />} />
           </Routes>
         </div>
       </div>

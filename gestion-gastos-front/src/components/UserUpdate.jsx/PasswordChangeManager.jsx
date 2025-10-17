@@ -41,6 +41,7 @@ const ChangePassword = ({
         user.email,
         payload.oldPassword
       );
+      // Reautentica al usuario para realizar la operación
       await reauthenticateWithCredential(user, credential);
     } catch (reauthError) {
       setErrorMessage("La contraseña actual es incorrecta");
@@ -48,7 +49,7 @@ const ChangePassword = ({
       return;
     }
 
-    //Cambia la contraseña en Firebase Auth33
+    //Cambia la contraseña en Firebase Auth
     try {
       await fbPasswordChange(payload.newPassword);
     } catch (err) {
