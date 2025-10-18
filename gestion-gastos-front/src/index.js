@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { AuthProvider } from "./Contexts/FBauthContext/index.jsx";
+import { TokenProvider } from "./Contexts/tokenContext/TokenContext.jsx";
 import App from "./App.jsx";
 import reportWebVitals from "./reportWebVitals.js";
 
@@ -9,9 +10,11 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <div>
-        <App />
-      </div>
+      <TokenProvider>
+        <div>
+          <App />
+        </div>
+      </TokenProvider>
     </AuthProvider>
   </React.StrictMode>
 );
