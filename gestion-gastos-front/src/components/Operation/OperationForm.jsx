@@ -14,11 +14,11 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
   useEffect(() => {
     const loadCategories = async () => {
       if (!token) return;
-      
+
       try {
-        const response = await fetch('http://localhost:3001/api/category/', {
+        const response = await fetch("http://localhost:3001/api/category/", {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         const data = await response.json();
@@ -26,16 +26,16 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
           setCategories(data.data);
         }
       } catch (error) {
-        console.error('Error loading categories:', error);
+        console.error("Error loading categories:", error);
       }
     };
-    
+
     loadCategories();
   }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!walletId) {
       setMessage("⚠️ Por favor selecciona una wallet primero");
       return;
@@ -55,39 +55,41 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
       description,
       walletid: walletId,
       categoryid: parseInt(selectedCategoryId) || null,
-      date: new Date().toISOString()
+      date: new Date().toISOString(),
     };
-    
-    console.log('Submitting operation:', operationData);
-    
+
+    console.log("Submitting operation:", operationData);
+
     try {
-      const response = await fetch('http://localhost:3001/api/operation/', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+      const response = await fetch("http://localhost:3001/api/operation/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(operationData)
+        body: JSON.stringify(operationData),
       });
-      
+
       if (response.ok) {
         const result = await response.json();
         setMessage("✅ Operación registrada correctamente");
         setAmount("");
         setDescription("");
         setSelectedCategoryId("");
-        
+
         if (onOperationAdded) {
           onOperationAdded();
         }
-        
+
         setTimeout(() => setMessage(""), 3000);
       } else {
         const errorData = await response.json();
-        setMessage(`❌ Error: ${errorData.message || 'Error al crear la operación'}`);
+        setMessage(
+          `❌ Error: ${errorData.message || "Error al crear la operación"}`
+        );
       }
     } catch (error) {
-      console.error('Error creating operation:', error);
+      console.error("Error creating operation:", error);
       setMessage("❌ Error de conexión al crear la operación");
     } finally {
       setLoading(false);
@@ -95,18 +97,20 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
   };
 
   const getMessageStyle = () => {
-    return message.includes('✅') ? styles.messageSuccess : styles.messageError;
+    return message.includes("✅") ? styles.messageSuccess : styles.messageError;
   };
 
   const getSubmitButtonStyle = () => {
-    if (!walletId || loading) return '';
-    return operationType === "gasto" ? styles.submitButtonExpense : styles.submitButtonIncome;
+    if (!walletId || loading) return "";
+    return operationType === "gasto"
+      ? styles.submitButtonExpense
+      : styles.submitButtonIncome;
   };
 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Registrar Operación</h2>
-      
+
       {message && (
         <div className={`${styles.message} ${getMessageStyle()}`}>
           {message}
@@ -129,20 +133,24 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
 
       <div className={styles.typeSelector}>
         <span className={styles.typeLabel}>Tipo de Operación:</span>
-        <button 
+        <button
           type="button"
           onClick={() => setOperationType("gasto")}
           className={`${styles.typeButton} ${
-            operationType === "gasto" ? styles.typeButtonExpense : styles.typeButtonActive
+            operationType === "gasto"
+              ? styles.typeButtonExpense
+              : styles.typeButtonActive
           }`}
         >
           💸 Gasto
         </button>
-        <button 
+        <button
           type="button"
           onClick={() => setOperationType("ingreso")}
           className={`${styles.typeButton} ${
-            operationType === "ingreso" ? styles.typeButtonIncome : styles.typeButtonActive
+            operationType === "ingreso"
+              ? styles.typeButtonIncome
+              : styles.typeButtonActive
           }`}
         >
           💰 Ingreso
@@ -151,14 +159,12 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
 
       <form onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
-          <label className={styles.label}>
-            Monto:
-          </label>
-          <input 
-            type="number" 
+          <label className={styles.label}>Monto:</label>
+          <input
+            type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            required 
+            required
             disabled={!walletId || loading}
             className={styles.input}
             step="0.01"
@@ -168,11 +174,9 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label}>
-            Descripción:
-          </label>
-          <input 
-            type="text" 
+          <label className={styles.label}>Descripción:</label>
+          <input
+            type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             disabled={!walletId || loading}
@@ -183,9 +187,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
         </div>
 
         <div className={styles.categorySection}>
-          <label className={styles.label}>
-            Categoría (opcional):
-          </label>
+          <label className={styles.label}>Categoría (opcional):</label>
           <CategoryButtons
             categories={categories}
             selectedId={selectedCategoryId}
@@ -193,16 +195,16 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
           />
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={!walletId || loading || !amount}
           className={`${styles.submitButton} ${getSubmitButtonStyle()}`}
         >
-          {loading ? '⏳ Procesando...' : 
-           walletId ? 
-             `📝 Registrar ${operationType === "gasto" ? "Gasto" : "Ingreso"}` : 
-             'Selecciona una wallet'
-          }
+          {loading
+            ? "⏳ Procesando..."
+            : walletId
+            ? `📝 Registrar ${operationType === "gasto" ? "Gasto" : "Ingreso"}`
+            : "Selecciona una wallet"}
         </button>
       </form>
     </div>
