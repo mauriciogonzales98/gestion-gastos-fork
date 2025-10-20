@@ -8,6 +8,7 @@ const OperationList = ({ operations, onDelete }) => {
   const [isDeleting, setIsDeleting] = useState();
   const [editingId, setEditingId] = useState(null);
   const [editedValues, setEditedValues] = useState({});
+  const [selectedTypeValue, setSelectedTypeValue] = useState(null);
   const { token, loadingToken, refreshToken } = useToken();
 
   if (!Array.isArray(operations) || operations.length === 0) {
@@ -55,6 +56,7 @@ const OperationList = ({ operations, onDelete }) => {
       amount: operation.amount.toString(),
       category: operation.category?.name || "",
       date: operation.date.split("T")[0], // Format for date input
+      type: operation.type,
     });
   };
 
@@ -75,6 +77,7 @@ const OperationList = ({ operations, onDelete }) => {
         description: editedValues.description,
         amount: parseFloat(editedValues.amount),
         date: editedValues.date,
+        type: editedValues.type,
         // Si vamos a poner el objeto de category podríamos tener que manejarlo distinto
       };
 
@@ -110,7 +113,7 @@ const OperationList = ({ operations, onDelete }) => {
             onDoubleClick={() => handleDoubleClick(operation)}
           >
             {editingId === operation.id ? (
-              // Edit Mode
+              // Modo edición
               <div className={styles.editForm}>
                 <input
                   type="text"
@@ -143,6 +146,33 @@ const OperationList = ({ operations, onDelete }) => {
                   onBlur={() => handleBlur(operation.id)}
                   className={styles.editInput}
                 />
+                {/* Radio para seleccionar tipo de operación  */}
+                <div>
+                  <label>
+                    <input
+                      type="radio"
+                      name="gasto"
+                      checked={selectedTypeValue === "gasto"}
+                      onChange={(e) => {
+                        handleInputChange("type", "gasto");
+                        setSelectedTypeValue("gasto");
+                      }}
+                    />{" "}
+                    Gasto
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="ingreso"
+                      checked={selectedTypeValue === "ingreso"}
+                      onChange={(e) => {
+                        handleInputChange("type", "ingreso");
+                        setSelectedTypeValue("ingreso");
+                      }}
+                    />{" "}
+                    Ingreso
+                  </label>
+                </div>
                 <div className={styles.editActions}>
                   <button
                     onClick={() => handleSave(operation.id)}
@@ -162,7 +192,7 @@ const OperationList = ({ operations, onDelete }) => {
                 </div>
               </div>
             ) : (
-              // Display Mode
+              // Modo display
               <>
                 <div className={styles.operationContent}>
                   <div className={styles.operationDescription}>
