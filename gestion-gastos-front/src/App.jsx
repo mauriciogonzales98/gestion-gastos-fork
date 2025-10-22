@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import Register from "./components/Registration/Register.jsx";
 import { useAuth } from "./Contexts/FBauthContext";
+import CategoryForm from "./components/CategoryForm/CategoryForm.jsx";
 
 function App() {
   const { loggedIn } = useAuth();
@@ -30,6 +31,7 @@ return (
             <Route path="/home" element={<HomeWithLogin />} />
             <Route path="/register" element={<Register />} />
             <Route path="/main" element={<Main />} />
+            <Route path="/categories" element={<CategoryForm />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>

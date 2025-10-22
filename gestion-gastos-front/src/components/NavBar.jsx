@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { fbSignOut } from "../Firebase/auth";
 import { AuthContext, useAuth } from "../Contexts/FBauthContext";
-import { BiLogOut } from 'react-icons/bi';
+import { BiCategory, BiLogOut } from 'react-icons/bi';
 import { FiHome } from 'react-icons/fi';
 import styles from './NavBar.module.css';
 
@@ -35,12 +35,23 @@ const NavBar = () => {
               {value.user && (
                   <button className = {styles.signout} 
                     onClick={() => {
+                      navigate("/categories");
+                    }}
+                  ><BiCategory/></button>
+                )}
+            </div>
+
+            <div>
+              {value.user && (
+                  <button className = {styles.signout} 
+                    onClick={() => {
                       fbSignOut();
                       navigate("/");
                     }}
                   ><BiLogOut/></button>
                 )}
             </div>
+
             {/* <div>
               {!value.user && (
                 <button onClick={() => navigate("/login")}>Sign In</button>

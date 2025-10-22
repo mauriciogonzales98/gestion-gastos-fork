@@ -204,7 +204,7 @@ const Main = () => {
         <h1>Main Page - Protected Route</h1>
         {user && <p style={{ color: '#666' }}>Bienvenido, {user.email}</p>}
       </div>
-
+      <button onClick={() => {navigate("/categories")}}>test</button>
       <Wallet
         wallets={wallets}
         selectedWalletId={selectedWalletId}
