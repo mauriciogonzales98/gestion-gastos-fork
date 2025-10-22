@@ -1,4 +1,11 @@
-import { BaseEntity, DateTimeType, Entity, ManyToOne, PrimaryKey, Enum } from "@mikro-orm/core";
+import {
+  BaseEntity,
+  DateTimeType,
+  Entity,
+  ManyToOne,
+  PrimaryKey,
+  Enum,
+} from "@mikro-orm/core";
 import { Property } from "@mikro-orm/core";
 import { User } from "../User/user.entity.js";
 import { Category } from "../Category/category.entity.js";
@@ -6,8 +13,8 @@ import { Tag } from "../Tag/tag.entity.js";
 import { Wallet } from "../Wallet/wallet.entity.js";
 
 export enum OperationType {
-  GASTO = 'gasto',
-  INGRESO = 'ingreso'
+  GASTO = "gasto",
+  INGRESO = "ingreso",
 }
 
 @Entity()
@@ -16,7 +23,7 @@ export class Operation extends BaseEntity {
   id!: number;
 
   @Property({ nullable: true })
-  amount!: number; 
+  amount!: number;
 
   @Property({ type: DateTimeType, nullable: true })
   date!: Date;
@@ -24,38 +31,46 @@ export class Operation extends BaseEntity {
   @Property({ nullable: true })
   description!: string;
 
-  @Enum({ 
-    items: () => OperationType, 
+  @Enum({
+    items: () => OperationType,
     default: OperationType.GASTO,
-    nullable: false 
+    nullable: false,
   })
   type!: OperationType;
 
-  @ManyToOne({ entity: () => User, 
+  @ManyToOne({
+    entity: () => User,
     nullable: false,
-    deleteRule: 'cascade',
-    updateRule: 'cascade',
-    fieldName: 'userid'})
+    deleteRule: "cascade",
+    updateRule: "cascade",
+    fieldName: "userid",
+  })
   user!: User;
 
-  @ManyToOne({ entity: () => Category, 
+  @ManyToOne({
+    entity: () => Category,
     nullable: true,
-    deleteRule: 'cascade',
-    updateRule: 'cascade',
-    fieldName: 'categoryid'})
+    deleteRule: "cascade",
+    updateRule: "cascade",
+    fieldName: "categoryid",
+  })
   category!: Category;
 
-  @ManyToOne({ entity: () => Tag, 
+  @ManyToOne({
+    entity: () => Tag,
     nullable: true,
-    deleteRule: 'cascade',
-    updateRule: 'cascade',
-    fieldName: 'tagid'})
+    deleteRule: "cascade",
+    updateRule: "cascade",
+    fieldName: "tagid",
+  })
   tag!: Tag;
 
-  @ManyToOne({ entity: () => Wallet, 
+  @ManyToOne({
+    entity: () => Wallet,
     nullable: false,
-    deleteRule: 'cascade',
-    updateRule: 'cascade',
-    fieldName: 'walletid'})
-  wallet!: Wallet;
+    deleteRule: "cascade",
+    updateRule: "cascade",
+    fieldName: "walletid",
+  })
+  walletid!: Wallet;
 }

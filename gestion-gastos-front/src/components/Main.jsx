@@ -12,7 +12,9 @@ import ChangeEmail from "./UserUpdate.jsx/EmailChangeManager.jsx";
 
 import OperationForm from "./Operation/OperationForm.jsx";
 import OperationList from "./Operation/OperationList.jsx";
-import Wallet from "./Wallet/Wallet.jsx";
+
+import WalletLoading from "./Wallet/WalletLoading.jsx";
+import styles from "./Wallet/WalletSelector.module.css";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -25,7 +27,6 @@ const Main = () => {
   // Uso hook de la token
   const { token, loadingToken, refreshToken } = useToken();
 
-  const [wallets, setWallets] = useState([]);
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [loadingWallets, setLoadingWallets] = useState(true);
   //const [token, setToken] = useState(null);
@@ -36,7 +37,12 @@ const Main = () => {
   const isGoogleUser = getAuth().currentUser?.providerData.some(
     (provider) => provider.providerId === "google.com"
   );
-
+  useEffect(() => {
+    if (!loggedIn) {
+      navigate("/home");
+      return;
+    }
+  }, [loggedIn, navigate]);
   // useEffect(() => {
   //   const getToken = async () => {
   //     if (user) {
@@ -87,44 +93,6 @@ const Main = () => {
   };
 
   useEffect(() => {
-    if (!loggedIn) {
-      navigate("/home");
-      return;
-    }
-
-    if (user && token) {
-      const loadWallets = async () => {
-        try {
-          setLoadingWallets(true);
-          const response = await fetch("http://localhost:3001/api/wallet", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          if (response.ok) {
-            const walletsData = await response.json();
-            setWallets(walletsData);
-
-            if (walletsData.length > 0 && !selectedWalletId) {
-              setSelectedWalletId(walletsData[0].id);
-            }
-          } else {
-            throw new Error("Error al cargar wallets");
-          }
-        } catch (error) {
-          console.error("Error loading wallets:", error);
-        } finally {
-          setLoadingWallets(false);
-        }
-      };
-
-      loadWallets();
-    }
-  }, [loggedIn, navigate, user, selectedWalletId, token]);
-
-  useEffect(() => {
     if (selectedWalletId) {
       loadOperations(selectedWalletId);
     }
@@ -133,10 +101,6 @@ const Main = () => {
   if (!loggedIn) {
     return null;
   }
-
-  const handleWalletSelect = (walletId) => {
-    setSelectedWalletId(walletId);
-  };
 
   return (
     <div
@@ -151,13 +115,15 @@ const Main = () => {
         <h1>Main Page - Protected Route</h1>
         {user && <p style={{ color: "#666" }}>Bienvenido, {user.email}</p>}
       </div>
-
-      <Wallet
-        wallets={wallets}
-        selectedWalletId={selectedWalletId}
-        onWalletSelect={handleWalletSelect}
-        loading={loadingWallets}
-      />
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <WalletLoading
+            token={token}
+            selectedWalletId={selectedWalletId}
+            setSelectedWalletId={setSelectedWalletId}
+          />
+        </div>
+      </div>
 
       <div
         style={{

@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import styles from "./OperationList.module.css";
 import deleteOperation from "./OperationDeleteManager.jsx";
-import { updateOperation } from "./operationUpdate/OperationUpdateManager.jsx";
+import OperationUpdateForm, {
+  updateOperation,
+} from "./operationUpdate/OperationUpdateManager.jsx";
 import { useToken } from "../../Contexts/tokenContext/TokenContext.jsx";
+import WalletSelector from "../Wallet/WalletSelector.jsx";
 
 const OperationList = ({ operations, onDelete }) => {
   const [isDeleting, setIsDeleting] = useState();
   const [editingId, setEditingId] = useState(null);
   const [editedValues, setEditedValues] = useState({});
-  const [selectedTypeValue, setSelectedTypeValue] = useState(null);
   const { token, loadingToken, refreshToken } = useToken();
 
   if (!Array.isArray(operations) || operations.length === 0) {
@@ -57,45 +59,8 @@ const OperationList = ({ operations, onDelete }) => {
       category: operation.category?.name || "",
       date: operation.date.split("T")[0], // Format for date input
       type: operation.type,
+      walletid: operation.wallet,
     });
-  };
-
-  const handleInputChange = (field, value) => {
-    setEditedValues((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleSave = async (operationId) => {
-    try {
-      if (!token) {
-        token = await refreshToken();
-      }
-
-      const updates = {
-        description: editedValues.description,
-        amount: parseFloat(editedValues.amount),
-        date: editedValues.date,
-        type: editedValues.type,
-        // Si vamos a poner el objeto de category podríamos tener que manejarlo distinto
-      };
-
-      await updateOperation(operationId, updates, token);
-      setEditingId(null);
-      setEditedValues({});
-
-      //Refrescar la lista
-      if (onDelete) onDelete();
-    } catch (error) {
-      console.error("Error updating operation:", error);
-      alert("Error al actualizar la operación");
-    }
-  };
-
-  const handleBlur = (operationId) => {
-    // Optional: Save on blur or require explicit Enter
-    // handleSave(operationId);
   };
 
   return (
@@ -114,83 +79,13 @@ const OperationList = ({ operations, onDelete }) => {
           >
             {editingId === operation.id ? (
               // Modo edición
-              <div className={styles.editForm}>
-                <input
-                  type="text"
-                  value={editedValues.description}
-                  onChange={(e) =>
-                    handleInputChange("description", e.target.value)
-                  }
-                  // onKeyUp={(e) => handleKeyPress(e, operation.id)}
-                  onBlur={() => handleBlur(operation.id)}
-                  className={styles.editInput}
-                  placeholder="Descripción"
-                  maxLength="100"
-                  autoFocus
-                />
-                <input
-                  type="number"
-                  value={editedValues.amount}
-                  onChange={(e) => handleInputChange("amount", e.target.value)}
-                  //onKeyUp={(e) => handleKeyPress(e, operation.id)}
-                  onBlur={() => handleBlur(operation.id)}
-                  className={styles.editInput}
-                  step="1"
-                />
-                <input
-                  type="date"
-                  value={editedValues.date}
-                  min="1900-01-01"
-                  onChange={(e) => handleInputChange("date", e.target.value)}
-                  //onKeyUp={(e) => handleKeyPress(e, operation.id)}
-                  onBlur={() => handleBlur(operation.id)}
-                  className={styles.editInput}
-                />
-                {/* Radio para seleccionar tipo de operación  */}
-                <div>
-                  <label>
-                    <input
-                      type="radio"
-                      name="gasto"
-                      checked={selectedTypeValue === "gasto"}
-                      onChange={(e) => {
-                        handleInputChange("type", "gasto");
-                        setSelectedTypeValue("gasto");
-                      }}
-                    />{" "}
-                    Gasto
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="ingreso"
-                      checked={selectedTypeValue === "ingreso"}
-                      onChange={(e) => {
-                        handleInputChange("type", "ingreso");
-                        setSelectedTypeValue("ingreso");
-                      }}
-                    />{" "}
-                    Ingreso
-                  </label>
-                </div>
-                <div className={styles.editActions}>
-                  <button
-                    onClick={() => handleSave(operation.id)}
-                    className={styles.saveButton}
-                  >
-                    ✅
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditingId(null);
-                      setEditedValues({});
-                    }}
-                    className={styles.cancelButton}
-                  >
-                    ❌
-                  </button>
-                </div>
-              </div>
+              <OperationUpdateForm
+                editingId={editingId}
+                setEditingId={setEditingId}
+                editedValues={editedValues}
+                setEditedValues={setEditedValues}
+                onDelete={onDelete}
+              />
             ) : (
               // Modo display
               <>
