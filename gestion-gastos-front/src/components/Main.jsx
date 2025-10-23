@@ -15,13 +15,18 @@ import OperationList from "./Operation/OperationList.jsx";
 
 import WalletLoading from "./Wallet/WalletLoading.jsx";
 import styles from "./Wallet/WalletSelector.module.css";
+import {
+  loadEnrichedOperations,
+  loadOperations,
+} from "./Operation/OperationEnrichManager.jsx";
+import CategoryList from "./CategoryForm/CategoryList.jsx";
 
 const Main = () => {
   const navigate = useNavigate();
   const { loggedIn, user } = useAuth();
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [isChangingEmail, setIsChangingEmail] = useState(false);
+  // const [isChangingEmail, setIsChangingEmail] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   // Uso hook de la token
@@ -31,7 +36,6 @@ const Main = () => {
   const [loadingWallets, setLoadingWallets] = useState(true);
   //const [token, setToken] = useState(null);
   const [operations, setOperations] = useState([]);
-  const [loadingOperations, setLoadingOperations] = useState(false);
 
   // Determina si el usuario está registrado por Google para evitar que intente cambiar la contraseña.
   const isGoogleUser = getAuth().currentUser?.providerData.some(
@@ -43,65 +47,42 @@ const Main = () => {
       return;
     }
   }, [loggedIn, navigate]);
-  // useEffect(() => {
-  //   const getToken = async () => {
-  //     if (user) {
-  //       try {
-  //         const auth = getAuth();
-  //         const currentUser = auth.currentUser;
-  //         if (currentUser) {
-  //           const userToken = await currentUser.getIdToken();
-  //           setToken(userToken);
-
-  //           const googleUser = currentUser.providerData.some(
-  //             (provider) => provider.providerId === "google.com"
-  //           );
-  //           setIsGoogleUser(googleUser);
-  //         }
-  //       } catch (error) {
-  //         console.error("Error getting token:", error);
-  //       }
-  //     }
-  //   };
-
-  //   getToken();
-  // }, [user]);
-
-  const loadOperations = async (walletId) => {
-    if (!walletId || !token) return;
-    try {
-      setLoadingOperations(true);
-      const response = await fetch(
-        `http://localhost:3001/api/operation/wallet/${walletId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+  //Cuando se selecciona una wallet, carga todas las operaciones, cargando las categorías e insertandolas en el objeto
+  useEffect(() => {
+    const operationsLoader = async () => {
+      if (selectedWalletId) {
+        try {
+          const enrichedOperations = await loadEnrichedOperations(
+            selectedWalletId,
+            token
+          );
+          setOperations(enrichedOperations);
+          console.log(
+            "Operaciones seleccionadas en operationsLoader:",
+            enrichedOperations
+          );
+        } catch (err) {
+          console.log("Error cargando operaciones enriqucidas al main", err);
+          setOperations([]);
         }
-      );
-      if (response.ok) {
-        const operationsData = await response.json();
-        setOperations(operationsData.data.reverse());
       }
-    } catch (error) {
-      console.error("Error loading operations:", error);
-    } finally {
-      setLoadingOperations(false);
+    };
+    operationsLoader();
+  }, [selectedWalletId, token]);
+  // Función que refresca las operaciones
+  const refreshOperations = async () => {
+    if (!selectedWalletId) return;
+    try {
+      const enrichedOperations = await loadEnrichedOperations(
+        selectedWalletId,
+        token
+      );
+      setOperations(enrichedOperations);
+    } catch (err) {
+      console.log("Error refreshing operations:", err);
+      setOperations([]);
     }
   };
-
-  useEffect(() => {
-    if (selectedWalletId) {
-      loadOperations(selectedWalletId);
-    }
-  }, [selectedWalletId, token]);
-
-  if (!loggedIn) {
-    return null;
-  }
-
   return (
     <div
       style={{
@@ -137,7 +118,7 @@ const Main = () => {
             walletId={selectedWalletId}
             token={token}
             onOperationAdded={() => {
-              loadOperations(selectedWalletId);
+              refreshOperations();
             }}
           />
         </div>
@@ -147,8 +128,8 @@ const Main = () => {
         <OperationList
           operations={operations}
           token={token}
-          onDelete={() => {
-            loadOperations(selectedWalletId);
+          onChange={() => {
+            refreshOperations();
           }}
         />
       </div>

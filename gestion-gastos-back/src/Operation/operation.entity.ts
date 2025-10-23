@@ -54,7 +54,7 @@ export class Operation extends BaseEntity {
     updateRule: "cascade",
     fieldName: "categoryid",
   })
-  category!: Category;
+  categoryid!: Category;
 
   @ManyToOne({
     entity: () => Tag,

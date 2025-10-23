@@ -7,12 +7,18 @@ import OperationUpdateForm, {
 import { useToken } from "../../Contexts/tokenContext/TokenContext.jsx";
 import WalletSelector from "../Wallet/WalletSelector.jsx";
 
-const OperationList = ({ operations, onDelete }) => {
+const OperationList = ({ operations, onChange }) => {
   const [isDeleting, setIsDeleting] = useState();
   const [editingId, setEditingId] = useState(null);
   const [editedValues, setEditedValues] = useState({});
-  const { token, loadingToken, refreshToken } = useToken();
-
+  const { token, refreshToken } = useToken();
+  if (operations > 0) {
+    console.log("Operations[0]: ", operations[0]);
+    console.log("Datos:");
+    console.log(operations[0].id);
+    console.log(operations[0].category);
+    console.log(operations[0].description);
+  }
   if (!Array.isArray(operations) || operations.length === 0) {
     return (
       <div className={styles.emptyState}>
@@ -41,7 +47,7 @@ const OperationList = ({ operations, onDelete }) => {
       try {
         await deleteOperation(operation.id, token);
         setIsDeleting(false);
-        if (onDelete) onDelete();
+        if (onChange) onChange();
       } catch (err) {
         setIsDeleting(false);
       }
@@ -50,13 +56,13 @@ const OperationList = ({ operations, onDelete }) => {
       setIsDeleting(false);
     }
   };
-
+  // Inicia el modo de edición, llamando al componente OperationUpdateForm
   const handleDoubleClick = (operation) => {
     setEditingId(operation.id);
     setEditedValues({
       description: operation.description || "",
       amount: operation.amount.toString(),
-      category: operation.category?.name || "",
+      category: operation.category?.id || null,
       date: operation.date.split("T")[0], // Format for date input
       type: operation.type,
       walletid: operation.wallet,
@@ -84,7 +90,7 @@ const OperationList = ({ operations, onDelete }) => {
                 setEditingId={setEditingId}
                 editedValues={editedValues}
                 setEditedValues={setEditedValues}
-                onDelete={onDelete}
+                onChange={onChange}
               />
             ) : (
               // Modo display

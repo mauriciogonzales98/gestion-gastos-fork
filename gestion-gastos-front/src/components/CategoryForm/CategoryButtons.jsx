@@ -17,10 +17,14 @@ const CategoryButtons = ({ categories = [], selectedId, onSelect }) => {
             type="button"
             onClick={() => onSelect(isSelected ? "" : cat.id)}
             aria-pressed={isSelected}
-            className={`${styles.button} ${isSelected ? styles.buttonSelected : ""}`}
+            className={`${styles.button} ${
+              isSelected ? styles.buttonSelected : ""
+            }`}
           >
-            <CategoryIcon iconName={cat.icon} size={18} />  
-            <span className={styles.label}>{cat.name ?? cat.label ?? "Cat"}</span>
+            <CategoryIcon iconName={cat.icon} size={18} />
+            <span className={styles.label}>
+              {cat.name ?? cat.label ?? "Cat"}
+            </span>
           </button>
         );
       })}

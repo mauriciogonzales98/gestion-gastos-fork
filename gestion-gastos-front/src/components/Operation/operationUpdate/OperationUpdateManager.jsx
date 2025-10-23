@@ -2,15 +2,21 @@ import { useToken } from "../../../Contexts/tokenContext/TokenContext";
 import styles from "../OperationList.module.css";
 import { useEffect, useState } from "react";
 import WalletLoading from "../../Wallet/WalletLoading";
+
+import CategoryList from "../../CategoryForm/CategoryList";
+import CategoryButtons from "../../CategoryForm/CategoryButtons";
+
 const OperationUpdateForm = ({
   editingId,
   setEditingId,
   editedValues,
   setEditedValues,
-  onDelete,
+  onChange,
 }) => {
   const [selectedTypeValue, setSelectedTypeValue] = useState(null);
+  const [categories, setCategories] = useState(null);
   const [selectedWalletId, setSelectedWalletId] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const { token, refreshToken } = useToken();
   const handleSave = async (operationId) => {
     try {
@@ -23,6 +29,7 @@ const OperationUpdateForm = ({
         amount: parseFloat(editedValues.amount),
         date: editedValues.date,
         type: editedValues.type,
+        categoryid: editedValues.categoryid,
         walletid: editedValues.walletid,
         // Si vamos a poner el objeto de category podríamos tener que manejarlo distinto
       };
@@ -34,7 +41,7 @@ const OperationUpdateForm = ({
       setEditedValues({});
 
       //Refrescar la lista
-      if (onDelete) onDelete();
+      if (onChange) onChange();
     } catch (error) {
       console.error("Error updating operation:", error);
       alert("Error al actualizar la operación");
@@ -46,13 +53,41 @@ const OperationUpdateForm = ({
       [field]: value,
     }));
   };
-  const handleWalletChange = (walletId, selectedWalletId) => {
+  const handleWalletChange = (walletId) => {
     setSelectedWalletId(walletId);
     setEditedValues((prev) => ({
       ...prev,
       walletid: walletId,
     }));
   };
+  const handleCategoryChange = (categoryId) => {
+    setSelectedCategoryId(categoryId);
+    setEditedValues((prev) => ({
+      ...prev,
+      categoryid: categoryId,
+    }));
+  };
+  useEffect(() => {
+    const loadCategories = async () => {
+      if (!token) return;
+
+      try {
+        const response = await fetch("http://localhost:3001/api/category/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setCategories(data.data);
+        }
+      } catch (error) {
+        console.error("Error loading categories:", error);
+      }
+    };
+
+    loadCategories();
+  }, [token]);
 
   return (
     // Modo edición
@@ -124,7 +159,14 @@ const OperationUpdateForm = ({
           selectedWalletId={selectedWalletId}
           setSelectedWalletId={handleWalletChange}
         />
+        {/*Selección de categoría*/}
       </div>
+      <CategoryButtons
+        categories={categories}
+        selectedId={selectedCategoryId}
+        onSelect={handleCategoryChange}
+      />
+      <div></div>
       {/*Botones para aceptar y cancelar*/}
 
       <div className={styles.editActions}>

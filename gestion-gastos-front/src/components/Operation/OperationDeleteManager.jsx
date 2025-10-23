@@ -1,9 +1,4 @@
-import { useToken } from "../../Contexts/tokenContext/TokenContext";
-
 const deleteOperation = async (operationId, token) => {
-  //DEBUG
-  console.log("Token en deleteOperation: ", token);
-  console.log("id de la operación en deleteOperation: ", operationId);
   if (!token) {
     throw new Error("no auth token available");
   }
