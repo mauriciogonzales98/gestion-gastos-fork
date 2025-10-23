@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import CategoryIcon from "./CategoryIcon";
 import styles from "./CategoryList.module.css";
 
-const CategoryList = () => {
+const CategoryList = ( {onEdit} ) => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -107,7 +107,15 @@ const CategoryList = () => {
                   color="#495057" 
                 />
               </div>
-              
+              {onEdit && (
+                <button
+                  className={styles.editButton}
+                  onClick={() =>  onEdit && onEdit(category)}
+                >
+                  ✏️
+                </button>
+              )}
+
               <div className={styles.categoryName}>
                 {category.name}
               </div>
