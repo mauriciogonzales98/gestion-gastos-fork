@@ -5,7 +5,6 @@ import Main from "./components/Main.jsx";
 import NavBar from "./components/NavBar.jsx";
 import PageNotFound from "./components/PageNotFound.jsx";
 import HomeWithLogin from "./components/HomeWithLogin.jsx";
-import React from "react";
 import {
   BrowserRouter,
   Routes,
@@ -20,7 +19,7 @@ import CategoryForm from "./components/CategoryForm/CategoryForm.jsx";
 function App() {
   const { loggedIn } = useAuth();
 
-return (
+  return (
     <BrowserRouter>
       <div className="app-container">
         {loggedIn && <NavBar />}
@@ -39,4 +38,5 @@ return (
     </BrowserRouter>
   );
 }
+
 export default App;
