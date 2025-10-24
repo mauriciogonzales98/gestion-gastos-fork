@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`wallet` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NOT NULL,
   `coin` VARCHAR(50) NULL,
-  `spend` DECIMAL(10, 2) NULL,
-  `income` DECIMAL(10, 2) NULL,
+  `spend` DECIMAL(15, 2) NULL,
+  `income` DECIMAL(15, 2) NULL,
   `userid` VARCHAR(28) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES `user`(`id`)
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`tag` (
 
 CREATE TABLE IF NOT EXISTS `gestion_gastos`.`operation` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `amount` DECIMAL(10, 2) NOT NULL,
+  `amount` DECIMAL(12, 2) NOT NULL,
   `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description` VARCHAR(100) NULL,
   `type` ENUM('gasto', 'ingreso') NOT NULL DEFAULT 'gasto',

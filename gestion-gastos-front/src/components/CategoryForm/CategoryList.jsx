@@ -3,55 +3,15 @@ import { getAuth } from "firebase/auth";
 import CategoryIcon from "./CategoryIcon";
 import styles from "./CategoryList.module.css";
 
-const CategoryList = ( {onEdit} ) => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+const CategoryList = ({ categories, loading, onEdit }) => {
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const auth = getAuth();
-        const user = auth.currentUser;
-
-        if (!user) {
-          throw new Error("Usuario no autenticado");
-        }
-
-        const token = await user.getIdToken();
-
-        const response = await fetch(`http://localhost:3001/api/category/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          setCategories(data.data);
-        } else {
-          throw new Error(data.message || "Error al cargar categorías");
-        }
-      } catch (err) {
-        console.error("Error fetching categories:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+  // Función para manejar doble click
+  const handleDoubleClick = (category) => {
+    if (onEdit) {
+      onEdit(category);
+    }
+  };
 
   // Estados de carga y error
   if (loading) {
@@ -99,6 +59,8 @@ const CategoryList = ( {onEdit} ) => {
             <div 
               key={category.id}
               className={styles.categoryCard}
+              onDoubleClick={() => handleDoubleClick(category)} // Doble click aquí
+              title="Doble click para editar" // Tooltip para indicar la funcionalidad
             >
               <div className={styles.iconContainer}>
                 <CategoryIcon 
@@ -107,15 +69,7 @@ const CategoryList = ( {onEdit} ) => {
                   color="#495057" 
                 />
               </div>
-              {onEdit && (
-                <button
-                  className={styles.editButton}
-                  onClick={() =>  onEdit && onEdit(category)}
-                >
-                  ✏️
-                </button>
-              )}
-
+              
               <div className={styles.categoryName}>
                 {category.name}
               </div>

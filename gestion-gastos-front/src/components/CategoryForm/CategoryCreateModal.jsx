@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {allIcons} from "./CategoryIcon"; // Asegúrate de importar tu componente
+import { allIcons } from "./CategoryIcon";
 import CategoryIcon from "./CategoryIcon";
-import * as FaIcons from 'react-icons/fa';
 
 const overlayStyle = {
   position: "fixed",
@@ -84,7 +83,7 @@ const iconNameStyle = {
   maxWidth: "100%",
 };
 
-const CategoryCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate }) => {
+const CategoryCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate, category }) => { // Agregar category como prop
   if (!isOpen) return null;
   
   const [name, setName] = useState("");
@@ -95,19 +94,19 @@ const CategoryCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate }) => 
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-
   useEffect(() => {
-    if(category && isOpen) {
+    if (category && isOpen) {
+      // Modo edición - cargar datos de la categoría
       setName(category.name || "");
       setIcon(category.icon || "");
       setDescription(category.description || "");
-    } else {
+    } else if (isOpen) {
+      // Modo creación - limpiar formulario
       setName("");
       setIcon("");
       setDescription("");
     }
   }, [category, isOpen]);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -125,26 +124,27 @@ const CategoryCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate }) => 
       };
 
       let res;
-      if(category){
+      if (category) {
+        // Modo edición
         res = await fetch(`http://localhost:3001/api/category/${category.id}`, {
-        method: "PUT",
-        headers: { 
-          "Content-Type": "application/json", 
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: JSON.stringify(categoryData),
+          method: "PUT",
+          headers: { 
+            "Content-Type": "application/json", 
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+          body: JSON.stringify(categoryData),
         });
-      }
-      else{
+      } else {
+        // Modo creación
         res = await fetch("http://localhost:3001/api/category/", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json", 
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: JSON.stringify(categoryData),
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json", 
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+          body: JSON.stringify(categoryData),
         });
       }
 
@@ -152,15 +152,14 @@ const CategoryCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate }) => 
       if (res.ok && (json.success === undefined || json.success === true)) {
         const resultado = json.data || json;
         
-        if(category){
+        if (category) {
           onUpdate(resultado);
-        }
-        else{
+        } else {
           onCreate(resultado);
         }
         handleClose();
       } else {
-        setError(json.message || "Error al crear categoría");
+        setError(json.message || `Error al ${category ? 'actualizar' : 'crear'} categoría`);
       }
     } catch (err) {
       setError(err.message || "Error de red");
@@ -190,10 +189,14 @@ const CategoryCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate }) => 
     iconName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const isEditMode = !!category;
+
   return (
     <div style={overlayStyle} role="dialog" aria-modal="true">
       <div style={modalStyle}>
-        <h3 style={{ marginTop: 0 }}>Crear nueva categoría</h3>
+        <h3 style={{ marginTop: 0 }}>
+          {isEditMode ? 'Editar categoría' : 'Crear nueva categoría'}
+        </h3>
         <form onSubmit={handleSubmit}>
           <input
             style={inputStyle}
@@ -318,7 +321,7 @@ const CategoryCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate }) => 
               type="submit"
               disabled={loading}
             >
-              {loading ? "Creando..." : "Crear"}
+              {loading ? (isEditMode ? "Actualizando..." : "Creando...") : (isEditMode ? "Actualizar" : "Crear")}
             </button>
           </div>
         </form>
