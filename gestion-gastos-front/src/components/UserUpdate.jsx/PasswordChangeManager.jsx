@@ -48,7 +48,7 @@ const ChangePassword = ({
       return;
     }
 
-    //Cambia la contraseña en Firebase Auth33
+    //Cambia la contraseña en Firebase Auth
     try {
       await fbPasswordChange(payload.newPassword);
     } catch (err) {

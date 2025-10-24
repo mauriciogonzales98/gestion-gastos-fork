@@ -18,6 +18,8 @@ const OperationUpdateForm = ({
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const { token, refreshToken } = useToken();
+
+  // Maneja el guradado de las operaciones
   const handleSave = async (operationId) => {
     try {
       if (!token) {
@@ -31,7 +33,6 @@ const OperationUpdateForm = ({
         type: editedValues.type,
         categoryid: editedValues.categoryid,
         walletid: editedValues.walletid,
-        // Si vamos a poner el objeto de category podríamos tener que manejarlo distinto
       };
       //DEBUG
       console.log("Updates: ", updates);
@@ -47,12 +48,14 @@ const OperationUpdateForm = ({
       alert("Error al actualizar la operación");
     }
   };
+  // Maneja el input de los datos propios de la operación (no claves foráneas)
   const handleInputChange = (field, value) => {
     setEditedValues((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
+  //Maneja el cambio de Wallet
   const handleWalletChange = (walletId) => {
     setSelectedWalletId(walletId);
     setEditedValues((prev) => ({
@@ -60,6 +63,7 @@ const OperationUpdateForm = ({
       walletid: walletId,
     }));
   };
+  // Maneja el cambio de Category
   const handleCategoryChange = (categoryId) => {
     setSelectedCategoryId(categoryId);
     setEditedValues((prev) => ({
@@ -67,6 +71,7 @@ const OperationUpdateForm = ({
       categoryid: categoryId,
     }));
   };
+  // Carga las categorías a mostrar cuando se carga el componente y si cambia el token de sesión
   useEffect(() => {
     const loadCategories = async () => {
       if (!token) return;
@@ -112,6 +117,7 @@ const OperationUpdateForm = ({
         className={styles.editInput}
         step="1"
       />
+
       <input
         type="date"
         value={editedValues.date}
@@ -172,6 +178,7 @@ const OperationUpdateForm = ({
       <div className={styles.editActions}>
         <button
           onClick={() => {
+            //DEBUG
             console.log("editedValues: ", editedValues);
             handleSave(editingId);
           }}
@@ -194,6 +201,7 @@ const OperationUpdateForm = ({
   );
 };
 
+// Actualiza las operaciones en el BE
 export const updateOperation = async (operationId, updates, token) => {
   const response = await fetch(
     `http://localhost:3001/api/operation/${operationId}`,

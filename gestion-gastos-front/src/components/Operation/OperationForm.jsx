@@ -159,6 +159,19 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
 
       <form onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
+          <label className={styles.label}>Descripción:</label>
+          <input
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            disabled={!walletId || loading}
+            className={styles.input}
+            placeholder="Descripción de la operación"
+            maxLength="100"
+          />
+        </div>
+
+        <div className={styles.formGroup}>
           <label className={styles.label}>Monto:</label>
           <input
             type="number"
@@ -171,19 +184,6 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
             min="0.01"
             max="9999999999.99"
             placeholder="0.00"
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Descripción:</label>
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            disabled={!walletId || loading}
-            className={styles.input}
-            placeholder="Descripción de la operación"
-            maxLength="100"
           />
         </div>
 

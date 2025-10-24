@@ -5,6 +5,7 @@ import Main from "./components/Main.jsx";
 import NavBar from "./components/NavBar.jsx";
 import PageNotFound from "./components/PageNotFound.jsx";
 import HomeWithLogin from "./components/HomeWithLogin.jsx";
+import Profile from "./components/Profile.jsx";
 import {
   BrowserRouter,
   Routes,
@@ -31,6 +32,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/main" element={<Main />} />
             <Route path="/categories" element={<CategoryForm />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>
