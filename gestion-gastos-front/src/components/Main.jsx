@@ -20,33 +20,30 @@ import {
   loadOperations,
 } from "./Operation/OperationEnrichManager.jsx";
 import CategoryList from "./CategoryForm/CategoryList.jsx";
+import FullNameChange from "./UserUpdate.jsx/FullNameChangeManager.jsx";
 
 const Main = () => {
   const navigate = useNavigate();
   const { loggedIn, user } = useAuth();
-  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  // const [isChangingEmail, setIsChangingEmail] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  // El usuario actual, traído de FB
+  const currentUser = getAuth().currentUser;
 
   // Uso hook de la token
   const { token, loadingToken, refreshToken } = useToken();
 
+  // Estados para la selección de wallet y carga de sus operaciones
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [loadingWallets, setLoadingWallets] = useState(true);
   //const [token, setToken] = useState(null);
   const [operations, setOperations] = useState([]);
 
-  // Determina si el usuario está registrado por Google para evitar que intente cambiar la contraseña.
-  const isGoogleUser = getAuth().currentUser?.providerData.some(
-    (provider) => provider.providerId === "google.com"
-  );
   useEffect(() => {
     if (!loggedIn) {
       navigate("/home");
       return;
     }
   }, [loggedIn, navigate]);
+
   //Cuando se selecciona una wallet, carga todas las operaciones, cargando las categorías e insertandolas en el objeto
   useEffect(() => {
     const operationsLoader = async () => {
@@ -142,58 +139,7 @@ const Main = () => {
           textAlign: "center",
         }}
       >
-        <AuthContext.Consumer>
-          {(value) => (
-            <>
-              <div>
-                {/* Botón que abre el formulario */}
-                <button onClick={() => setIsDeletingAccount(true)}>
-                  BORRAR CUENTA
-                </button>
-
-                {/* Formulario de eliminación */}
-                {isDeletingAccount && (
-                  <DeleteAccount
-                    setIsDeletingAccount={setIsDeletingAccount}
-                    errorMessage={errorMessage}
-                    setErrorMessage={setErrorMessage}
-                    onSuccess={() => navigate("/")}
-                    onCancel={() => setIsDeletingAccount(false)}
-                    isGoogleUser={isGoogleUser}
-                  />
-                )}
-              </div>
-
-              {/*Comienzo del JSX para cambio de contraseña*/}
-              {value.user && <h1>Cambiar Contraseña</h1>}
-              {value.user && !isChangingPassword && (
-                <button
-                  onClick={() => {
-                    // Evita que los usuarios de Google modifiquen su contraseña
-                    //Seguramente deba ir en otro lado.
-                    if (isGoogleUser) {
-                      setErrorMessage(
-                        "Los usuarios de Google no necesitan modificar su contraseña"
-                      );
-                      return;
-                    }
-                    setIsChangingPassword(true);
-                  }}
-                >
-                  Cambiar Contraseña
-                </button>
-              )}
-              {isChangingPassword && (
-                <ChangePassword
-                  setIsChangingPassword={setIsChangingPassword}
-                  errorMessage={errorMessage}
-                  setErrorMessage={setErrorMessage}
-                  onSuccess={() => navigate("/")}
-                  onCancel={() => setIsChangingPassword(false)}
-                />
-              )}
-
-              {/* Comienzo del JSX para cambio de email, temporalmente deshabilitado
+        {/* Comienzo del JSX para cambio de email, temporalmente deshabilitado
 
 
               {value.user && <h1>Cambiar Email</h1>}
@@ -228,9 +174,6 @@ const Main = () => {
               )}
               
               */}
-            </>
-          )}
-        </AuthContext.Consumer>
       </div>
     </div>
   );
