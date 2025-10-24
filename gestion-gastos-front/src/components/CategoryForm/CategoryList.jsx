@@ -38,15 +38,13 @@ const CategoryList = ({ categories, loading, onEdit }) => {
 
   // Renderizar categorías
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>
-        Mis Categorías ({categories.length})
-      </h2>
-      
+    <>
+      <h2 className={styles.title}>Mis Categorías ({categories.length})</h2>
+
       {categories.length === 0 ? (
         <div className={styles.emptyState}>
           <p>No tienes categorías creadas</p>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className={styles.reloadButton}
           >
@@ -63,21 +61,19 @@ const CategoryList = ({ categories, loading, onEdit }) => {
               title="Doble click para editar" // Tooltip para indicar la funcionalidad
             >
               <div className={styles.iconContainer}>
-                <CategoryIcon 
-                  iconName={category.icon} 
-                  size={24} 
-                  color="#495057" 
+                <CategoryIcon
+                  iconName={category.icon}
+                  size={30}
+                  color="#495057"
                 />
               </div>
-              
-              <div className={styles.categoryName}>
-                {category.name}
-              </div>
+
+              <div className={styles.categoryName}>{category.name}</div>
             </div>
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 };
 
