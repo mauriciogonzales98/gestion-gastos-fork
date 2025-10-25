@@ -23,7 +23,10 @@ const NavBar = () => {
             <>
               <div>
                 {" "}
-                {value.user && <span> Welcome, {value.user.email}</span>}{" "}
+                {/* Muestra el usuario de FB */}
+                {value.user && (
+                  <span> Welcome, {value.user.displayName.split(" ")[0]}</span>
+                )}{" "}
               </div>
 
               <button className={styles.homeicon} onClick={ClickHandler}>
@@ -44,7 +47,6 @@ const NavBar = () => {
               </div>
 
               <div>
-                PERFIL
                 {value.user && (
                   <button
                     className={styles.homeicon}

@@ -91,8 +91,6 @@ const DeleteAccount = ({
     <div>
       <h3>Borrar Cuenta</h3>
 
-      {errorMessage && <div>{errorMessage}</div>}
-
       <form onSubmit={handleSubmit}>
         {!isGoogleUser && (
           <Form.Group className="mb-3">

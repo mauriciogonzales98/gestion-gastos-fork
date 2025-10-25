@@ -39,7 +39,12 @@ const Profile = () => {
             <div>
               {/* COMIENZO del JSX para borrado de cuenta */}
               {/* Botón que abre el formulario de Borrado de Cuenta */}
-              <button onClick={() => setIsDeletingAccount(true)}>
+              <button
+                onClick={() => {
+                  setErrorMessage(null);
+                  setIsDeletingAccount(true);
+                }}
+              >
                 BORRAR CUENTA
               </button>
 
@@ -69,6 +74,7 @@ const Profile = () => {
                     );
                     return;
                   }
+                  setErrorMessage(null);
                   setIsChangingPassword(true);
                 }}
               >
@@ -87,7 +93,12 @@ const Profile = () => {
             {/* FIN del JSX para cambio de contraseña */}
             {/* COMIENZO del JSX para cambio de nombre y apellido */}
             <h1>CAMBIAR NOMBRE Y APELLIDO</h1>
-            <button onClick={() => setIsChangingFullName(true)}>
+            <button
+              onClick={() => {
+                setErrorMessage(null);
+                setIsChangingFullName(true);
+              }}
+            >
               CAMBIAR NOMBRE Y APELLIDO
             </button>
             {isChangingFullName && (
