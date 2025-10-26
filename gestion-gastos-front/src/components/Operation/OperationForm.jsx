@@ -17,6 +17,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
 
       try {
         const response = await fetch("http://localhost:3001/api/category/", {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -56,7 +56,7 @@ const Main = () => {
             selectedWalletId,
             token
           );
-          setOperations(enrichedOperations);
+          setOperations(enrichedOperations.reverse());
           console.log(
             "Operaciones seleccionadas en operationsLoader:",
             enrichedOperations

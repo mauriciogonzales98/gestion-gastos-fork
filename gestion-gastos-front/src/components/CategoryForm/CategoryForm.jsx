@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import CategoryList from "../CategoryForm/CategoryList";
 import CategoryCreateModal from "./CategoryCreateModal";
 import styles from "./CategoryForm.module.css";
 import { getAuth } from "firebase/auth";
+
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:3001";
 
 const CategoryForm = () => {
   const [showModal, setShowModal] = useState(false);
@@ -23,43 +25,57 @@ const CategoryForm = () => {
     }
   }, []);
 
-  // Cargar categorías - igual que en OperationForm
-  useEffect(() => {
-    const loadCategories = async () => {
-      if (!token) return;
-      
-      try {
-        setLoading(true);
-        const response = await fetch('http://localhost:3001/api/category/', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        if (data.success) {
-          setCategories(data.data);
-        }
-      } catch (error) {
-        console.error('Error loading categories:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    loadCategories();
+  // Función de carga reutilizable
+  const fetchCategories = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE}/api/category/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : data?.data ?? [];
+      setCategories(list);
+    } catch (error) {
+      console.error("Error loading categories:", error);
+      setCategories([]);
+    } finally {
+      setLoading(false);
+    }
   }, [token]);
 
+  // Cargar categorías cuando haya token
+  useEffect(() => {
+    fetchCategories();
+  }, [token, fetchCategories]);
+
+  // --- Cambios: manejar create/update/delete localmente en lugar de refetch ---
   const handleCreated = (newCategory) => {
-    setCategories((prev) => [newCategory, ...prev]);
+    // Añadir al principio del arreglo local
+    setCategories((prev) => [...prev, newCategory]);
+    setShowModal(false);
   };
 
   const handleUpdated = (updatedCategory) => {
+    // Reemplazar el elemento en el arreglo local
     setCategories((prev) =>
-      prev.map((cat) =>
-        cat.id === updatedCategory.id ? updatedCategory : cat
-      )
+      prev.map((c) => (String(c.id) === String(updatedCategory.id) ? updatedCategory : c))
     );
+    setShowModal(false);
+    setEditingCategory(null);
   };
+
+  const handleDeleted = (deletedCategoryId) => {
+    // Filtrar localmente la categoría borrada
+    setShowModal(false);
+    setEditingCategory(null);
+    setCategories((prev)  => prev.filter((c) => String(c.id) !== String(deletedCategoryId)));
+  };
+  // ------------------------------------------------------------------------
 
   const handleEdit = (category) => {
     setEditingCategory(category);
@@ -102,6 +118,7 @@ const CategoryForm = () => {
         onClose={handleCloseModal}
         onCreate={handleCreated}
         onUpdate={handleUpdated}
+        onDelete={handleDeleted}
         token={token}
         category={editingCategory}
       />

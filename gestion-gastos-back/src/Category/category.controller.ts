@@ -112,9 +112,14 @@ async function update(req: Request, res: Response) {
 
 async function remove(req: Request, res: Response) {
   try {
+    const firebaseUser = (req as any).firebaseUser;
+    if (!firebaseUser || !firebaseUser.uid) {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Usuario no autenticado' 
+      });
+    }
     const id = Number.parseInt(req.params.id);
-    const category = em.getReference(Category, id);
-    await em.removeAndFlush(category);
     const categoryToRemove = await em.findOneOrFail(Category, { id: id });
     await em.removeAndFlush(categoryToRemove);
     res.status(200).json({ message: "category removed" });
