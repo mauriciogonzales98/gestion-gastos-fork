@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  sanitizeCharacterInput,
+  SanitizeUserInput,
   findAll,
   findOne,
   add,
@@ -16,8 +16,8 @@ userRouter.get("/", findAll);
 userRouter.get("/:email", findOne);
 
 // characterRouter.get('/:id', findOne)
-userRouter.post("/", sanitizeCharacterInput, add);
+userRouter.post("/", SanitizeUserInput, add);
 // characterRouter.put('/:id', sanitizeCharacterInput, update)
-userRouter.patch("/:id", sanitizeCharacterInput, update);
+userRouter.patch("/:id", SanitizeUserInput, update);
 // characterRouter.delete('/:id', remove)
 userRouter.delete("/:id", firebaseAuthMiddleware, remove);

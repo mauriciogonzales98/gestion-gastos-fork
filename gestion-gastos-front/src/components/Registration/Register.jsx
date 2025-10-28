@@ -1,117 +1,150 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   fbCreateUserWithEmailAndPassword,
-  fbGoogleSignUp,
+  fbEmailPasswordSignIn,
+  fbGoogleSignIn,
 } from "../../Firebase/auth.js";
 import Form from "react-bootstrap/Form";
-import { getAuth, getRedirectResult } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
-// Esta función envía los datos del usuario al BE, se utiliza tanto al registrarse
-// con email y contraseña como con Google.
 const Register = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
-  console.log("Estado de isRegistering: ", isRegistering);
 
-  // Envía la información al BE
-  const commitToDB = async (e, user, datosUsuario) => {
-    console.log("Commiting to DB from Google");
+  const registrationProcess = async (userData) => {
+    console.log("Starting registration process with data:", userData);
     try {
-      await fetch(`http://localhost:3001/api/user`, {
+      const serverStatus = await fetch("http://localhost:3001/api/status", {
+        method: "GET",
+      });
+      console.log(serverStatus);
+      const response = await fetch(`http://localhost:3001/api/registration`, {
         method: "POST",
-        mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.accessToken}`,
         },
-        body: JSON.stringify(datosUsuario),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res && res.success != false) {
-            console.log("Usuario creado en BE");
-            // BORRAR FUERA TESTING
-            console.log("uid de FB: ", user.uid);
-          } else {
-            console.log(
-              "Error al crear usuario en BE",
-              res?.message || "Unknown error"
-            );
-          }
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  //Register con google, podría ser lo mismo que el login, tal vez
-  const onGoogleRegister = async (e) => {
-    e.preventDefault();
+        body: JSON.stringify(userData),
+      });
 
-    console.log("Estado de isRegistering: ", isRegistering);
-    if (!isRegistering) {
-      setIsRegistering(true);
-      try {
-        await fbGoogleSignUp();
-        const user = getAuth().currentUser;
-        // After returning from the redirect when your app initializes you can obtain the result
-        console.log("Resultado de getAuth().currentUser: ", user);
-        if (user) {
-          // This is the registered user
-          // Esto asume usuarios con un solo nombre y un solo apellido para el parseo.
-          const datosUsuario = {
-            id: user.uid,
-            name: user.displayName ? user.displayName.split(" ")[0] : "",
-            surname: user.displayName ? user.displayName.split(" ")[1] : "",
-            email: user.email,
-            password: null,
-          };
-          await commitToDB(e, user, datosUsuario);
-        }
-        navigate("/Main");
-      } catch (err) {
-        setErrorMessage(err.message);
-        setIsRegistering(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || errorData.error || "Registration failed"
+        );
       }
+
+      const result = await response.json();
+      console.log("Registration result:", result);
+      if (result.data && result.data.userId) {
+        console.log("User created successfully in backend");
+        return result;
+      } else {
+        throw new Error(result.error || "Registration incomplete");
+      }
+    } catch (error) {
+      console.error("Registration process error:", error);
+      throw error;
     }
   };
 
-  // Commit to DB when registering from google
-
-  //Registrarse con email y contraseña
+  // Register with email and password
   const submitForm = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(e.target);
-    const payload = Object.fromEntries(formData);
-    if (!isRegistering) {
-      setIsRegistering(true);
-      try {
-        await fbCreateUserWithEmailAndPassword(
-          //estos dos datos solían ser payload.email y payload.password, los cambié por las dudas, pero podrían romper algo.
-          payload.email,
-          payload.password
-        );
-        const user = getAuth().currentUser;
-        const datosUsuario = {
-          id: user.uid,
-          name: payload.name,
-          surname: payload.surname,
-          email: payload.email,
-          password: payload.password,
-        };
+    setErrorMessage("");
 
-        //await commitToDBFromEmailAndPassword(e, user, datosUsuario);
-        await commitToDB(e, user, datosUsuario);
-        navigate("/Main");
-      } catch (err) {
-        setErrorMessage(err.message);
-        setIsRegistering(false);
+    if (isRegistering) return;
+
+    setIsRegistering(true);
+
+    try {
+      const formData = new FormData(e.target);
+      const payload = Object.fromEntries(formData);
+
+      // Validate passwords match
+      if (payload.password !== payload.confirmPassword) {
+        throw new Error("Passwords do not match");
       }
+
+      // Prepare registration data
+      const userData = {
+        name: payload.name,
+        surname: payload.surname,
+        email: payload.email,
+        password: payload.password,
+      };
+
+      console.log("Starting registration process...");
+
+      // Step 1: Register in backend (this will create Firebase user via Admin SDK)
+      const registrationResult = await registrationProcess(userData);
+
+      // Step 2: If backend registration successful, log user in with frontend SDK
+      if (registrationResult.data.userId) {
+        try {
+          await fbEmailPasswordSignIn(payload.email, payload.password);
+          console.log("User logged in successfully");
+          navigate("/Main");
+        } catch (loginError) {
+          console.warn(
+            "Auto-login failed, but registration was successful:",
+            loginError
+          );
+          // Registration was successful, user can log in manually
+          navigate("/login", {
+            state: {
+              message: "Registration successful! Please log in.",
+            },
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Registration error:", err);
+      setErrorMessage(err.message || "Registration failed");
+    } finally {
+      setIsRegistering(false);
     }
   };
-  // Commit to DB when registering from email and password
+
+  // Google registration
+  const onGoogleRegister = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (isRegistering) return;
+
+    setIsRegistering(true);
+
+    try {
+      // Google sign up creates the Firebase user immediately
+      const result = await fbGoogleSignIn();
+      const user = result.user;
+
+      console.log("Google registration successful:", user);
+
+      if (user) {
+        const userData = {
+          name: user.displayName ? user.displayName.split(" ")[0] : "",
+          surname: user.displayName
+            ? user.displayName.split(" ").slice(1).join(" ")
+            : "",
+          email: user.email,
+        };
+
+        // Register in backend
+        await registrationProcess(userData);
+
+        navigate("/Main");
+      }
+    } catch (err) {
+      console.error("Google registration error:", err);
+      setErrorMessage(err.message || "Google registration failed");
+      setIsRegistering(false);
+    }
+  };
+
   return (
     <>
       <div className="register-container">
@@ -125,26 +158,23 @@ const Register = () => {
           </p>
         )}
 
-        <form
-          className="register-form"
-          onSubmit={submitForm} /*onSubmit={(e) => onSubmit(e) }*/
-        >
+        <form className="register-form" onSubmit={submitForm}>
           <Form.Group>
             <label htmlFor="name">Name</label>
             <Form.Control
               type="text"
               id="name"
               name="name"
-              //onChange={(e) => setName(e.target.value)}
               required
+              disabled={isRegistering}
             />
             <label htmlFor="surname">Surname</label>
             <Form.Control
               type="text"
               id="surname"
               name="surname"
-              //onChange={(e) => setSurname(e.target.value)}
               required
+              disabled={isRegistering}
             />
           </Form.Group>
           <Form.Group>
@@ -153,39 +183,47 @@ const Register = () => {
               type="email"
               id="email"
               name="email"
-              //onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={isRegistering}
             />
           </Form.Group>
           <Form.Group>
             <label htmlFor="password">Password</label>
             <Form.Control
-              type="text"
+              type="password"
               id="password"
               name="password"
-              //onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={isRegistering}
+              minLength={8}
             />
           </Form.Group>
           <Form.Group>
             <label htmlFor="confirmPassword">Confirm Password</label>
             <Form.Control
-              type="text"
+              type="password"
               id="confirmPassword"
               name="confirmPassword"
-              //onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              disabled={isRegistering}
+              minLength={8}
             />
           </Form.Group>
-          <button type="submit">Register</button>
+          <button type="submit" disabled={isRegistering}>
+            {isRegistering ? "Registering..." : "Register"}
+          </button>
         </form>
+
         <p>
           ¿Le diste al link sin querer? Inicia sesión acá.{" "}
           <a href="/login">Iniciar sesión</a>
         </p>
+
         <p>
           ¿Preferís venderle tus datos a google?
-          <button onClick={onGoogleRegister}>Registrarse con Google</button>
+          <button onClick={onGoogleRegister} disabled={isRegistering}>
+            {isRegistering ? "Registering..." : "Registrarse con Google"}
+          </button>
         </p>
       </div>
     </>

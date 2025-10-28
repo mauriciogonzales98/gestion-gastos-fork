@@ -1,12 +1,12 @@
-import { fbEmailPasswordSignUp, fbGoogleSignUp } from "../../Firebase/auth.js";
+import { fbEmailPasswordSignIn, fbGoogleSignIn } from "../../Firebase/auth.js";
 import { useAuth } from "../../Contexts/FBauthContext/index.jsx";
 import React, { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import Form from "react-bootstrap/Form";
 import { PasswordInput } from "./PasswordInputs.jsx";
-import styles from './Login.module.css'
-import logo from './ggs2.png'
+import styles from "./Login.module.css";
+import logo from "./ggs2.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const Login = () => {
       setIsSigningIn(true);
       try {
         //Firebase Auth Sign in
-        await fbEmailPasswordSignUp(payload.email, payload.password);
+        await fbEmailPasswordSignIn(payload.email, payload.password);
       } catch (err) {
         setFriendlyErrorMessage(
           "Ocurrió un error inesperado. Por favor, intenta nuevamente."
@@ -106,7 +106,7 @@ const Login = () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        await fbGoogleSignUp();
+        await fbGoogleSignIn();
       } catch (err) {
         setErrorMessage(err.message);
       }
@@ -120,8 +120,8 @@ const Login = () => {
     <>
       <div className={styles.container}>
         <div className={styles.logo}>
-        <img src={logo} /> 
-      </div>
+          <img src={logo} />
+        </div>
       </div>
       {friendlyErrorMessage && (
         <>
@@ -142,12 +142,12 @@ const Login = () => {
 
         <div className={styles.formGroup}>
           <label className={styles.label}>Email:</label>
-          <Form.Control 
-            type="text" 
-            id="email" 
-            name="email" 
+          <Form.Control
+            type="text"
+            id="email"
+            name="email"
             placeholder="Ingrese su correo electrónico"
-            className={styles.input} 
+            className={styles.input}
           />
         </div>
 
@@ -163,7 +163,9 @@ const Login = () => {
           />
         </div>
 
-        <button type="submit" className={styles.submitButton}>Iniciar Sesión</button>
+        <button type="submit" className={styles.submitButton}>
+          Iniciar Sesión
+        </button>
 
         <div className={styles.divider}>
           <div className={styles.dividerLine}></div>
@@ -180,8 +182,10 @@ const Login = () => {
         </button>
 
         <div className={styles.linkContainer}>
-          ¿No tiene una cuenta? 
-          <a href="/register" className={styles.link}>Regístrese aquí</a>
+          ¿No tiene una cuenta?
+          <a href="/register" className={styles.link}>
+            Regístrese aquí
+          </a>
         </div>
       </form>
     </>
