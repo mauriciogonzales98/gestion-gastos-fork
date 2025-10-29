@@ -58,3 +58,17 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`operation` (
   FOREIGN KEY (`tagid`) REFERENCES `tag`(`id`),
   FOREIGN KEY (`walletid`) REFERENCES `wallet`(`id`)
 );
+CREATE TABLE IF NOT EXISTS `registration_process` (
+  `id` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `surname` varchar(50) DEFAULT NULL,
+  `auth_created` tinyint DEFAULT '0',
+  `user_id` varchar(28) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  `step` varchar(45) DEFAULT NULL,
+  `error` varchar(512) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
