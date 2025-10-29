@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useToken } from "../../Contexts/tokenContext/TokenContext";
+import { useToken } from "../../../Contexts/fbTokenContext/TokenContext";
 
 const FullNameChange = ({ onCancel, userId }) => {
   const [errorMessage, setErrorMessage] = useState("");

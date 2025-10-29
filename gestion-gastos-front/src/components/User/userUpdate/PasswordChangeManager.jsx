@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fbPasswordChange } from "../../Firebase/auth.js";
+import { fbPasswordChange } from "../../../Firebase/auth.js";
 import {
   getAuth,
   EmailAuthProvider,

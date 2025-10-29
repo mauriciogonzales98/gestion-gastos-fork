@@ -1,10 +1,10 @@
-import { useToken } from "../../../Contexts/tokenContext/TokenContext";
+import { useToken } from "../../../Contexts/fbTokenContext/TokenContext";
 import styles from "../OperationList.module.css";
 import { useEffect, useState } from "react";
 import WalletLoading from "../../Wallet/WalletLoading";
 
-import CategoryList from "../../CategoryForm/CategoryList";
-import CategoryButtons from "../../CategoryForm/CategoryButtons";
+import CategoryList from "../../Category/CategoryForm/CategoryList";
+import CategoryButtons from "../../Category/CategoryForm/CategoryButtons";
 
 const OperationUpdateForm = ({
   editingId,

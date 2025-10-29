@@ -1,7 +1,8 @@
 // contexts/TokenContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
-import { useAuth } from "../FBauthContext/index";
+// import { useAuth } from "../fbAuthContext/index.jsx";
+import { useAuth } from "../fbAuthContext";
 
 const TokenContext = createContext();
 

@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { AuthProvider } from "./Contexts/FBauthContext/index.jsx";
-import { TokenProvider } from "./Contexts/tokenContext/TokenContext.jsx";
+import { AuthProvider } from "./Contexts/fbAuthContext/index.jsx";
+import { TokenProvider } from "./Contexts/fbTokenContext/TokenContext.jsx";
 import App from "./App.jsx";
 import reportWebVitals from "./reportWebVitals.js";
 

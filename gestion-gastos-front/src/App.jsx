@@ -1,21 +1,14 @@
 import "./App.css";
-import Home from "./components/Home.jsx";
-import Login from "./components/Registration/Login.jsx";
-import Main from "./components/Main.jsx";
-import NavBar from "./components/NavBar.jsx";
-import PageNotFound from "./components/PageNotFound.jsx";
-import HomeWithLogin from "./components/HomeWithLogin.jsx";
-import Profile from "./components/Profile.jsx";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Switch,
-  useNavigate,
-} from "react-router-dom";
-import Register from "./components/Registration/Register.jsx";
-import { useAuth } from "./Contexts/FBauthContext";
-import CategoryForm from "./components/CategoryForm/CategoryForm.jsx";
+import Main from "./components/Pages/Main.jsx";
+import NavBar from "./components/Pages/NavBar.jsx";
+import PageNotFound from "./components/Pages/Service/PageNotFound.jsx";
+import HomeWithLogin from "./components/Pages/HomeWithLogin.jsx";
+import Profile from "./components/Pages/Profile.jsx";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Register from "./components/User/userCreate/Register/Register.jsx";
+import { useAuth } from "./Contexts/fbAuthContext/index.jsx";
+import CategoryForm from "./components/Category/CategoryForm/CategoryForm.jsx";
+import ServerDown from "./components/Pages/Service/ServerDown.jsx";
 
 function App() {
   const { loggedIn } = useAuth();
@@ -32,6 +25,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/main" element={<Main />} />
             <Route path="/categories" element={<CategoryForm />} />
+            <Route path="/serverdown" element={<ServerDown />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>

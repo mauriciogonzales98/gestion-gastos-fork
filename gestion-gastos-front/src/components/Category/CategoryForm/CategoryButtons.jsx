@@ -1,4 +1,3 @@
-import React from "react";
 import CategoryIcon from "./CategoryIcon";
 import styles from "./CategoryButtons.module.css";
 

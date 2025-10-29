@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import CategoryButtons from "../CategoryForm/CategoryButtons";
+import CategoryButtons from "../../Category/CategoryForm/CategoryButtons";
 import styles from "./OperationForm.module.css";
 
 const OperationForm = ({ walletId, token, onOperationAdded }) => {

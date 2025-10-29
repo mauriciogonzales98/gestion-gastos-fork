@@ -1,17 +1,14 @@
-import { AuthContext } from "../Contexts/FBauthContext";
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { useToken } from "../Contexts/tokenContext/TokenContext.jsx";
-import { authContext } from "../Contexts/FBauthContext/index.jsx";
+import { useToken } from "../../Contexts/fbTokenContext/TokenContext.jsx";
+import { AuthContext } from "../../Contexts/fbAuthContext/index.jsx";
 import { useNavigate } from "react-router-dom";
 
-import DeleteAccount from "./UserUpdate.jsx/UserDeleteManager.jsx";
-import { PasswordInput } from "./Registration/PasswordInputs.jsx";
-import ChangePassword from "./UserUpdate.jsx/PasswordChangeManager.jsx";
-import ChangeEmail from "./UserUpdate.jsx/EmailChangeManager.jsx";
-
-import FullNameChange from "./UserUpdate.jsx/FullNameChangeManager.jsx";
-
+import DeleteAccount from "../User/userDelete/UserDeleteManager.jsx";
+import { PasswordInput } from "../Login/PasswordInputs.jsx";
+import ChangePassword from "../User/userUpdate/PasswordChangeManager.jsx";
+import ChangeEmail from "../User/userUpdate/EmailChangeManager.jsx";
+import FullNameChange from "../User/userUpdate/FullNameChangeManager.jsx";
 const Profile = () => {
   // El usuario actual, traído de FB
   const currentUser = getAuth().currentUser;

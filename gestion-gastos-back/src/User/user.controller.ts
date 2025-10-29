@@ -2,15 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { User } from "./user.entity.js";
 import { Wallet } from "../Wallet/wallet.entity.js";
 import { CategoryService } from "../Services/category.service.js";
+import { RegistrationService } from "../Services/registrationProcess.service.js";
 import { orm } from "../shared/db/orm.js";
 import { userRouter } from "./user.routes.js";
 const em = orm.em;
 
-function sanitizeCharacterInput(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+function SanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     id: req.body.id,
     name: req.body.name,
@@ -100,4 +97,4 @@ async function remove(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
-export { sanitizeCharacterInput, findAll, findOne, add, update, remove };
+export { SanitizeUserInput, findAll, findOne, add, update, remove };

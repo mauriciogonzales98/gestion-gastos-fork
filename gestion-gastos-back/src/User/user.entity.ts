@@ -14,4 +14,18 @@ export class User extends BaseEntity {
 
   @Property({ nullable: false, unique: true })
   email!: string;
+
+  static createFromFirebase(
+    firebaseUid: string,
+    email: string,
+    name: string,
+    surname: string
+  ): User {
+    const user = new User();
+    user.id = firebaseUid;
+    user.email = email;
+    user.name = name;
+    user.surname = surname;
+    return user;
+  }
 }
