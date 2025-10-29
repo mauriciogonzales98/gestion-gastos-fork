@@ -7,6 +7,7 @@ import Form from "react-bootstrap/Form";
 import { PasswordInput } from "./PasswordInputs.jsx";
 import styles from "./Login.module.css";
 import logo from "./ggs2.png";
+import StatusService from "../../Services/status/serviceStatus.js";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,6 +24,13 @@ const Login = () => {
   // Email and Password Sign In
   const submitLoginForm = async (e) => {
     e.preventDefault();
+    const statusService = new StatusService();
+    const isServiceDown = await statusService.checkBackendStatus();
+    if (!isServiceDown) {
+      console.log("El Backend está caído.");
+      navigate("/serverdown");
+      return;
+    }
 
     // Mensaje de error si ya está logueado
     if (getAuth().currentUser) setErrorMessage("Ya está logueado");

@@ -8,18 +8,23 @@ import {
 import Form from "react-bootstrap/Form";
 import { getAuth } from "firebase/auth";
 
+import StatusService from "../../Services/status/serviceStatus.js";
+
 const Register = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
 
   const registrationProcess = async (userData) => {
+    const statusService = new StatusService();
+    const isServiceDown = await statusService.checkBackendStatus();
+    if (!isServiceDown) {
+      console.log("El Backend está caído.");
+      navigate("/serverdown");
+      throw new Error("BACKEND_DOWN");
+    }
     console.log("Starting registration process with data:", userData);
     try {
-      const serverStatus = await fetch("http://localhost:3001/api/status", {
-        method: "GET",
-      });
-      console.log(serverStatus);
       const response = await fetch(`http://localhost:3001/api/registration`, {
         method: "POST",
         headers: {

@@ -15,6 +15,7 @@ import {
 import Register from "./components/Registration/Register.jsx";
 import { useAuth } from "./Contexts/FBauthContext";
 import CategoryForm from "./components/CategoryForm/CategoryForm.jsx";
+import ServerDown from "./components/ServerDown.jsx";
 
 function App() {
   const { loggedIn } = useAuth();
@@ -31,6 +32,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/main" element={<Main />} />
             <Route path="/categories" element={<CategoryForm />} />
+            <Route path="/serverdown" element={<ServerDown />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>
