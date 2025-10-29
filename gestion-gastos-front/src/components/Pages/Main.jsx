@@ -1,25 +1,26 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Contexts/FBauthContext/index.jsx";
-import { AuthContext } from "../Contexts/FBauthContext/index.jsx";
+import { useAuth } from "../../Contexts/fbAuthContext/index.jsx";
+import { AuthContext } from "../../Contexts/fbAuthContext/index.jsx";
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { useToken } from "../Contexts/tokenContext/TokenContext.jsx";
+import { useToken } from "../../Contexts/fbTokenContext/TokenContext.jsx";
 
-import DeleteAccount from "./UserUpdate.jsx/UserDeleteManager.jsx";
-import { PasswordInput } from "./Registration/PasswordInputs.jsx";
-import ChangePassword from "./UserUpdate.jsx/PasswordChangeManager.jsx";
-import ChangeEmail from "./UserUpdate.jsx/EmailChangeManager.jsx";
+import DeleteAccount from "../User/userDelete/UserDeleteManager.jsx";
+import { PasswordInput } from "../Login/PasswordInputs.jsx";
+import ChangePassword from "../User/userUpdate/PasswordChangeManager.jsx";
+import ChangeEmail from "../User/userUpdate/EmailChangeManager.jsx";
 
-import OperationForm from "./Operation/OperationForm.jsx";
-import OperationList from "./Operation/OperationList.jsx";
+import OperationForm from "../Operation/operationCreate/OperationForm.jsx";
+import OperationList from "../Operation/OperationList.jsx";
 
-import WalletLoading from "./Wallet/WalletLoading.jsx";
-import styles from "./Wallet/WalletSelector.module.css";
+import WalletLoading from "../Wallet/WalletLoading.jsx";
+import styles from "../Wallet/WalletSelector.module.css";
+
 import {
   loadEnrichedOperations,
   loadOperations,
-} from "./Operation/OperationEnrichManager.jsx";
-import CategoryList from "./CategoryForm/CategoryList.jsx";
+} from "../Operation/operationCreate/OperationEnrichManager.jsx";
+import CategoryList from "../Category/CategoryForm/CategoryList.jsx";
 
 const Main = () => {
   const navigate = useNavigate();

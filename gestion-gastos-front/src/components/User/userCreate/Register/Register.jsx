@@ -4,11 +4,11 @@ import {
   fbCreateUserWithEmailAndPassword,
   fbEmailPasswordSignIn,
   fbGoogleSignIn,
-} from "../../Firebase/auth.js";
+} from "../../../../Firebase/auth.js";
 import Form from "react-bootstrap/Form";
 import { getAuth } from "firebase/auth";
 
-import StatusService from "../../Services/status/serviceStatus.js";
+import StatusService from "../../../../Services/status/serviceStatus.js";
 
 const Register = () => {
   const navigate = useNavigate();

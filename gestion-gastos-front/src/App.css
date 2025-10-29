@@ -4,7 +4,7 @@
   min-height: 100vh;
 }
 
-.app-container{ 
+.app-container {
   display: flex;
   min-height: 100%;
   background: #0a2217;
@@ -55,10 +55,10 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
-  background: none; 
+  background: none;
 }
 
-.left-panel{
+.left-panel {
   flex: 1;
   display: flex;
   align-items: center;
@@ -69,7 +69,7 @@
   overflow: hidden;
 }
 
-.right-panel {  
+.right-panel {
   flex: 1;
   display: flex;
   align-items: center;
@@ -81,13 +81,13 @@
   overflow: hidden;
 }
 
-/* ?? */ 
+/* ?? */
 /* Responsive */
 @media (max-width: 768px) {
   .split-layout {
     flex-direction: column;
   }
-  
+
   .right-panel {
     border-left: none;
     border-top: none;

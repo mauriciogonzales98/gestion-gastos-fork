@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   getAuth,
   reauthenticateWithCredential,
@@ -6,7 +6,7 @@ import {
   reauthenticateWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
-import { fbDeleteUser } from "../../Firebase/auth.js";
+import { fbDeleteUser } from "../../../Firebase/auth.js";
 import Form from "react-bootstrap/Form";
 
 const DeleteAccount = ({

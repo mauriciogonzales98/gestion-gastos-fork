@@ -1,5 +1,5 @@
 import { fbEmailPasswordSignIn, fbGoogleSignIn } from "../../Firebase/auth.js";
-import { useAuth } from "../../Contexts/FBauthContext/index.jsx";
+import { useAuth } from "../../Contexts/fbAuthContext/index.jsx";
 import React, { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
@@ -147,7 +147,6 @@ const Login = () => {
       )}
       <form onSubmit={submitLoginForm} className={styles.form}>
         <h1 className={styles.title}>Inicia Sesión</h1>
-
         <div className={styles.formGroup}>
           <label className={styles.label}>Email:</label>
           <Form.Control
@@ -158,7 +157,6 @@ const Login = () => {
             className={styles.input}
           />
         </div>
-
         <div className={styles.formGroup}>
           <label className={styles.label}>Contraseña:</label>
           <Form.Control
@@ -170,17 +168,15 @@ const Login = () => {
             className={styles.input}
           />
         </div>
-
+        s
         <button type="submit" className={styles.submitButton}>
           Iniciar Sesión
         </button>
-
         <div className={styles.divider}>
           <div className={styles.dividerLine}></div>
           <span className={styles.dividerText}>O</span>
           <div className={styles.dividerLine}></div>
         </div>
-
         <button
           className={styles.googleButton}
           onClick={onGoogleSignIn}
@@ -188,7 +184,6 @@ const Login = () => {
         >
           Continuar con Google
         </button>
-
         <div className={styles.linkContainer}>
           ¿No tiene una cuenta?
           <a href="/register" className={styles.link}>
