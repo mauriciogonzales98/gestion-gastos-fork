@@ -131,15 +131,7 @@ const Main = () => {
         />
       </div>
 
-      <div
-        style={{
-          padding: "20px",
-          backgroundColor: "#f8f9fa",
-          borderRadius: "8px",
-          textAlign: "center",
-        }}
-      >
-        {/* Comienzo del JSX para cambio de email, temporalmente deshabilitado
+      {/* Comienzo del JSX para cambio de email, temporalmente deshabilitado
 
 
               {value.user && <h1>Cambiar Email</h1>}
@@ -174,7 +166,6 @@ const Main = () => {
               )}
               
               */}
-      </div>
     </div>
   );
 };

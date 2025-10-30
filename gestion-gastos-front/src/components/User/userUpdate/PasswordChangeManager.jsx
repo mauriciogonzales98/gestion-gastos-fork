@@ -41,6 +41,7 @@ const ChangePassword = ({
         user.email,
         payload.oldPassword
       );
+      // Reautentica al usuario para realizar la operación
       await reauthenticateWithCredential(user, credential);
     } catch (reauthError) {
       setErrorMessage("La contraseña actual es incorrecta");

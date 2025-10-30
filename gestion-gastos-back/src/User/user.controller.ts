@@ -53,8 +53,8 @@ async function add(req: Request, res: Response) {
     await em.flush();
 
     const newWallet = new Wallet();
-    newWallet.name = "ARS";
-    newWallet.coin = "Pesos";
+    newWallet.name = "Wallet";
+    newWallet.coin = "ARS";
     newWallet.spend = 0;
     newWallet.income = 0;
     newWallet.user = user;

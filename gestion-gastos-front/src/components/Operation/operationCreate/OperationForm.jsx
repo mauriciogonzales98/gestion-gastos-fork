@@ -21,7 +21,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        });  
+        });
         const data = await response.json();
         if (data.success) {
           setCategories(data.data);
@@ -48,9 +48,9 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
     }
 
     if (amount > 9999999999.99) {
-    setMessage("El monto no puede ser mayor a 999,999,999.99");
-    return;
-  }
+      setMessage("El monto no puede ser mayor a 999,999,999.99");
+      return;
+    }
 
     setLoading(true);
     setMessage("");
@@ -164,6 +164,21 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
       </div>
 
       <form onSubmit={handleSubmit}>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Monto:</label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+            disabled={!walletId || loading}
+            className={styles.input}
+            step="1"
+            min="0.0"
+            placeholder="0.00"
+          />
+        </div>
+
         <div className={styles.formGroup}>
           <label className={styles.label}>Descripción:</label>
           <input

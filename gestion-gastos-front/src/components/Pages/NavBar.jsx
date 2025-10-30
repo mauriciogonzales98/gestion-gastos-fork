@@ -1,7 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { fbSignOut } from "../../Firebase/auth";
 import { AuthContext, useAuth } from "../../Contexts/fbAuthContext";
-import { BiCategory, BiLogOut, BiSolidUserAccount } from "react-icons/bi";
+import {
+  BiCategory,
+  BiDollarCircle,
+  BiLogOut,
+  BiSolidUserAccount,
+} from "react-icons/bi";
 import { FiHome } from "react-icons/fi";
 import styles from "./NavBar.module.css";
 
@@ -24,15 +29,16 @@ const NavBar = () => {
         <AuthContext.Consumer>
           {(value) => (
             <>
+              {/* WELCOME MESSAGE */}
               <div>
                 {" "}
                 {value.user && <span> Welcome, {value.user.email}</span>}{" "}
               </div>
-
+              {/* HOME */}
               <button className={styles.homeicon} onClick={ClickHandler}>
                 <FiHome />
               </button>
-
+              {/* CATEGORIES */}
               <div>
                 {value.user && (
                   <button
@@ -46,6 +52,17 @@ const NavBar = () => {
                 )}
               </div>
               <div>
+                <button
+                  className={styles.button}
+                  onClick={() => {
+                    navigate("/create-wallet");
+                  }}
+                >
+                  <BiDollarCircle />
+                </button>
+              </div>
+              {/* PROFILE */}
+              <div>
                 {value.user && (
                   <button
                     className={styles.homeicon}
@@ -57,6 +74,7 @@ const NavBar = () => {
                   </button>
                 )}
               </div>
+              {/* SIGN OUT */}
               <div>
                 {value.user && (
                   <button
