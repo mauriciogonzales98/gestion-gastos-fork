@@ -73,11 +73,44 @@
   cursor: pointer;
   width: 90px;
   height: 90px;
+  position: relative;
 }
 
 .categoryCard:hover {
   background-color: #e9ecef;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-color: #12824c;
+}
+
+/* Efecto de pulso al hacer hover para indicar que es clickeable */
+.categoryCard:hover::after {
+  content: '✏️';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #12824c;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .iconContainer {
@@ -90,6 +123,11 @@
   justify-content: center;
   border: 2px solid #dee2e6;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease;
+}
+
+.categoryCard:hover .iconContainer {
+  border-color: #12824c;
 }
 
 .categoryName {
@@ -99,4 +137,70 @@
   line-height: 1.2;
   max-width: 80px;
   word-wrap: break-word;
+}
+
+/* Estilos para cuando hay descripción (opcional) */
+.categoryDescription {
+  display: none; /* Ocultamos la descripción en la vista de grid */
+}
+
+/* Versión alternativa si quieres mostrar tooltip al hover */
+.categoryCard:hover .categoryName::after {
+  content: attr(data-fullname);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+  .categoriesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 90px));
+    gap: 12px;
+  }
+  
+  .categoryCard {
+    width: 80px;
+    height: 80px;
+    padding: 12px 5px;
+  }
+  
+  .iconContainer {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .categoryName {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .categoriesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 80px));
+    gap: 10px;
+  }
+  
+  .categoryCard {
+    width: 70px;
+    height: 70px;
+    padding: 10px 5px;
+  }
+  
+  .iconContainer {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .categoryName {
+    font-size: 0.75rem;
+  }
 }

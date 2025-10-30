@@ -17,10 +17,11 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
 
       try {
         const response = await fetch("http://localhost:3001/api/category/", {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        });
+        });  
         const data = await response.json();
         if (data.success) {
           setCategories(data.data);
@@ -37,14 +38,19 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
     e.preventDefault();
 
     if (!walletId) {
-      setMessage("⚠️ Por favor selecciona una wallet primero");
+      setMessage("Por favor selecciona una wallet primero");
       return;
     }
 
     if (!amount || parseFloat(amount) <= 0) {
-      setMessage("⚠️ Ingresa un monto válido");
+      setMessage("Ingresa un monto válido");
       return;
     }
+
+    if (amount > 9999999999.99) {
+    setMessage("El monto no puede ser mayor a 999,999,999.99");
+    return;
+  }
 
     setLoading(true);
     setMessage("");

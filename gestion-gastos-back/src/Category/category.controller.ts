@@ -73,10 +73,22 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const category = em.create(Category, req.body.sanitizedInput);
-    const user = await em.findOneOrFail(User, { id: req.body.userid });
+    const firebaseUser = (req as any).firebaseUser;
+        
+    if (!firebaseUser || !firebaseUser.uid) {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Usuario no autenticado' 
+      });
+    }
 
-    category.user = user;
+    const userId = firebaseUser.uid;
+    const user = await em.findOneOrFail(User, { id: userId });
+    const category = em.create(Category, {
+      ...req.body.sanitizedInput,
+      user: user
+    });
+
     await em.persistAndFlush(category);
     res.status(201).json({ message: "category created", data: category });
   } catch (error: any) {
@@ -100,9 +112,14 @@ async function update(req: Request, res: Response) {
 
 async function remove(req: Request, res: Response) {
   try {
+    const firebaseUser = (req as any).firebaseUser;
+    if (!firebaseUser || !firebaseUser.uid) {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Usuario no autenticado' 
+      });
+    }
     const id = Number.parseInt(req.params.id);
-    const category = em.getReference(Category, id);
-    await em.removeAndFlush(category);
     const categoryToRemove = await em.findOneOrFail(Category, { id: id });
     await em.removeAndFlush(categoryToRemove);
     res.status(200).json({ message: "category removed" });
