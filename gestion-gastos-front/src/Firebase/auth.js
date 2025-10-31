@@ -10,7 +10,7 @@ import {
   updateEmail,
 } from "firebase/auth";
 
-export const fbEmailPasswordSignUp = async (email, password) => {
+export const fbEmailPasswordSignIn = async (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
@@ -18,7 +18,7 @@ export const fbCreateUserWithEmailAndPassword = async (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password);
 };
 
-export const fbGoogleSignUp = async () => {
+export const fbGoogleSignIn = async () => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
   return result;

@@ -1,12 +1,13 @@
-import { fbEmailPasswordSignUp, fbGoogleSignUp } from "../../Firebase/auth.js";
-import { useAuth } from "../../Contexts/FBauthContext/index.jsx";
+import { fbEmailPasswordSignIn, fbGoogleSignIn } from "../../Firebase/auth.js";
+import { useAuth } from "../../Contexts/fbAuthContext/index.jsx";
 import React, { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import Form from "react-bootstrap/Form";
 import { PasswordInput } from "./PasswordInputs.jsx";
-import styles from './Login.module.css'
-import logo from './ggs2.png'
+import styles from "./Login.module.css";
+import logo from "./ggs2.png";
+import StatusService from "../../Services/status/serviceStatus.js";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,6 +24,13 @@ const Login = () => {
   // Email and Password Sign In
   const submitLoginForm = async (e) => {
     e.preventDefault();
+    const statusService = new StatusService();
+    const isServiceDown = await statusService.checkBackendStatus();
+    if (!isServiceDown) {
+      console.log("El Backend está caído.");
+      navigate("/serverdown");
+      return;
+    }
 
     // Mensaje de error si ya está logueado
     if (getAuth().currentUser) setErrorMessage("Ya está logueado");
@@ -35,7 +43,7 @@ const Login = () => {
       setIsSigningIn(true);
       try {
         //Firebase Auth Sign in
-        await fbEmailPasswordSignUp(payload.email, payload.password);
+        await fbEmailPasswordSignIn(payload.email, payload.password);
       } catch (err) {
         setFriendlyErrorMessage(
           "Ocurrió un error inesperado. Por favor, intenta nuevamente."
@@ -106,7 +114,7 @@ const Login = () => {
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        await fbGoogleSignUp();
+        await fbGoogleSignIn();
       } catch (err) {
         setErrorMessage(err.message);
       }
@@ -120,8 +128,8 @@ const Login = () => {
     <>
       <div className={styles.container}>
         <div className={styles.logo}>
-        <img src={logo} /> 
-      </div>
+          <img src={logo} />
+        </div>
       </div>
       {friendlyErrorMessage && (
         <>
@@ -139,18 +147,16 @@ const Login = () => {
       )}
       <form onSubmit={submitLoginForm} className={styles.form}>
         <h1 className={styles.title}>Inicia Sesión</h1>
-
         <div className={styles.formGroup}>
           <label className={styles.label}>Email:</label>
-          <Form.Control 
-            type="text" 
-            id="email" 
-            name="email" 
+          <Form.Control
+            type="text"
+            id="email"
+            name="email"
             placeholder="Ingrese su correo electrónico"
-            className={styles.input} 
+            className={styles.input}
           />
         </div>
-
         <div className={styles.formGroup}>
           <label className={styles.label}>Contraseña:</label>
           <Form.Control
@@ -162,15 +168,15 @@ const Login = () => {
             className={styles.input}
           />
         </div>
-
-        <button type="submit" className={styles.submitButton}>Iniciar Sesión</button>
-
+        s
+        <button type="submit" className={styles.submitButton}>
+          Iniciar Sesión
+        </button>
         <div className={styles.divider}>
           <div className={styles.dividerLine}></div>
           <span className={styles.dividerText}>O</span>
           <div className={styles.dividerLine}></div>
         </div>
-
         <button
           className={styles.googleButton}
           onClick={onGoogleSignIn}
@@ -178,10 +184,11 @@ const Login = () => {
         >
           Continuar con Google
         </button>
-
         <div className={styles.linkContainer}>
-          ¿No tiene una cuenta? 
-          <a href="/register" className={styles.link}>Regístrese aquí</a>
+          ¿No tiene una cuenta?
+          <a href="/register" className={styles.link}>
+            Regístrese aquí
+          </a>
         </div>
       </form>
     </>

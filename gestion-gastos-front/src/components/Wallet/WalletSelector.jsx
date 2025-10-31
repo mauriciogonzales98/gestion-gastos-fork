@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./WalletSelector.module.css";
 import WalletLoading from "./WalletLoading";
 

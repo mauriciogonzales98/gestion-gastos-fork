@@ -66,7 +66,7 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   try {
     const wallet = em.create(Wallet, req.body.sanitizedInput);
-    const user = await em.findOneOrFail(User, { id: req.body.userid });
+    const user = await em.findOneOrFail(User, { id: req.body.userId });
 
     wallet.user = user;
     await em.persistAndFlush(wallet);

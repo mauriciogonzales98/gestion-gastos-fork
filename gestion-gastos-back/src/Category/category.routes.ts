@@ -21,10 +21,5 @@ categoryRouter.put(
   sanitizeCategoryInput,
   update
 );
-categoryRouter.patch(
-  "/:id",
-  firebaseAuthMiddleware,
-  sanitizeCategoryInput,
-  update
-);
+categoryRouter.patch("/:id", firebaseAuthMiddleware, sanitizeCategoryInput, update);
 categoryRouter.delete("/:id", firebaseAuthMiddleware, remove);

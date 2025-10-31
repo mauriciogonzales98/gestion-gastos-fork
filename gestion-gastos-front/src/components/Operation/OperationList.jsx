@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styles from "./OperationList.module.css";
-import deleteOperation from "./OperationDeleteManager.jsx";
+import deleteOperation from "./operationDelete/OperationDeleteManager.jsx";
 import OperationUpdateForm, {
   updateOperation,
 } from "./operationUpdate/OperationUpdateManager.jsx";
-import { useToken } from "../../Contexts/tokenContext/TokenContext.jsx";
+import { useToken } from "../../Contexts/fbTokenContext/TokenContext.jsx";
 import WalletSelector from "../Wallet/WalletSelector.jsx";
 
 const OperationList = ({ operations, onChange }) => {

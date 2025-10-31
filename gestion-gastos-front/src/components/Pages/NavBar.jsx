@@ -1,15 +1,23 @@
 import { useNavigate } from "react-router-dom";
-import { fbSignOut } from "../Firebase/auth";
-import { AuthContext, useAuth } from "../Contexts/fbAuthContext";
-import { BiCategory, BiLogOut, BiSolidUserAccount } from "react-icons/bi";
+import { fbSignOut } from "../../Firebase/auth";
+import { AuthContext, useAuth } from "../../Contexts/fbAuthContext";
+import {
+  BiCategory,
+  BiDollarCircle,
+  BiLogOut,
+  BiSolidUserAccount,
+} from "react-icons/bi";
 import { FiHome } from "react-icons/fi";
 import styles from "./NavBar.module.css";
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const { userLoggedIn } = useAuth();
 
   const ClickHandler = () => {
-    console.log("Handled");
+    if (userLoggedIn) {
+      navigate("/main");
+    } else navigate("/");
   };
 
   return (
@@ -21,18 +29,16 @@ const NavBar = () => {
         <AuthContext.Consumer>
           {(value) => (
             <>
+              {/* WELCOME MESSAGE */}
               <div>
                 {" "}
-                {/* Muestra el usuario de FB */}
-                {value.user && (
-                  <span> Welcome, {value.user.displayName.split(" ")[0]}</span>
-                )}{" "}
+                {value.user && <span> Welcome, {value.user.email}</span>}{" "}
               </div>
-
+              {/* HOME */}
               <button className={styles.homeicon} onClick={ClickHandler}>
                 <FiHome />
               </button>
-
+              {/* CATEGORIES */}
               <div>
                 {value.user && (
                   <button
@@ -45,7 +51,17 @@ const NavBar = () => {
                   </button>
                 )}
               </div>
-
+              <div>
+                <button
+                  className={styles.button}
+                  onClick={() => {
+                    navigate("/create-wallet");
+                  }}
+                >
+                  <BiDollarCircle />
+                </button>
+              </div>
+              {/* PROFILE */}
               <div>
                 {value.user && (
                   <button
@@ -55,6 +71,20 @@ const NavBar = () => {
                     }}
                   >
                     <BiSolidUserAccount />
+                  </button>
+                )}
+              </div>
+              {/* SIGN OUT */}
+              <div>
+                {value.user && (
+                  <button
+                    className={styles.signout}
+                    onClick={() => {
+                      fbSignOut();
+                      navigate("/");
+                    }}
+                  >
+                    <BiLogOut />
                   </button>
                 )}
               </div>
@@ -68,6 +98,7 @@ const NavBar = () => {
           )}
         </AuthContext.Consumer>
       </nav>
+      <hr></hr>
     </div>
   );
 };
