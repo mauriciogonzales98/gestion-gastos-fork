@@ -1,9 +1,9 @@
-import React from 'react';
-import Login from './Registration/Login.jsx';
-import Home from './Home.jsx';
+import React from "react";
+import Login from "../Login/Login.jsx";
+import Home from "./Home.jsx";
 // import '../App.css'
-import './Home.module.css';
-import './Registration/Login.module.css';
+import "./Home.module.css";
+import "../Login/Login.jsx";
 
 const HomeWithLogin = () => {
   return (

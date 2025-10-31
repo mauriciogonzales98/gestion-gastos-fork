@@ -130,7 +130,7 @@ const Register = () => {
           onSubmit={submitForm} /*onSubmit={(e) => onSubmit(e) }*/
         >
           <Form.Group>
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">Name </label>
             <Form.Control
               type="text"
               id="name"
@@ -138,7 +138,7 @@ const Register = () => {
               //onChange={(e) => setName(e.target.value)}
               required
             />
-            <label htmlFor="surname">Surname</label>
+            <label htmlFor="surname">Surname </label>
             <Form.Control
               type="text"
               id="surname"
@@ -148,7 +148,7 @@ const Register = () => {
             />
           </Form.Group>
           <Form.Group>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Email </label>
             <Form.Control
               type="email"
               id="email"
@@ -158,7 +158,7 @@ const Register = () => {
             />
           </Form.Group>
           <Form.Group>
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Password </label>
             <Form.Control
               type="text"
               id="password"
@@ -168,7 +168,7 @@ const Register = () => {
             />
           </Form.Group>
           <Form.Group>
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label htmlFor="confirmPassword">Confirm Password </label>
             <Form.Control
               type="text"
               id="confirmPassword"
@@ -177,7 +177,7 @@ const Register = () => {
               required
             />
           </Form.Group>
-          <button type="submit">Register</button>
+          <button type="submit">Register </button>
         </form>
         <p>
           ¿Le diste al link sin querer? Inicia sesión acá.{" "}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import CategoryButtons from "../CategoryForm/CategoryButtons";
+import CategoryButtons from "../../Category/CategoryForm/CategoryButtons";
 import styles from "./OperationForm.module.css";
 
 const OperationForm = ({ walletId, token, onOperationAdded }) => {
@@ -17,6 +17,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
 
       try {
         const response = await fetch("http://localhost:3001/api/category/", {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -37,12 +38,17 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
     e.preventDefault();
 
     if (!walletId) {
-      setMessage("⚠️ Por favor selecciona una wallet primero");
+      setMessage("Por favor selecciona una wallet primero");
       return;
     }
 
     if (!amount || parseFloat(amount) <= 0) {
-      setMessage("⚠️ Ingresa un monto válido");
+      setMessage("Ingresa un monto válido");
+      return;
+    }
+
+    if (amount > 9999999999.99) {
+      setMessage("El monto no puede ser mayor a 999,999,999.99");
       return;
     }
 
@@ -167,9 +173,8 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
             required
             disabled={!walletId || loading}
             className={styles.input}
-            step="0.01"
-            min="0.01"
-            max="9999999999.99"
+            step="1"
+            min="0.0"
             placeholder="0.00"
           />
         </div>
@@ -184,6 +189,22 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
             className={styles.input}
             placeholder="Descripción de la operación"
             maxLength="100"
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Monto:</label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+            disabled={!walletId || loading}
+            className={styles.input}
+            step="0.01"
+            min="0.01"
+            max="9999999999.99"
+            placeholder="0.00"
           />
         </div>
 

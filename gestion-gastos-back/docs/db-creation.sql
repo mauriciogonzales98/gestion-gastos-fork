@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`wallet` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NOT NULL,
   `coin` VARCHAR(50) NULL,
-  `spend` DECIMAL(10, 2) NULL,
-  `income` DECIMAL(10, 2) NULL,
+  `spend` DECIMAL(15, 2) NULL,
+  `income` DECIMAL(15, 2) NULL,
   `userid` VARCHAR(28) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES `user`(`id`)
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`tag` (
 
 CREATE TABLE IF NOT EXISTS `gestion_gastos`.`operation` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `amount` DECIMAL(10, 2) NOT NULL,
+  `amount` DECIMAL(12, 2) NOT NULL,
   `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description` VARCHAR(100) NULL,
   `type` ENUM('gasto', 'ingreso') NOT NULL DEFAULT 'gasto',
@@ -57,4 +57,18 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`operation` (
   FOREIGN KEY (`categoryid`) REFERENCES `category`(`id`),
   FOREIGN KEY (`tagid`) REFERENCES `tag`(`id`),
   FOREIGN KEY (`walletid`) REFERENCES `wallet`(`id`)
+);
+CREATE TABLE IF NOT EXISTS `registration_process` (
+  `id` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `surname` varchar(50) DEFAULT NULL,
+  `auth_created` tinyint DEFAULT '0',
+  `user_id` varchar(28) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  `step` varchar(45) DEFAULT NULL,
+  `error` varchar(512) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
 );
