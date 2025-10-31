@@ -2,16 +2,16 @@
 
 ## Grupo
 ### Integrantes
-* 52292 - Gonzales Diaz, Mauricio Renzo
-* 52159 - Montaña, Tomas
-* 53240 - Tobarez, Ariadna Luz Melody
+* 52292 - Gonzales Díaz, Mauricio Renzo
+* 52159 - Montaña, Tomás
+* 53240 - Tobarez, Ariadna 
 
 ### Repositorios
 * [Fullstack app](https://github.com/mauriciogonzales98/GestionGastos)
 
 ## Tema
 ### Descripción
-Sistema de registro de gastos. El usuario puede registrar sus gastos e ingresos de dinero, la fuente y categorizarlos. Crear sus propias categorias y ver un resumen de sus gastos y un deglose por categorias de cuanto se ha gastado en cada una en un determinado periodo de tiempo.
+Sistema de registro de gastos. El usuario puede registrar sus gastos e ingresos de dinero, la fuente y categorizarlos. Crear sus propias categorias y ver un resumen de sus gastos y un deglose por categorías de cuánto se ha gastado en cada una en un determinado período de tiempo.
 
 ### Modelo
 ![DSW Gestor de Gastos - Page 1](https://github.com/user-attachments/assets/c0b8e586-ad5f-4ba7-87eb-53bcf623aeac)
