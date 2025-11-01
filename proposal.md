@@ -14,7 +14,8 @@
 Sistema de registro de gastos. El usuario puede registrar sus gastos e ingresos de dinero, la fuente y categorizarlos. Crear sus propias categorias y ver un resumen de sus gastos y un deglose por categorías de cuánto se ha gastado en cada una en un determinado período de tiempo.
 
 ### Modelo
-<img width="4400" height="4400" alt="image" src="https://github.com/user-attachments/assets/3c1ae9d2-8f67-41cb-9d77-33a47dbc8a07" />
+<img width="4400" height="4396" alt="image" src="https://github.com/user-attachments/assets/efe1037e-8b41-4b8a-bf8f-2a317ba36b19" />
+
 
 
 
