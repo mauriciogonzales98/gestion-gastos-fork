@@ -7,7 +7,7 @@
 * 53240 - Tobarez, Ariadna 
 
 ### Repositorios
-* [Fullstack app](https://github.com/mauriciogonzales98/GestionGastos)
+* [Fullstack app](https://github.com/mauriciogonzales98/gestion-gastos-fork)
 
 ## Tema
 ### Descripción
