@@ -7,14 +7,17 @@
 * 53240 - Tobarez, Ariadna 
 
 ### Repositorios
-* [Fullstack app](https://github.com/mauriciogonzales98/GestionGastos)
+* [Fullstack app](https://github.com/mauriciogonzales98/gestion-gastos-fork)
 
 ## Tema
 ### Descripción
 Sistema de registro de gastos. El usuario puede registrar sus gastos e ingresos de dinero, la fuente y categorizarlos. Crear sus propias categorias y ver un resumen de sus gastos y un deglose por categorías de cuánto se ha gastado en cada una en un determinado período de tiempo.
 
 ### Modelo
-![DSW Gestor de Gastos - Page 1](https://github.com/user-attachments/assets/c0b8e586-ad5f-4ba7-87eb-53bcf623aeac)
+<img width="4400" height="4400" alt="image" src="https://github.com/user-attachments/assets/3c1ae9d2-8f67-41cb-9d77-33a47dbc8a07" />
+
+
+
 
 
 ## Alcance Funcional 
