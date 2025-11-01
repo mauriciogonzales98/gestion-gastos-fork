@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "install:all": "pnpm --prefix gestion-gastos-back install && pnpm --prefix gestion-gastos-front install",
+    "start": "pnpm run install:all && pnpm run start:dev",
+    "start:dev": "concurrently \"pnpm --prefix gestion-gastos-back start:dev\" \"pnpm --prefix gestion-gastos-front start\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

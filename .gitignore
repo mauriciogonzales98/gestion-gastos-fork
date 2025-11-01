@@ -1,3 +1,6 @@
+node_modules
+.vscode
+
 gestion-gastos-back/src/shared/db/orm.ts
 gestion-gastos-back/.env
 gestion-gastos-back/firebase-service-account.json
