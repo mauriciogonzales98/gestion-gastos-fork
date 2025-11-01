@@ -14,7 +14,8 @@
 Sistema de registro de gastos. El usuario puede registrar sus gastos e ingresos de dinero, la fuente y categorizarlos. Crear sus propias categorias y ver un resumen de sus gastos y un deglose por categorías de cuánto se ha gastado en cada una en un determinado período de tiempo.
 
 ### Modelo
-![DSW Gestor de Gastos - Page 1](https://github.com/user-attachments/assets/c0b8e586-ad5f-4ba7-87eb-53bcf623aeac)
+<img width="4096" height="2856" alt="image" src="https://github.com/user-attachments/assets/d5555144-4d45-458c-8135-84ae6ae48795" />
+
 
 
 ## Alcance Funcional 
