@@ -98,56 +98,36 @@ export class RegistrationService {
     process.markAuthCreationStarted();
     await this.em.flush();
 
-    try {
       const authUser = await this.callFirebaseAuth(request);
 
       process.markAuthCreationCompleted(authUser.uid);
       await this.em.flush();
       console.log("Auth Creation marked completed");
       return authUser;
-    } catch (error) {
-      throw new Error(
-        `Failed to create auth user: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
-    }
   }
 
-  private async createLocalUser(
-    process: RegistrationProcess,
-    request: RegistrationRequest,
-    firebaseUid: string
-  ): Promise<void> {
+  private async createLocalUser(process: RegistrationProcess, request: RegistrationRequest, firebaseUid: string): Promise<void> {
+
     process.markUserCreationStarted();
     await this.em.flush();
 
-    try {
       // Llama a un método estático en User.entity
-
       const user = User.createFromFirebase(
         firebaseUid,
         request.email,
         request.name,
         request.surname
       );
+
       // Pushea el usuario a la base de datos
       await this.em.persistAndFlush(user);
       console.log("User entity created");
-      process.userId = user.id;
 
+      process.userId = user.id;
       await this.em.flush();
 
       console.log("Process updated with user ID:", user.id);
-    } catch (error) {
-      console.error("Local user creation failed:", error);
-
-      throw new Error(
-        `Failed to create local user: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
-    }
+    
   }
 
   private async handleRegistrationError(

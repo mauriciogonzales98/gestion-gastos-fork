@@ -17,6 +17,8 @@ import Profile from "./components/Pages/Profile.jsx";
 import ServerDown from "./components/Pages/ServicePages/ServerDown.jsx";
 import PageNotFound from "./components/Pages/ServicePages/PageNotFound.jsx";
 
+import MercadoPagoTest from "./components/PruebaMP/PruebaMP.jsx";
+
 function App() {
   const { loggedIn } = useAuth();
 
@@ -40,6 +42,7 @@ function App() {
 
             <Route path="/serverdown" element={<ServerDown />} />
             <Route path="*" element={<PageNotFound />} />
+            <Route path="mptest" element={<MercadoPagoTest />} />
           </Routes>
         </div>
       </div>

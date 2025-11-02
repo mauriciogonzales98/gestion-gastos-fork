@@ -79,6 +79,7 @@ const Register = () => {
         surname: payload.surname,
         email: payload.email,
         password: payload.password,
+        isGoogleSignUp: false,
       };
 
       console.log("Starting registration process...");
@@ -124,22 +125,23 @@ const Register = () => {
 
     try {
       // Google sign up creates the Firebase user immediately
-      const result = await fbGoogleSignIn();
-      const user = result.user;
+      await fbGoogleSignIn();
+      // const user = result.user;
+      const user = getAuth().currentUser;
 
       console.log("Google registration successful:", user);
 
       if (user) {
         const userData = {
+          id: user.uid,
           name: user.displayName ? user.displayName.split(" ")[0] : "",
-          surname: user.displayName
-            ? user.displayName.split(" ").slice(1).join(" ")
-            : "",
+          surname: user.displayName ? user.displayName.split(" ").slice(1).join(" ") : "",
           email: user.email,
         };
 
         // Register in backend
-        await registrationProcess(userData);
+        // await registrationProcess(userData);
+        await registerWithGoogle(user, userData);
 
         navigate("/Main");
       }
@@ -150,6 +152,32 @@ const Register = () => {
     }
   };
 
+  const registerWithGoogle = async (user, userData) => {
+    try {
+      await fetch(`http://localhost:3001/api/user`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+        body: JSON.stringify(userData),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res && res.success != false) {
+            console.log("Usuario creado en BE");
+          } else {
+            console.log(
+              "Error al crear usuario en BE",
+              res?.message || "Unknown error"
+            );
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+    };
   return (
     <>
       <div className="register-container">
