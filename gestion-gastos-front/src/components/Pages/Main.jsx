@@ -16,10 +16,6 @@ import OperationList from "../Operation/OperationList.jsx";
 import WalletLoading from "../Wallet/WalletLoading.jsx";
 import styles from "../Wallet/WalletSelector.module.css";
 
-import {
-  loadEnrichedOperations,
-  loadOperations,
-} from "../Operation/operationCreate/OperationEnrichManager.jsx";
 import CategoryList from "../Category/CategoryForm/CategoryList.jsx";
 
 const Main = () => {
@@ -35,7 +31,9 @@ const Main = () => {
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [loadingWallets, setLoadingWallets] = useState(true);
   //const [token, setToken] = useState(null);
-  const [operations, setOperations] = useState([]);
+
+  // Estado para refrescar las operaciones
+  const [doRefreshOperations, setDoRefreshOperations] = useState(false);
 
   useEffect(() => {
     if (!loggedIn) {
@@ -44,42 +42,6 @@ const Main = () => {
     }
   }, [loggedIn, navigate]);
 
-  //Cuando se selecciona una wallet, carga todas las operaciones, cargando las categorías e insertandolas en el objeto
-  useEffect(() => {
-    const operationsLoader = async () => {
-      if (selectedWalletId) {
-        try {
-          const enrichedOperations = await loadEnrichedOperations(
-            selectedWalletId,
-            token
-          );
-          setOperations(enrichedOperations.reverse());
-          console.log(
-            "Operaciones seleccionadas en operationsLoader:",
-            enrichedOperations
-          );
-        } catch (err) {
-          console.log("Error cargando operaciones enriqucidas al main", err);
-          setOperations([]);
-        }
-      }
-    };
-    operationsLoader();
-  }, [selectedWalletId, token]);
-  // Función que refresca las operaciones
-  const refreshOperations = async () => {
-    if (!selectedWalletId) return;
-    try {
-      const enrichedOperations = await loadEnrichedOperations(
-        selectedWalletId,
-        token
-      );
-      setOperations(enrichedOperations);
-    } catch (err) {
-      console.log("Error refreshing operations:", err);
-      setOperations([]);
-    }
-  };
   return (
     <div
       style={{
@@ -115,19 +77,23 @@ const Main = () => {
             walletId={selectedWalletId}
             token={token}
             onOperationAdded={() => {
-              refreshOperations();
+              setDoRefreshOperations(true);
             }}
+            doRefreshOperations={doRefreshOperations}
+            setDoRefreshOperations={setDoRefreshOperations}
           />
         </div>
       </div>
 
       <div>
         <OperationList
-          operations={operations}
+          selectedWalletId={selectedWalletId}
           token={token}
           onChange={() => {
-            refreshOperations();
+            setDoRefreshOperations(true);
           }}
+          doRefreshOperations={doRefreshOperations}
+          setDoRefreshOperations={setDoRefreshOperations}
         />
       </div>
 

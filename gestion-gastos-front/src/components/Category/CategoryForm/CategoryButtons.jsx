@@ -1,7 +1,33 @@
 import CategoryIcon from "./CategoryIcon";
 import styles from "./CategoryButtons.module.css";
+import { useState, useEffect } from "react";
+import { useToken } from "../../../Contexts/fbTokenContext/TokenContext";
 
-const CategoryButtons = ({ categories = [], selectedId, onSelect }) => {
+const CategoryButtons = ({ selectedId, onSelect }) => {
+  const { token } = useToken();
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const loadCategories = async () => {
+      if (!token) return;
+
+      try {
+        const response = await fetch("http://localhost:3001/api/category/", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setCategories(data.data);
+        }
+      } catch (error) {
+        console.error("Error loading categories:", error);
+      }
+    };
+
+    loadCategories();
+  }, [token]);
   if (!categories || categories.length === 0) {
     return <div className={styles.emptyMessage}>No hay categorías</div>;
   }

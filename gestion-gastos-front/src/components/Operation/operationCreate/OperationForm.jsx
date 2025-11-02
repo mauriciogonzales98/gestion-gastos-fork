@@ -11,28 +11,28 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    const loadCategories = async () => {
-      if (!token) return;
+  // useEffect(() => {
+  //   const loadCategories = async () => {
+  //     if (!token) return;
 
-      try {
-        const response = await fetch("http://localhost:3001/api/category/", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        if (data.success) {
-          setCategories(data.data);
-        }
-      } catch (error) {
-        console.error("Error loading categories:", error);
-      }
-    };
+  //     try {
+  //       const response = await fetch("http://localhost:3001/api/category/", {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+  //       const data = await response.json();
+  //       if (data.success) {
+  //         setCategories(data.data);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error loading categories:", error);
+  //     }
+  //   };
 
-    loadCategories();
-  }, [token]);
+  //   loadCategories();
+  // }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -165,21 +165,6 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
 
       <form onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
-          <label className={styles.label}>Monto:</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            required
-            disabled={!walletId || loading}
-            className={styles.input}
-            step="1"
-            min="0.0"
-            placeholder="0.00"
-          />
-        </div>
-
-        <div className={styles.formGroup}>
           <label className={styles.label}>Descripción:</label>
           <input
             type="text"
@@ -211,7 +196,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
         <div className={styles.categorySection}>
           <label className={styles.label}>Categoría (opcional):</label>
           <CategoryButtons
-            categories={categories}
+            // categories={categories}
             selectedId={selectedCategoryId}
             onSelect={setSelectedCategoryId}
           />

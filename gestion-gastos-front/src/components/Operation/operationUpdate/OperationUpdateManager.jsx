@@ -14,7 +14,6 @@ const OperationUpdateForm = ({
   onChange,
 }) => {
   const [selectedTypeValue, setSelectedTypeValue] = useState(null);
-  const [categories, setCategories] = useState(null);
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const { token, refreshToken } = useToken();
@@ -71,28 +70,6 @@ const OperationUpdateForm = ({
       categoryid: categoryId,
     }));
   };
-  // Carga las categorías a mostrar cuando se carga el componente y si cambia el token de sesión
-  useEffect(() => {
-    const loadCategories = async () => {
-      if (!token) return;
-
-      try {
-        const response = await fetch("http://localhost:3001/api/category/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        if (data.success) {
-          setCategories(data.data);
-        }
-      } catch (error) {
-        console.error("Error loading categories:", error);
-      }
-    };
-
-    loadCategories();
-  }, [token]);
 
   return (
     // Modo edición
@@ -168,7 +145,6 @@ const OperationUpdateForm = ({
         {/*Selección de categoría*/}
       </div>
       <CategoryButtons
-        categories={categories}
         selectedId={selectedCategoryId}
         onSelect={handleCategoryChange}
       />

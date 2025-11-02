@@ -1,24 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./OperationList.module.css";
 import deleteOperation from "./operationDelete/OperationDeleteManager.jsx";
 import OperationUpdateForm, {
   updateOperation,
 } from "./operationUpdate/OperationUpdateManager.jsx";
 import { useToken } from "../../Contexts/fbTokenContext/TokenContext.jsx";
-import WalletSelector from "../Wallet/WalletSelector.jsx";
 
-const OperationList = ({ operations, onChange }) => {
+import {
+  loadEnrichedOperations,
+  loadOperations,
+} from "./operationCreate/OperationEnrichManager.jsx";
+
+const OperationList = ({
+  selectedWalletId,
+  onChange,
+  doRefreshOperations,
+  setDoRefreshOperations,
+}) => {
   const [isDeleting, setIsDeleting] = useState();
   const [editingId, setEditingId] = useState(null);
   const [editedValues, setEditedValues] = useState({});
   const { token, refreshToken } = useToken();
-  if (operations > 0) {
-    console.log("Operations[0]: ", operations[0]);
-    console.log("Datos:");
-    console.log(operations[0].id);
-    console.log(operations[0].category);
-    console.log(operations[0].description);
+  const [operations, setOperations] = useState([]);
+  // Función que refresca las operaciones
+  const refreshOperations = async () => {
+    if (!selectedWalletId) return;
+    try {
+      const enrichedOperations = await loadEnrichedOperations(
+        selectedWalletId,
+        token
+      );
+      setOperations(enrichedOperations);
+    } catch (err) {
+      console.log("Error refreshing operations:", err);
+      setOperations([]);
+    }
+  };
+  if (doRefreshOperations) {
+    refreshOperations();
+    setDoRefreshOperations(false);
   }
+  //Cuando se selecciona una wallet, carga todas las operaciones, cargando las categorías e insertandolas en el objeto
+  const operationsLoader = async () => {
+    if (selectedWalletId) {
+      try {
+        const enrichedOperations = await loadEnrichedOperations(
+          selectedWalletId,
+          token
+        );
+        setOperations(enrichedOperations.reverse());
+        // DEBUG
+        console.log(
+          "Operaciones seleccionadas en operationsLoader:",
+          enrichedOperations
+        );
+      } catch (err) {
+        console.log("Error cargando operaciones enriqucidas al main", err);
+        setOperations([]);
+      }
+    }
+  };
+  useEffect(() => {
+    // Acá estaba la declaración de operationsLoader
+    operationsLoader();
+  }, [selectedWalletId, token]);
   if (!Array.isArray(operations) || operations.length === 0) {
     return (
       <div className={styles.emptyState}>
@@ -43,7 +88,6 @@ const OperationList = ({ operations, onChange }) => {
         }" por $${amount.toFixed(2)}?`
       )
     ) {
-      //DEBUG
       try {
         await deleteOperation(operation.id, token);
         setIsDeleting(false);
@@ -74,6 +118,10 @@ const OperationList = ({ operations, onChange }) => {
       <h2 className={styles.title}>
         Lista de Operaciones ({operations.length})
       </h2>
+
+      {/* Acá deberían ir los dropdown menus para elegir categoría y fechas (la wallet es la ya seleccionada) */}
+
+      {/* Acá arranca el mapeo de la lista de operaciones */}
       <ul className={styles.list}>
         {operations.map((operation) => (
           <li
