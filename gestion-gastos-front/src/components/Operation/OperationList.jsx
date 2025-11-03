@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from "./OperationList.module.css";
 import deleteOperation from "./operationDelete/OperationDeleteManager.jsx";
 import OperationUpdateForm, {
   updateOperation,
 } from "./operationUpdate/OperationUpdateManager.jsx";
 import { useToken } from "../../Contexts/fbTokenContext/TokenContext.jsx";
+import Dropdown from "react-bootstrap/Dropdown";
 
 import {
   loadEnrichedOperations,
   loadOperations,
 } from "./operationCreate/OperationEnrichManager.jsx";
+
+// import CategoryButtons from "../Category/CategoryForm/CategoryButtons.jsx";
+// import CategoryList from "../Category/CategoryForm/CategoryList.jsx";
+import CategoryDropdown from "../Category/CategoryForm/CategoryDropdown.jsx";
 
 const OperationList = ({
   selectedWalletId,
@@ -17,11 +22,54 @@ const OperationList = ({
   doRefreshOperations,
   setDoRefreshOperations,
 }) => {
+  const [errorMessage, setErrorMessage] = useState("");
+  //Estado de borrado
   const [isDeleting, setIsDeleting] = useState();
+  // Estados para la edición
   const [editingId, setEditingId] = useState(null);
   const [editedValues, setEditedValues] = useState({});
+  // auth token
   const { token, refreshToken } = useToken();
+
+  // Lista de todas las operaciones del usuario
   const [operations, setOperations] = useState([]);
+
+  // Categoría seleccionada para el filtro
+  const [selectedCategoryId, setSelectedCategoryId] = useState(0);
+
+  // Manejo de fechas desde y hasta para el filtro
+  const [selectedDates, setSelectedDates] = useState({});
+
+  const [showOperationList, setShowOperationList] = useState(true);
+  const dates = {
+    from: selectedDates.from,
+    to: selectedDates.to,
+  };
+  const handleDateChange = (field, value) => {
+    //Valores actuales de from y to
+    const currentFrom = selectedDates.from || "";
+    const currentTo = selectedDates.to || "";
+    console.log("Handling change...");
+    //Evita que la fecha de inicio sea mayor a la de fin
+    // y que la de fin sea menor a la de inicio, colocando el último campo que se intenta seleccionar en null
+    console.log("Valores que entran: ", field, " ", value);
+    console.log("Valores actuales: ", currentFrom, currentTo);
+    if (
+      (currentFrom && field == "to" && value < currentFrom) ||
+      (currentTo && field == "from" && value > currentTo)
+    ) {
+      console.log("fecha inválida");
+      setErrorMessage("Error: Intervalo de fechas inválido. ");
+      setSelectedDates((prev) => ({ ...prev, [field]: " " }));
+      return;
+    }
+    console.log("Fecha válida");
+    setSelectedDates((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   // Función que refresca las operaciones
   const refreshOperations = async () => {
     if (!selectedWalletId) return;
@@ -61,9 +109,9 @@ const OperationList = ({
     }
   };
   useEffect(() => {
-    // Acá estaba la declaración de operationsLoader
     operationsLoader();
   }, [selectedWalletId, token]);
+
   if (!Array.isArray(operations) || operations.length === 0) {
     return (
       <div className={styles.emptyState}>
@@ -72,7 +120,53 @@ const OperationList = ({
       </div>
     );
   }
+  // Maneja el filtrado de las operaciones
+  const filterOperationList = () => {
+    const normalizedCategoryId = (() => {
+      if (
+        selectedCategoryId === null ||
+        selectedCategoryId === undefined ||
+        selectedCategoryId === ""
+      ) {
+        return 0; // default: show all
+      }
+      const n = Number(selectedCategoryId);
+      return Number.isNaN(n) ? 0 : n;
+    })();
+    return operations.filter((operation) => {
 
+      //Filtrado por categorías
+      const categoryFilter = () => {
+        // 0 => all categories, -1 => unassigned (Sin Categoría)
+        if (normalizedCategoryId === 0) return true;
+        if (normalizedCategoryId === -1) return operation.categoryid == null;
+        return operation.categoryid === normalizedCategoryId;
+      };
+      // Filtrado por fecha desde
+      const fromDateFilter = () => {
+        if (!dates.from || dates.from == " ") return true;
+        const opDate = new Date(operation.date).toISOString().split('T')[0];
+        console.log("date from: ", opDate >= dates.from);
+        return opDate >= dates.from;
+      };
+      // Filtrado por fecha hasta
+      const toDateFilter = () => {
+        if (!dates.to || dates.to == " ") return true;
+        const opDate = new Date(operation.date).toISOString().split('T')[0];
+        console.log("Date to: ", opDate <= dates.to);
+        return opDate <= dates.to;
+      };
+
+      // Filtrado por tag
+      const tagFilter = () => {
+        return true;
+      };
+      return categoryFilter() && fromDateFilter() && toDateFilter() && tagFilter();
+    });
+  };
+
+  const filteredOperations = filterOperationList();
+  // Maneja el borrado de operaciones
   const handleDelete = async (operation, token) => {
     if (!token) {
       try {
@@ -115,21 +209,54 @@ const OperationList = ({
 
   return (
     <div className={styles.container}>
+      {errorMessage && <div>{errorMessage}</div>}
+
       <h2 className={styles.title}>
         Lista de Operaciones ({operations.length})
       </h2>
 
-      {/* Acá deberían ir los dropdown menus para elegir categoría y fechas (la wallet es la ya seleccionada) */}
+      {/* Selectores del filtro para la lista*/}
+      <div>
+        {/* Selector de categoría */}
+        <h4>Categoría</h4>
+        <CategoryDropdown
+          selectedId={selectedCategoryId}
+          onSelect={setSelectedCategoryId}
+        />
 
+        {/* Selector de Fecha Desde y Fecha Hasta */}
+        <h4>Fecha Desde:</h4>
+        <input
+          type="date"
+          value={selectedDates.from}
+          onKeyDown={(e) => e.preventDefault()}
+          onChange={(e) => handleDateChange("from", e.target.value)}
+          //onKeyUp={(e) => handleKeyPress(e, operation.id)}
+          //onBlur={() => handleBlur(operation.id)}
+          className={styles.editInput}
+        />
+        <h4>Fecha Hasta:</h4>
+        <input
+          type="date"
+          value={(selectedDates.to)}
+          onKeyDown={(e) => e.preventDefault()}
+          onChange={(e) => handleDateChange("to", e.target.value)}
+          //onKeyUp={(e) => handleKeyPress(e, operation.id)}
+          //onBlur={() => handleBlur(operation.id)}
+          className={styles.editInput}
+        />
+      </div>
       {/* Acá arranca el mapeo de la lista de operaciones */}
       <ul className={styles.list}>
-        {operations.map((operation) => (
+        {filteredOperations.map((operation) => (
           <li
             key={operation.id}
             className={`${styles.operationItem} ${
               operation.type === "gasto" ? styles.expense : ""
             } ${editingId === operation.id ? styles.editing : ""}`}
-            onDoubleClick={() => handleDoubleClick(operation)}
+            onDoubleClick={() => {
+              handleDoubleClick(operation);
+            }}
           >
             {editingId === operation.id ? (
               // Modo edición
@@ -189,5 +316,4 @@ const OperationList = ({
     </div>
   );
 };
-
 export default OperationList;

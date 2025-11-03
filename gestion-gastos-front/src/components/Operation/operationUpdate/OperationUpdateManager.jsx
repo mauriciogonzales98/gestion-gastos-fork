@@ -98,7 +98,7 @@ const OperationUpdateForm = ({
       <input
         type="date"
         value={editedValues.date}
-        min="1900-01-01"
+        onKeyDown={(e) => e.preventDefault()}
         onChange={(e) => handleInputChange("date", e.target.value)}
         //onKeyUp={(e) => handleKeyPress(e, operation.id)}
         //onBlur={() => handleBlur(operation.id)}

@@ -53,8 +53,8 @@ const CategoryList = ({ categories, loading, onEdit }) => {
         </div>
       ) : (
         <div className={styles.categoriesGrid}>
-          {categories.map(category => (
-            <div 
+          {categories.map((category) => (
+            <div
               key={category.id}
               className={styles.categoryCard}
               onDoubleClick={() => handleDoubleClick(category)} // Doble click aquí
