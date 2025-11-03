@@ -98,7 +98,6 @@ const NavBar = () => {
           )}
         </AuthContext.Consumer>
       </nav>
-      <hr></hr>
     </div>
   );
 };
