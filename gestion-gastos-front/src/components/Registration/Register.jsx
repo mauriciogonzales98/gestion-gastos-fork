@@ -77,8 +77,45 @@ const Register = () => {
     }
   };
 
-  // Commit to DB when registering from google
+  const handleGoogleAuth = async (e) => {
+    e.preventDefault();
 
+    if (!isRegistering) {
+      setIsRegistering(true);
+      try {
+        // Usamos la misma función para ambos casos
+        const result = await fbGoogleSignIn();
+        const user = result.user;
+        
+        console.log("Usuario de Google:", user);
+
+        // Verificar si el usuario es nuevo (recién registrado)
+        const isNewUser = result._tokenResponse?.isNewUser || 
+                        user.metadata.creationTime === user.metadata.lastSignInTime;
+
+        if (isNewUser) {
+          console.log("Usuario nuevo detectado, creando en BD...");
+          // Esto asume usuarios con un solo nombre y un solo apellido para el parseo.
+          const datosUsuario = {
+            id: user.uid,
+            name: user.displayName ? user.displayName.split(" ")[0] : "",
+            surname: user.displayName ? user.displayName.split(" ")[1] : "",
+            email: user.email,
+            password: null,
+          };
+          await commitToDB(e, user, datosUsuario);
+        } else {
+          console.log("Usuario existente, solo login");
+        }
+        await new Promise(resolve => setTimeout(resolve, 500));
+        navigate("/Main");
+      } catch (err) {
+        setErrorMessage(err.message);
+        setIsRegistering(false);
+      }
+    }
+};
+  
   //Registrarse con email y contraseña
   const submitForm = async (e) => {
     e.preventDefault();
@@ -185,7 +222,7 @@ const Register = () => {
         </p>
         <p>
           ¿Preferís venderle tus datos a google?
-          <button onClick={onGoogleRegister}>Registrarse con Google</button>
+          <button onClick={handleGoogleAuth}>Registrarse con Google</button>
         </p>
       </div>
     </>

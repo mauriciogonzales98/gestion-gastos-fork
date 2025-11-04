@@ -1,3 +1,4 @@
+// NavBar.jsx
 import { useNavigate } from "react-router-dom";
 import { fbSignOut } from "../../Firebase/auth";
 import { AuthContext, useAuth } from "../../Contexts/fbAuthContext";
@@ -6,8 +7,9 @@ import {
   BiDollarCircle,
   BiLogOut,
   BiSolidUserAccount,
+  BiTag,
 } from "react-icons/bi";
-import { FiHome } from "react-icons/fi";
+import { FiHome, FiTag } from "react-icons/fi";
 import styles from "./NavBar.module.css";
 
 const NavBar = () => {
@@ -48,6 +50,19 @@ const NavBar = () => {
                     }}
                   >
                     <BiCategory />
+                  </button>
+                )}
+              </div>
+              {/* TAGS */}
+              <div>
+                {value.user && (
+                  <button
+                    className={styles.signout}
+                    onClick={() => {
+                      navigate("/tags");
+                    }}
+                  >
+                    <BiTag />
                   </button>
                 )}
               </div>
@@ -98,7 +113,6 @@ const NavBar = () => {
           )}
         </AuthContext.Consumer>
       </nav>
-      <hr></hr>
     </div>
   );
 };

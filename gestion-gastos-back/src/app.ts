@@ -8,6 +8,8 @@ import { walletRouter } from "./Wallet/wallet.routes.js";
 import { operationRouter } from "./Operation/operation.routes.js";
 import { registrationRouter } from "./Registration/registrationProcess.routes.js";
 import { statusRouter } from "./Status/status.routes.js";
+import { mercadoPagoRouter } from "./MercadoPago/mercadoPago.routes.js";
+import { tagRouter } from "./Tag/tag.routes.js";
 
 import { orm, syncSchema } from "./shared/db/orm.js";
 import { RequestContext } from "@mikro-orm/core";
@@ -36,6 +38,8 @@ app.use("/api/wallet", walletRouter);
 app.use("/api/operation", operationRouter);
 app.use("/api/registration", registrationRouter);
 app.use("/api/status", statusRouter);
+app.use("/api/mercado-pago", mercadoPagoRouter);
+app.use("/api/tag", tagRouter);
 
 app.use((_, res) => {
   res.status(404).send({ message: "Resource not found" });
