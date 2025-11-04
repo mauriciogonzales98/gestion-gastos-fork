@@ -11,6 +11,7 @@ import Register from "./components/User/userCreate/Register/Register.jsx";
 import Main from "./components/Pages/Main.jsx";
 import CategoryForm from "./components/Category/CategoryForm/CategoryForm.jsx";
 import CreateWallet from "./components/Wallet/createWallet/CreateWallet.jsx";
+import TagForm from "./components/Tag/TagForm.jsx";
 
 import Profile from "./components/Pages/Profile.jsx";
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="/main" element={<Main />} />
             <Route path="/categories" element={<CategoryForm />} />
             <Route path="/create-wallet" element={<CreateWallet />} />
+            <Route path="/tags" element={<TagForm />} />
 
             <Route path="/profile" element={<Profile />} />
 

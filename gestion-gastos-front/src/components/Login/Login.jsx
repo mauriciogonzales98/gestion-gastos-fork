@@ -168,7 +168,6 @@ const Login = () => {
             className={styles.input}
           />
         </div>
-        s
         <button type="submit" className={styles.submitButton}>
           Iniciar Sesión
         </button>

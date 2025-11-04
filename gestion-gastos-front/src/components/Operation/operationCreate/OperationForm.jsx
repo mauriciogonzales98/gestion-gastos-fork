@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CategoryButtons from "../../Category/CategoryForm/CategoryButtons";
 import styles from "./OperationForm.module.css";
+import TagSelector from "../../Tag/TagSelector.jsx";
 
 const OperationForm = ({ walletId, token, onOperationAdded }) => {
   const [operationType, setOperationType] = useState("gasto");
@@ -8,6 +9,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
   const [description, setDescription] = useState("");
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const [selectedTagId, setSelectedTagId] = useState(null); // ✅ ESTADO FALTANTE
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -61,6 +63,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
       description,
       walletid: walletId,
       categoryid: parseInt(selectedCategoryId) || null,
+      tagid: selectedTagId, // ✅ INCLUIR EL TAG EN LOS DATOS
       date: new Date().toISOString(),
     };
 
@@ -82,6 +85,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
         setAmount("");
         setDescription("");
         setSelectedCategoryId("");
+        setSelectedTagId(null); // ✅ LIMPIAR EL TAG TAMBIÉN
 
         if (onOperationAdded) {
           onOperationAdded();
@@ -192,22 +196,6 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
           />
         </div>
 
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Monto:</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            required
-            disabled={!walletId || loading}
-            className={styles.input}
-            step="0.01"
-            min="0.01"
-            max="9999999999.99"
-            placeholder="0.00"
-          />
-        </div>
-
         <div className={styles.categorySection}>
           <label className={styles.label}>Categoría (opcional):</label>
           <CategoryButtons
@@ -216,6 +204,13 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
             onSelect={setSelectedCategoryId}
           />
         </div>
+
+        {/* ✅ SELECTOR DE TAGS */}
+        <TagSelector 
+          selectedTagId={selectedTagId}
+          onTagSelect={setSelectedTagId}
+          token={token}
+        />
 
         <button
           type="submit"

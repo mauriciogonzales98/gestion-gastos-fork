@@ -59,11 +59,11 @@ export class Operation extends BaseEntity {
   @ManyToOne({
     entity: () => Tag,
     nullable: true,
-    deleteRule: "cascade",
-    updateRule: "cascade",
     fieldName: "tagid",
+    deleteRule: "set null",
+    updateRule: "cascade",
   })
-  tag!: Tag;
+  tag?: Tag;
 
   @ManyToOne({
     entity: () => Wallet,
