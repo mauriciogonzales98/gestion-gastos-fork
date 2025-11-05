@@ -93,7 +93,11 @@ const Main = () => {
                   setSelectedWalletId={handleWalletSelect}  // 🔥 CAMBIADO AQUÍ
                 />
               </div>
+
+
             </div>
+
+
 
             {/* Operation Form - MÁS GRANDE */}
             <div className={`${styles.operationCard} ${styles.largeOperationCard}`}>
@@ -113,11 +117,9 @@ const Main = () => {
                 </div>
               )}
             </div>
-          </div>
-        </div>
 
-        {/* Sección Inferior: Historial de Operaciones con Filtros */}
-        <div className={styles.bottomSection}>
+            
+            {/* Historial de Operaciones */}
           <div className={styles.operationsListCard}>
             <h2 className={styles.cardTitle}>Historial de Operaciones</h2>
             {selectedWalletId ? (
@@ -145,6 +147,13 @@ const Main = () => {
               </div>
             )}
           </div>
+
+          </div>
+        </div>
+
+        {/* Sección Inferior: Historial de Operaciones con Filtros */}
+        <div className={styles.bottomSection}>
+
         </div>
       </div>
     </div>

@@ -95,6 +95,7 @@ const OperationsPage = () => {
               selectedWalletId={selectedWalletId}
               doRefreshOperations={doRefreshOperations}
               setDoRefreshOperations={setDoRefreshOperations}
+              filterEnabled={true}
             />
           ) : (
             <div className={styles.emptyState}>
