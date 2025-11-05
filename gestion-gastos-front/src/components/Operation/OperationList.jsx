@@ -219,11 +219,6 @@ const OperationList = ({
   return (
     <div className={styles.container}>
       {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
-
-      <h2 className={styles.title}>
-        Cantidad de Operaciones ({operations.length})
-      </h2>
-
       {/* Sección de Filtros - ESTILOS MEJORADOS */}
       <div className={styles.filterSection}>
         <div className={styles.filterGrid}>

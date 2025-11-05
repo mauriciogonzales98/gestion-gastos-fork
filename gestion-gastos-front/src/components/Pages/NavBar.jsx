@@ -10,11 +10,11 @@ import {
   BiTag,
   BiHome,
   BiWallet,
+  BiHistory, // ✅ Nuevo icono para operaciones
 } from "react-icons/bi";
-import { memo, useCallback } from "react"; // ✅ Importamos memo y useCallback
+import { memo, useCallback } from "react";
 import styles from "./NavBar.module.css";
 
-// ✅ Memoizamos el componente para evitar re-renders innecesarios
 const NavBar = memo(() => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
@@ -38,6 +38,11 @@ const NavBar = memo(() => {
 
   const handleTagsClick = useCallback(() => {
     navigate("/tags");
+  }, [navigate]);
+
+  // ✅ NUEVA función para Mis Operaciones
+  const handleOperationsClick = useCallback(() => {
+    navigate("/operations");
   }, [navigate]);
 
   const handleProfileClick = useCallback(() => {
@@ -67,13 +72,14 @@ const NavBar = memo(() => {
         <AuthContext.Consumer>
           {(value) => (
             <>
-              {/* WELCOME MESSAGE */}
+          {/* WELCOME MESSAGE 
               {value.user && (
                 <div className={styles.welcome}>
                   Bienvenido,<br/>{value.user.email}
                 </div>
               )}
-              
+          */}
+
               {/* HOME */}
               <div className={styles.tooltip}>
                 <button className={styles.navButton} onClick={handleHomeClick}>
@@ -82,7 +88,6 @@ const NavBar = memo(() => {
                 </button>
                 <div className={styles.tooltipText}>Inicio</div>
               </div>
-
               {/* WALLETS */}
               {value.user && (
                 <div className={styles.tooltip}>
@@ -97,14 +102,14 @@ const NavBar = memo(() => {
                 </div>
               )}
 
-              {/* TAGS */}
+              {/* MIS OPERACIONES - NUEVO BOTÓN */}
               {value.user && (
                 <div className={styles.tooltip}>
                   <button
                     className={styles.navButton}
-                    onClick={handleTagsClick}
+                    onClick={handleOperationsClick}
                   >
-                    <BiTag className={styles.icon} />
+                    <BiHistory className={styles.icon} />
                     <span>Mis Operaciones</span>
                   </button>
                   <div className={styles.tooltipText}>Mis Operaciones</div>

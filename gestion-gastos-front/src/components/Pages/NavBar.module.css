@@ -40,7 +40,7 @@
 }
 
 .container:hover .logo {
-  width: 120px; /* ✅ Ancho reducido */
+  width: 100px; /* ✅ Ancho reducido */
   height: auto; /* ✅ Mantenemos misma altura */
   margin-bottom: 1.5rem;
   background: transparent;

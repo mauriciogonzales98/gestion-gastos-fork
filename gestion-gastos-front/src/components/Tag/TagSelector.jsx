@@ -50,7 +50,6 @@ const TagSelector = ({ selectedTagId, onTagSelect, token }) => {
 
   return (
     <div className={styles.container}>
-      <label className={styles.label}>Etiqueta</label>
       
       <div className={styles.selector}>
         <div 

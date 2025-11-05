@@ -24,6 +24,23 @@ const Main = () => {
   const [operations, setOperations] = useState([]);
   const [doRefreshOperations, setDoRefreshOperations] = useState(false);
 
+  // 🔥 NUEVA FUNCIÓN: Manejar selección de wallet y guardar en localStorage
+  const handleWalletSelect = (walletId) => {
+    setSelectedWalletId(walletId);
+    // Guardar en localStorage para que OperationsPage pueda acceder
+    localStorage.setItem('selectedWalletId', walletId);
+    console.log("Wallet guardada en localStorage:", walletId);
+  };
+
+  // Cargar wallet del localStorage al iniciar (opcional)
+  useEffect(() => {
+    const savedWalletId = localStorage.getItem('selectedWalletId');
+    if (savedWalletId && savedWalletId !== "null" && savedWalletId !== "undefined") {
+      setSelectedWalletId(savedWalletId);
+      console.log("Wallet cargada desde localStorage:", savedWalletId);
+    }
+  }, []);
+
   useEffect(() => {
     if (!loggedIn) {
       navigate("/home");
@@ -68,10 +85,11 @@ const Main = () => {
             <div className={styles.walletCard}>
               <h2 className={styles.cardTitle}>Seleccionar Wallet</h2>
               <div className={styles.walletSelector}>
+                {/* 🔥 ACTUALIZADO: Pasar handleWalletSelect en lugar de setSelectedWalletId */}
                 <WalletLoading
                   token={token}
                   selectedWalletId={selectedWalletId}
-                  setSelectedWalletId={setSelectedWalletId}
+                  setSelectedWalletId={handleWalletSelect}  // 🔥 CAMBIADO AQUÍ
                 />
               </div>
             </div>

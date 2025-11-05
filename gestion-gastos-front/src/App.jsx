@@ -20,6 +20,8 @@ import PageNotFound from "./components/Pages/ServicePages/PageNotFound.jsx";
 
 import MercadoPagoTest from "./components/PruebaMP/PruebaMP.jsx";
 
+import OperationsPage from './components/Operation/OperationsPage.jsx';
+
 function App() {
   const { loggedIn } = useAuth();
 
@@ -36,6 +38,7 @@ function App() {
             <Route path="/register" element={<Register />} />
 
             <Route path="/main" element={<Main />} />
+            <Route path="/operations" element={<OperationsPage />} />
             <Route path="/categories" element={<CategoryForm />} />
             <Route path="/create-wallet" element={<CreateWallet />} />
             <Route path="/tags" element={<TagForm />} />
