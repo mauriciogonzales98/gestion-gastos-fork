@@ -189,15 +189,25 @@ async function syncMovements(req: Request, res: Response) {
 
     console.log('✅ Sincronización completada exitosamente');
 
-    return res.status(200).json({
-      success: true,
-      message: "Movimientos sincronizados exitosamente",
-      data: {
-        imported: savedMovements.length,
-        movements: savedMovements,
-        lastSyncAt: user.lastSyncAt,
-      },
-    });
+   return res.status(200).json({
+  success: true,
+  message: "Movimientos sincronizados exitosamente",
+  data: {
+    imported: savedMovements.length,
+    movements: savedMovements,
+    lastSyncAt: user.lastSyncAt,
+    // ✅ Agregar estadísticas de operation_type
+    statistics: {
+      incomes: savedMovements.filter(m => m.type === 'ingreso').length,
+      expenses: savedMovements.filter(m => m.type === 'gasto').length,
+      operationTypes: savedMovements.reduce((acc: any, mov) => {
+        const opType = mov.operation_type || 'sin_operation_type';
+        acc[opType] = (acc[opType] || 0) + 1;
+        return acc;
+      }, {})
+    }
+  },
+});
 
   } catch (error: any) {
     console.error('❌ Sync movements error:', error);
@@ -306,37 +316,129 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
   }
 
   const savedOperations: any[] = [];
+  let duplicateCount = 0;
+  let invalidStatusCount = 0;
+  let processedCount = 0;
+  let incomeCount = 0;
+  let expenseCount = 0;
+
+  console.log('🟡 === PROCESANDO MOVIMIENTOS ===');
+  console.log('🟡 Total movimientos recibidos de MP:', mpMovements.length);
 
   for (const payment of mpMovements) {
     try {
-      // Verificar si el pago ya existe
+      // ✅ CONSULTA NATIVA para verificar duplicados
       if (payment.id) {
-        const existingOperation = await em.findOne(Operation, {
-          user: { id: userId },
-          externalId: payment.id.toString()
-        });
-
-        if (existingOperation) {
-          console.log(`Pago ${payment.id} ya existe, omitiendo`);
+        const existingCount = await em.getConnection().execute(
+          'SELECT COUNT(*) as count FROM operation WHERE userid = ? AND external_id = ?',
+          [userId, payment.id.toString()]
+        );
+        
+        if (existingCount[0].count > 0) {
+          console.log(`⏭️  Pago ${payment.id} ya existe en DB, omitiendo`);
+          duplicateCount++;
           continue;
         }
       }
 
+      // ✅ ACEPTAR MÁS ESTADOS
+      const validStatuses = ['approved', 'completed', 'authorized', 'in_process'];
+      if (!validStatuses.includes(payment.status)) {
+        console.log(`⏭️  Pago ${payment.id} con estado "${payment.status}" omitido`);
+        invalidStatusCount++;
+        continue;
+      }
+
       // Determinar tipo y monto
-      const amount = Math.abs(payment.transaction_amount || payment.amount || 0);
-      const type = (payment.transaction_amount > 0 || payment.amount > 0) ? 'income' : 'expense';
+      const transactionAmount = payment.transaction_amount || payment.amount || 0;
+      const amount = Math.abs(transactionAmount);
+      
+      // Si el monto es 0, omitir
+      if (amount === 0) {
+        console.log(`⏭️  Pago ${payment.id} con monto 0, omitiendo`);
+        continue;
+      }
 
-      // Crear descripción
+      // ✅ LÓGICA MEJORADA CON operation_type
+      let type: string = 'gasto'; // Por defecto GASTO
+      let typeReason = 'asumido gasto por defecto';
+      const operationType = payment.operation_type || 'sin_operation_type';
+
+      // 1. PRIMERO por operation_type (más confiable)
+      if (payment.operation_type) {
+        switch (payment.operation_type) {
+          case 'money_transfer':
+          case 'account_fund':
+          case 'payment_addition':
+            type = 'ingreso';
+            typeReason = `operation_type: ${payment.operation_type} (entrada de dinero)`;
+            break;
+          case 'regular_payment':
+          case 'recurring_payment':
+          case 'pos_payment':
+          case 'cellphone_recharge':
+            type = 'gasto';
+            typeReason = `operation_type: ${payment.operation_type} (pago/salida de dinero)`;
+            break;
+          case 'investment':
+          case 'money_exchange':
+            // Estos pueden ser ambiguos, los dejamos como gasto por defecto
+            type = 'gasto';
+            typeReason = `operation_type: ${payment.operation_type} (asumido gasto)`;
+            break;
+          default:
+            typeReason = `operation_type: ${payment.operation_type} (no reconocido, asumido gasto)`;
+        }
+      }
+      // 2. LUEGO por description (solo si operation_type no está definido)
+      else if (payment.description) {
+        const descLower = payment.description.toLowerCase();
+        
+        // Palabras clave que indican INGRESO (entrada de dinero)
+        const incomeKeywords = [
+          'reembolso',
+          'devolución',
+          'devolucion',
+          'transferencia recibida',
+          'depósito',
+          'deposito',
+          'cashin',
+          'money_in',
+          'ingreso',
+          'pago recibido',
+          'recibido',
+          'refund'
+        ];
+        
+        if (incomeKeywords.some(keyword => descLower.includes(keyword))) {
+          type = 'ingreso';
+          typeReason = 'keyword ingreso detectado: ' + payment.description;
+        } else {
+          typeReason = 'descripción analizada: ' + payment.description;
+        }
+      }
+
+      // Contar por tipo
+      if (type === 'ingreso') {
+        incomeCount++;
+      } else {
+        expenseCount++;
+      }
+
+      // Crear descripción (incluir operation_type para referencia)
       const description = payment.description || 
-                         payment.payment_method_id || 
-                         payment.title ||
-                         'Pago Mercado Pago';
+                         `Pago MP ${payment.id}`;
 
-      // Crear operation
+      // Fecha del pago
+      const paymentDate = new Date(payment.date_created || payment.date_approved || payment.created_date);
+
+      console.log(`✅ Procesando: ${description} - $${amount} (${type}) - Razón: ${typeReason}`);
+
+      // Crear operation - ✅ SIN metadata
       const operation = em.create(Operation, {
         amount: amount,
         description: description,
-        date: new Date(payment.date_created || payment.date_approved || payment.created_date),
+        date: paymentDate,
         type: type,
         wallet: defaultWallet,
         category: defaultCategory,
@@ -345,25 +447,39 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
         syncSource: 'mercado_pago',
         paymentMethod: payment.payment_method_id,
         status: payment.status
+        // ❌ Eliminada la línea de metadata
       });
 
       await em.persistAndFlush(operation);
+      processedCount++;
       
+      // ✅ Guardar operation_type en el objeto de respuesta para debug
       savedOperations.push({
         id: operation.id,
         amount: operation.amount,
         description: operation.description,
         type: operation.type,
         date: operation.date,
-        externalId: operation.externalId
+        externalId: operation.externalId,
+        status: operation.status,
+        operation_type: operationType // Para análisis en frontend
       });
 
-      console.log(`✅ Pago importado: ${description} - $${amount} (${type})`);
+      console.log(`💾 Guardado: ${operation.description} - $${operation.amount} como ${operation.type}`);
 
     } catch (error) {
-      console.error(`Error procesando pago ${payment.id}:`, error);
+      console.error(`❌ Error procesando pago ${payment.id}:`, error);
     }
   }
+
+  console.log('🟡 === RESUMEN DETALLADO IMPORTACIÓN ===');
+  console.log('🟡 Total movimientos MP:', mpMovements.length);
+  console.log('🟡 Duplicados omitidos:', duplicateCount);
+  console.log('🟡 Estados inválidos omitidos:', invalidStatusCount);
+  console.log('🟡 Procesados exitosamente:', processedCount);
+  console.log('🟡 Ingresos:', incomeCount);
+  console.log('🟡 Gastos:', expenseCount);
+  console.log('🟡 Movimientos guardados:', savedOperations.length);
 
   return savedOperations;
 }

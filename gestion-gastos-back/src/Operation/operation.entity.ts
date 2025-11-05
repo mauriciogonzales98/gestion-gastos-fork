@@ -1,4 +1,3 @@
-// Operation.entity.ts - agregar estos campos
 import { Entity, PrimaryKey, Property, ManyToOne, Unique } from '@mikro-orm/core';
 import { User } from '../User/user.entity.js';
 import { Category } from '../Category/category.entity.js';
@@ -20,25 +19,24 @@ export class Operation {
   date!: Date;
 
   @Property()
-  type!: string; // 'income' o 'expense'
+  type!: string;
 
-  @ManyToOne(() => Wallet)
+  @ManyToOne(() => Wallet, { fieldName: 'walletid' })
   wallet!: Wallet;
 
-  @ManyToOne(() => Category)
+  @ManyToOne(() => Category, { fieldName: 'categoryid' })
   category!: Category;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { fieldName: 'userid' })
   user!: User;
 
-  // Campos nuevos para Mercado Pago
-  @Property({ nullable: true })
+  @Property({ fieldName: 'external_id', nullable: true })
   externalId?: string;
 
-  @Property({ nullable: true })
-  syncSource?: string; // 'manual' o 'mercado_pago'
+  @Property({ fieldName: 'sync_source', nullable: true })
+  syncSource?: string;
 
-  @Property({ nullable: true })
+  @Property({ fieldName: 'payment_method', nullable: true })
   paymentMethod?: string;
 
   @Property({ nullable: true })
