@@ -218,49 +218,64 @@ const OperationList = ({
 
   return (
     <div className={styles.container}>
-      {errorMessage && <div>{errorMessage}</div>}
+      {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
 
       <h2 className={styles.title}>
-        Lista de Operaciones ({operations.length})
+        Cantidad de Operaciones ({operations.length})
       </h2>
 
-      {/* Selectores del filtro para la lista*/}
-      <div>
-        {/* Selector de categoría */}
-        <h4>Categoría</h4>
-        <CategoryDropdown
-          selectedId={selectedCategoryId}
-          onSelect={setSelectedCategoryId}
-        />
+      {/* Sección de Filtros - ESTILOS MEJORADOS */}
+      <div className={styles.filterSection}>
+        <div className={styles.filterGrid}>
+          {/* Filtro por Categoría */}
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>Categoría</label>
+            <div className={styles.categoryDropdown}>
+              <CategoryDropdown
+                selectedId={selectedCategoryId}
+                onSelect={setSelectedCategoryId}
+              />
+            </div>
+          </div>
 
-        {/* Selector de Fecha Desde y Fecha Hasta */}
-        <h4>Fecha Desde:</h4>
-        <input
-          type="date"
-          value={selectedDates.from}
-          onKeyDown={(e) => e.preventDefault()}
-          onChange={(e) => handleDateChange("from", e.target.value)}
-          //onKeyUp={(e) => handleKeyPress(e, operation.id)}
-          //onBlur={() => handleBlur(operation.id)}
-          className={styles.editInput}
-        />
-        <h4>Fecha Hasta:</h4>
-        <input
-          type="date"
-          value={(selectedDates.to)}
-          onKeyDown={(e) => e.preventDefault()}
-          onChange={(e) => handleDateChange("to", e.target.value)}
-          //onKeyUp={(e) => handleKeyPress(e, operation.id)}
-          //onBlur={() => handleBlur(operation.id)}
-          className={styles.editInput}
-        />
-        <h4>Tag:</h4>
-        <TagSelector
-          selectedTagId={selectedTagId}
-          onTagSelect={setSelectedTagId}
-          token={token}
-        />
+          {/* Filtro por Fecha Desde */}
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>Fecha Desde</label>
+            <input
+              type="date"
+              value={selectedDates.from || ""}
+              onKeyDown={(e) => e.preventDefault()}
+              onChange={(e) => handleDateChange("from", e.target.value)}
+              className={styles.filterInput}
+            />
+          </div>
+
+          {/* Filtro por Fecha Hasta */}
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>Fecha Hasta</label>
+            <input
+              type="date"
+              value={selectedDates.to || ""}
+              onKeyDown={(e) => e.preventDefault()}
+              onChange={(e) => handleDateChange("to", e.target.value)}
+              className={styles.filterInput}
+            />
+          </div>
+
+          {/* Filtro por Tag */}
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>Etiqueta</label>
+            <div className={styles.tagSelector}>
+              <TagSelector
+                selectedTagId={selectedTagId}
+                onTagSelect={setSelectedTagId}
+                token={token}
+              />
+            </div>
+          </div>
+        </div>
       </div>
+
       {/* Acá arranca el mapeo de la lista de operaciones */}
       <ul className={styles.list}>
         {filteredOperations.map((operation) => (

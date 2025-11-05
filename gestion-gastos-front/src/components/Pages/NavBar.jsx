@@ -97,6 +97,20 @@ const NavBar = memo(() => {
                 </div>
               )}
 
+              {/* TAGS */}
+              {value.user && (
+                <div className={styles.tooltip}>
+                  <button
+                    className={styles.navButton}
+                    onClick={handleTagsClick}
+                  >
+                    <BiTag className={styles.icon} />
+                    <span>Mis Operaciones</span>
+                  </button>
+                  <div className={styles.tooltipText}>Mis Operaciones</div>
+                </div>
+              )}
+
               {/* CATEGORIES */}
               {value.user && (
                 <div className={styles.tooltip}>
