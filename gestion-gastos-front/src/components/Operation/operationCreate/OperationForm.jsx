@@ -63,7 +63,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
       description,
       walletid: walletId,
       categoryid: parseInt(selectedCategoryId) || null,
-      tagid: selectedTagId, // ✅ INCLUIR EL TAG EN LOS DATOS
+      tagid: selectedTagId == -1 ? null : selectedTagId, // Manejo en caso de haber seleccionado "sin etiqueta"
       date: new Date().toISOString(),
     };
 
@@ -169,21 +169,6 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
 
       <form onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
-          <label className={styles.label}>Monto:</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            required
-            disabled={!walletId || loading}
-            className={styles.input}
-            step="1"
-            min="0.0"
-            placeholder="0.00"
-          />
-        </div>
-
-        <div className={styles.formGroup}>
           <label className={styles.label}>Descripción:</label>
           <input
             type="text"
@@ -193,6 +178,22 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
             className={styles.input}
             placeholder="Descripción de la operación"
             maxLength="100"
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Monto:</label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+            disabled={!walletId || loading}
+            className={styles.input}
+            step="0.01"
+            min="0.01"
+            max="9999999999.99"
+            placeholder="0.00"
           />
         </div>
 

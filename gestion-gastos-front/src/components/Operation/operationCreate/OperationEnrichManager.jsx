@@ -57,7 +57,7 @@ export const loadEnrichedOperations = async (walletId, token) => {
 
       return {
         ...operation,
-        category: fullCategory || operation.categoryid, // Replace categoryid with full object or null
+        category: fullCategory || operation.categoryid, // Reemplaza el id por el objeto completo de categoría si lo encuentra
       };
     });
   };

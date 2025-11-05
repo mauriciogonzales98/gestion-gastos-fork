@@ -83,6 +83,7 @@ const TagSelector = ({ selectedTagId, onTagSelect, token }) => {
                 </div>
                 
                 <div className={styles.tagsList}>
+                  <div key="no-tag" className={styles.tagOption} onClick={()=>{handleTagSelect({id: -1})}}>Sin etiqueta</div>
                   {tags.map(tag => (
                     <div
                       key={tag.id}
@@ -95,7 +96,7 @@ const TagSelector = ({ selectedTagId, onTagSelect, token }) => {
                   
                   {tags.length === 0 && (
                     <div className={styles.noTags}>
-                      No hay tags creados
+                      No hay etiquetas creadas
                     </div>
                   )}
                 </div>

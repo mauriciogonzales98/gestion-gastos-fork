@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`tag` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
   `name` VARCHAR(50) NULL,
   `userid` VARCHAR(28) NOT NULL,
+  `color` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES `user`(`id`)
 );

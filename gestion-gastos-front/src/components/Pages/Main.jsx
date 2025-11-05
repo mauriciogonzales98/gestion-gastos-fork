@@ -18,7 +18,10 @@ const Main = () => {
   const { token } = useToken();
 
   const [selectedWalletId, setSelectedWalletId] = useState(null);
-  const [operations, setOperations] = useState([]);
+// Estado para las categorías
+  const [categories, setCategories] = useState([]);
+  // Estado para refrescar las operaciones
+  const [doRefreshOperations, setDoRefreshOperations] = useState(false);
   const [showOperationModal, setShowOperationModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -164,12 +167,74 @@ const Main = () => {
           </div>
         </div>
 
-        {/* Operations List Card */}
-        <div className={styles.operationsListCard}>
-          <h2 className={styles.cardTitle}>Historial de Operaciones</h2>
-          {operationsContent}
+      <div
+        style={{
+          display: "flex",
+          marginBottom: "30px",
+          justifyContent: "center",
+        }}
+      >
+        <div style={{ width: "1200px", maxWidth: "100%" }}>
+          <OperationForm
+            walletId={selectedWalletId}
+            token={token}
+            onOperationAdded={() => {
+              setDoRefreshOperations(true);
+            }}
+            doRefreshOperations={doRefreshOperations}
+            setDoRefreshOperations={setDoRefreshOperations}
+          />
         </div>
       </div>
+
+      <div>
+        <OperationList
+          selectedWalletId={selectedWalletId}
+          categories = {categories}
+          token={token}
+          onChange={() => {
+            setDoRefreshOperations(true);
+          }}
+          doRefreshOperations={doRefreshOperations}
+          setDoRefreshOperations={setDoRefreshOperations}
+        />
+      </div>
+
+      {/* Comienzo del JSX para cambio de email, temporalmente deshabilitado
+
+
+              {value.user && <h1>Cambiar Email</h1>}
+              {value.user && !isChangingEmail && (
+                <button
+                  onClick={() => {
+                    if (window.confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+                      userDeleteManager();
+                    }
+                  }}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: '#dc3545',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    fontSize: '16px'
+                  }}
+                >
+                  Cambiar Email
+                </button>
+              )}
+              {isChangingEmail && (
+                <ChangeEmail
+                  setIsChangingEmail={setIsChangingEmail}
+                  errorMessage={errorMessage}
+                  setErrorMessage={setErrorMessage}
+                  onSuccess={() => navigate("/")}
+                  onCancel={() => setIsChangingEmail(false)}
+                />
+              )}
+              
+              */}
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import CategoryIcon from "./CategoryIcon";
 import styles from "./CategoryButtons.module.css";
-
 const CategoryButtons = ({ categories = [], selectedId, onSelect }) => {
   if (!categories || categories.length === 0) {
     return <div className={styles.emptyMessage}>No hay categorías</div>;
