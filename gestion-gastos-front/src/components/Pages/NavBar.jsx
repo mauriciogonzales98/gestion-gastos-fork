@@ -8,9 +8,11 @@ import {
   BiLogOut,
   BiSolidUserAccount,
   BiTag,
+  BiHome,
+  BiWallet,
 } from "react-icons/bi";
-import { FiHome, FiTag } from "react-icons/fi";
 import styles from "./NavBar.module.css";
+// The logo lives in the public folder. Refer to it with an absolute public path.
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -24,74 +26,94 @@ const NavBar = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title} onClick={() => navigate("/")}>
-        GG - Gestion de Gastos
-      </h1>
+      {/* Logo */}
+      <img
+        src="/ggs.png"
+        alt="Gestión de Gastos"
+        className={styles.logo}
+        onClick={() => navigate("/")}
+      />
+      
+      
       <nav className={styles.navbar}>
         <AuthContext.Consumer>
           {(value) => (
             <>
               {/* WELCOME MESSAGE */}
-              <div>
-                {" "}
-                {value.user && <span> Welcome, {value.user.email}</span>}{" "}
-              </div>
+              {value.user && (
+                <div className={styles.welcome}>
+                  Bienvenido,<br/>{value.user.email}
+                </div>
+              )}
+              
               {/* HOME */}
-              <button className={styles.homeicon} onClick={ClickHandler}>
-                <FiHome />
-              </button>
-              {/* CATEGORIES */}
-              <div>
-                {value.user && (
-                  <button
-                    className={styles.signout}
-                    onClick={() => {
-                      navigate("/categories");
-                    }}
-                  >
-                    <BiCategory />
-                  </button>
-                )}
-              </div>
-              {/* TAGS */}
-              <div>
-                {value.user && (
-                  <button
-                    className={styles.signout}
-                    onClick={() => {
-                      navigate("/tags");
-                    }}
-                  >
-                    <BiTag />
-                  </button>
-                )}
-              </div>
-              <div>
-                <button
-                  className={styles.button}
-                  onClick={() => {
-                    navigate("/create-wallet");
-                  }}
-                >
-                  <BiDollarCircle />
+              <div className={styles.tooltip}>
+                <button className={styles.navButton} onClick={ClickHandler}>
+                  <BiHome className={styles.icon} />
+                  <span>Inicio</span>
                 </button>
+                <div className={styles.tooltipText}>Inicio</div>
               </div>
-              {/* PROFILE */}
-              <div>
-                {value.user && (
+
+              {/* WALLETS */}
+              {value.user && (
+                <div className={styles.tooltip}>
                   <button
-                    className={styles.homeicon}
-                    onClick={() => {
-                      navigate("/Profile");
-                    }}
+                    className={styles.navButton}
+                    onClick={() => navigate("/create-wallet")}
                   >
-                    <BiSolidUserAccount />
+                    <BiWallet className={styles.icon} />
+                    <span>Carteras</span>
                   </button>
-                )}
-              </div>
+                  <div className={styles.tooltipText}>Carteras</div>
+                </div>
+              )}
+
+              {/* CATEGORIES */}
+              {value.user && (
+                <div className={styles.tooltip}>
+                  <button
+                    className={styles.navButton}
+                    onClick={() => navigate("/categories")}
+                  >
+                    <BiCategory className={styles.icon} />
+                    <span>Categorías</span>
+                  </button>
+                  <div className={styles.tooltipText}>Categorías</div>
+                </div>
+              )}
+
+              {/* TAGS */}
+              {value.user && (
+                <div className={styles.tooltip}>
+                  <button
+                    className={styles.navButton}
+                    onClick={() => navigate("/tags")}
+                  >
+                    <BiTag className={styles.icon} />
+                    <span>Etiquetas</span>
+                  </button>
+                  <div className={styles.tooltipText}>Etiquetas</div>
+                </div>
+              )}
+
+              {/* PROFILE */}
+              {value.user && (
+                <div className={styles.tooltip}>
+                  <button
+                    className={styles.navButton}
+                    onClick={() => navigate("/Profile")}
+                  >
+                    <BiSolidUserAccount className={styles.icon} />
+                    <span>Perfil</span>
+                  </button>
+                  <div className={styles.tooltipText}>Perfil</div>
+                </div>
+              )}
+
               {/* SIGN OUT */}
-              <div>
-                {value.user && (
+              {value.user && (
+                <div className={styles.tooltip}>
                   <button
                     className={styles.signout}
                     onClick={() => {
@@ -99,16 +121,12 @@ const NavBar = () => {
                       navigate("/");
                     }}
                   >
-                    <BiLogOut />
+                    <BiLogOut className={styles.icon} />
+                    <span>Cerrar Sesión</span>
                   </button>
-                )}
-              </div>
-
-              {/* <div>
-              {!value.user && (
-                <button onClick={() => navigate("/login")}>Sign In</button>
+                  <div className={styles.tooltipText}>Cerrar Sesión</div>
+                </div>
               )}
-            </div> */}
             </>
           )}
         </AuthContext.Consumer>
@@ -116,4 +134,5 @@ const NavBar = () => {
     </div>
   );
 };
+
 export default NavBar;

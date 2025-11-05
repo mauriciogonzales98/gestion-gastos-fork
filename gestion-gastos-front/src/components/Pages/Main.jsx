@@ -1,41 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Contexts/fbAuthContext/index.jsx";
-import { AuthContext } from "../../Contexts/fbAuthContext/index.jsx";
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useToken } from "../../Contexts/fbTokenContext/TokenContext.jsx";
 
-// import DeleteAccount from "../User/userDelete/UserDeleteManager.jsx";
-// import { PasswordInput } from "../Login/PasswordInputs.jsx";
-// import ChangePassword from "../User/userUpdate/PasswordChangeManager.jsx";
-// import ChangeEmail from "../User/userUpdate/EmailChangeManager.jsx";
-
 import OperationForm from "../Operation/operationCreate/OperationForm.jsx";
 import OperationList from "../Operation/OperationList.jsx";
-
 import WalletLoading from "../Wallet/WalletLoading.jsx";
-import styles from "../Wallet/WalletSelector.module.css";
+import styles from "./Main.module.css";
 
 import {
   loadEnrichedOperations,
-  loadOperations,
 } from "../Operation/operationCreate/OperationEnrichManager.jsx";
-import CategoryList from "../Category/CategoryForm/CategoryList.jsx";
 
 const Main = () => {
   const navigate = useNavigate();
   const { loggedIn, user } = useAuth();
-  // El usuario actual, traído de FB
-  const currentUser = getAuth().currentUser;
-
-  // Uso hook de la token
   const { token, loadingToken, refreshToken } = useToken();
 
-  // Estados para la selección de wallet y carga de sus operaciones
   const [selectedWalletId, setSelectedWalletId] = useState(null);
-  const [loadingWallets, setLoadingWallets] = useState(true);
-  //const [token, setToken] = useState(null);
   const [operations, setOperations] = useState([]);
+  const [showOperationModal, setShowOperationModal] = useState(false);
 
   useEffect(() => {
     if (!loggedIn) {
@@ -44,7 +29,7 @@ const Main = () => {
     }
   }, [loggedIn, navigate]);
 
-  //Cuando se selecciona una wallet, carga todas las operaciones, cargando las categorías e insertandolas en el objeto
+  // Cuando se selecciona una wallet, carga todas las operaciones
   useEffect(() => {
     const operationsLoader = async () => {
       if (selectedWalletId) {
@@ -54,18 +39,15 @@ const Main = () => {
             token
           );
           setOperations(enrichedOperations.reverse());
-          console.log(
-            "Operaciones seleccionadas en operationsLoader:",
-            enrichedOperations
-          );
         } catch (err) {
-          console.log("Error cargando operaciones enriqucidas al main", err);
+          console.log("Error cargando operaciones enriquecidas al main", err);
           setOperations([]);
         }
       }
     };
     operationsLoader();
   }, [selectedWalletId, token]);
+
   // Función que refresca las operaciones
   const refreshOperations = async () => {
     if (!selectedWalletId) return;
@@ -75,97 +57,91 @@ const Main = () => {
         token
       );
       setOperations(enrichedOperations);
+      setShowOperationModal(false); // Cerrar modal después de agregar
     } catch (err) {
       console.log("Error refreshing operations:", err);
       setOperations([]);
     }
   };
+
+  const handleOperationAdded = () => {
+    refreshOperations();
+    setShowOperationModal(false); // Cerrar modal después de agregar
+  };
+
   return (
-    <div
-      style={{
-        padding: "20px",
-        maxWidth: "1200px",
-        margin: "0 auto",
-        textAlign: "center",
-      }}
-    >
-      <div style={{ textAlign: "center", marginBottom: "30px" }}>
-        <h1>Main Page - Protected Route</h1>
-        {user && <p style={{ color: "#666" }}>Bienvenido, {user.email}</p>}
-      </div>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <WalletLoading
-            token={token}
-            selectedWalletId={selectedWalletId}
-            setSelectedWalletId={setSelectedWalletId}
-          />
+    <div className={styles.container}>
+      {/* Botón flotante para registrar operación */}
+      {selectedWalletId && (
+        <button 
+          className={styles.floatingButton}
+          onClick={() => setShowOperationModal(true)}
+        >
+          <span className={styles.floatingIcon}>+</span>
+          Registrar Operación
+        </button>
+      )}
+
+      {/* Modal para el formulario de operación */}
+      {showOperationModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>Registrar Nueva Operación</h2>
+              <button 
+                className={styles.closeButton}
+                onClick={() => setShowOperationModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <OperationForm
+              walletId={selectedWalletId}
+              token={token}
+              onOperationAdded={handleOperationAdded}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div className={styles.contentGrid}>
+        {/* Wallet Selection Card */}
+        <div className={styles.walletCard}>
+          <h2 className={styles.cardTitle}>Seleccionar Wallet</h2>
+          <div className={styles.walletSelector}>
+            <WalletLoading
+              token={token}
+              selectedWalletId={selectedWalletId}
+              setSelectedWalletId={setSelectedWalletId}
+            />
+          </div>
+        </div>
+
+        {/* Operations List Card */}
+        <div className={styles.operationsListCard}>
+          <h2 className={styles.cardTitle}>Historial de Operaciones</h2>
+          {selectedWalletId ? (
+            operations.length > 0 ? (
+              <OperationList
+                operations={operations}
+                token={token}
+                onChange={refreshOperations}
+              />
+            ) : (
+              <div className={styles.emptyState}>
+                <h3>No hay operaciones</h3>
+                <p>Comienza registrando tu primera operación</p>
+              </div>
+            )
+          ) : (
+            <div className={styles.emptyState}>
+              <h3>Wallet no seleccionada</h3>
+              <p>Selecciona una wallet para ver las operaciones</p>
+            </div>
+          )}
         </div>
       </div>
-
-      <div
-        style={{
-          display: "flex",
-          marginBottom: "30px",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ width: "1200px", maxWidth: "100%" }}>
-          <OperationForm
-            walletId={selectedWalletId}
-            token={token}
-            onOperationAdded={() => {
-              refreshOperations();
-            }}
-          />
-        </div>
-      </div>
-
-      <div>
-        <OperationList
-          operations={operations}
-          token={token}
-          onChange={() => {
-            refreshOperations();
-          }}
-        />
-      </div>
-
-      {/* Comienzo del JSX para cambio de email, temporalmente deshabilitado
-
-
-              {value.user && <h1>Cambiar Email</h1>}
-              {value.user && !isChangingEmail && (
-                <button
-                  onClick={() => {
-                    if (window.confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
-                      userDeleteManager();
-                    }
-                  }}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    fontSize: '16px'
-                  }}
-                >
-                  Cambiar Email
-                </button>
-              )}
-              {isChangingEmail && (
-                <ChangeEmail
-                  setIsChangingEmail={setIsChangingEmail}
-                  errorMessage={errorMessage}
-                  setErrorMessage={setErrorMessage}
-                  onSuccess={() => navigate("/")}
-                  onCancel={() => setIsChangingEmail(false)}
-                />
-              )}
-              
-              */}
     </div>
   );
 };
