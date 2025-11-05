@@ -9,7 +9,7 @@ export class Operation {
   @PrimaryKey()
   id!: number;
 
-  @Property({ type: 'decimal', precision: 10, scale: 2 })
+  @Property({ type: 'decimal', precision: 12, scale: 2 })
   amount!: number;
 
   @Property()

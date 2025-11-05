@@ -132,7 +132,7 @@ async function oauthCallback(req: Request, res: Response) {
     await em.flush();
     console.log('✅ Tokens guardados exitosamente');
 
-    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/configuracion?mp_success=true`);
+    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/Profile?mp_success=true`);
 
   } catch (error: any) {
     console.error('❌ OAuth callback error:', error);
@@ -142,7 +142,7 @@ async function oauthCallback(req: Request, res: Response) {
       deleteCodeVerifier(req.query.state as string);
     }
     
-    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/configuracion?mp_error=${encodeURIComponent(error.message)}`);
+    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/Profile?mp_error=${encodeURIComponent(error.message)}`);
   }
 }
 

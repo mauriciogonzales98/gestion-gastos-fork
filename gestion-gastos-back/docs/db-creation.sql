@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`category` (
 CREATE TABLE IF NOT EXISTS `gestion_gastos`.`wallet` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NOT NULL,
-  `coin` VARCHAR(50) NULL,
+  `coin` VARCHAR(5) NULL,
   `spend` DECIMAL(15, 2) NULL,
   `income` DECIMAL(15, 2) NULL,
   `userid` VARCHAR(28) NOT NULL,
