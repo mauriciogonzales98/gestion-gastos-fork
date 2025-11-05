@@ -77,7 +77,7 @@ async function findAllFromWallet(req: Request, res: Response) {
 
     const operations = await em.find(Operation, {
       user: { id: userId },
-      walletid: { id: Number(req.params.walletId) },
+      wallet: { id: Number(req.params.walletId) },
     });
 
     return res.status(200).json({

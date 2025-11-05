@@ -13,6 +13,9 @@ import { mercadoPagoRouter } from "./MercadoPago/mercadoPago.routes.js";
 import { orm, syncSchema } from "./shared/db/orm.js";
 import { RequestContext } from "@mikro-orm/core";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = express(); // Creating an express app
 
 // Create a route that sends a response when visiting the homepage

@@ -1,76 +1,56 @@
-import {
-  BaseEntity,
-  DateTimeType,
-  Entity,
-  ManyToOne,
-  PrimaryKey,
-  Enum,
-} from "@mikro-orm/core";
-import { Property } from "@mikro-orm/core";
-import { User } from "../User/user.entity.js";
-import { Category } from "../Category/category.entity.js";
-import { Tag } from "../Tag/tag.entity.js";
-import { Wallet } from "../Wallet/wallet.entity.js";
-
-export enum OperationType {
-  GASTO = "gasto",
-  INGRESO = "ingreso",
-}
+// Operation.entity.ts - agregar estos campos
+import { Entity, PrimaryKey, Property, ManyToOne, Unique } from '@mikro-orm/core';
+import { User } from '../User/user.entity.js';
+import { Category } from '../Category/category.entity.js';
+import { Wallet } from '../Wallet/wallet.entity.js';
 
 @Entity()
-export class Operation extends BaseEntity {
+@Unique({ properties: ['user', 'externalId'] })
+export class Operation {
   @PrimaryKey()
   id!: number;
 
-  @Property({ nullable: true })
+  @Property({ type: 'decimal', precision: 10, scale: 2 })
   amount!: number;
 
-  @Property({ type: DateTimeType, nullable: true })
-  date!: Date;
-
-  @Property({ nullable: true })
+  @Property()
   description!: string;
 
-  @Enum({
-    items: () => OperationType,
-    default: OperationType.GASTO,
-    nullable: false,
-  })
-  type!: OperationType;
+  @Property()
+  date!: Date;
 
-  @ManyToOne({
-    entity: () => User,
-    nullable: false,
-    deleteRule: "cascade",
-    updateRule: "cascade",
-    fieldName: "userid",
-  })
+  @Property()
+  type!: string; // 'income' o 'expense'
+
+  @ManyToOne(() => Wallet)
+  wallet!: Wallet;
+
+  @ManyToOne(() => Category)
+  category!: Category;
+
+  @ManyToOne(() => User)
   user!: User;
 
-  @ManyToOne({
-    entity: () => Category,
-    nullable: true,
-    deleteRule: "cascade",
-    updateRule: "cascade",
-    fieldName: "categoryid",
-  })
-  categoryid!: Category;
+  // Campos nuevos para Mercado Pago
+  @Property({ nullable: true })
+  externalId?: string;
 
-  @ManyToOne({
-    entity: () => Tag,
-    nullable: true,
-    deleteRule: "cascade",
-    updateRule: "cascade",
-    fieldName: "tagid",
-  })
-  tag!: Tag;
+  @Property({ nullable: true })
+  syncSource?: string; // 'manual' o 'mercado_pago'
 
-  @ManyToOne({
-    entity: () => Wallet,
-    nullable: false,
-    deleteRule: "cascade",
-    updateRule: "cascade",
-    fieldName: "walletid",
-  })
-  walletid!: Wallet;
+  @Property({ nullable: true })
+  paymentMethod?: string;
+
+  @Property({ nullable: true })
+  status?: string;
+
+  constructor(amount: number, description: string, date: Date, type: string, wallet: Wallet, category: Category, user: User) {
+    this.amount = amount;
+    this.description = description;
+    this.date = date;
+    this.type = type;
+    this.wallet = wallet;
+    this.category = category;
+    this.user = user;
+  }
 }
