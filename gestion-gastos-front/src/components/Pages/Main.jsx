@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Contexts/fbAuthContext/index.jsx";
-import { getAuth } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useToken } from "../../Contexts/fbTokenContext/TokenContext.jsx";
 
 import OperationForm from "../Operation/operationCreate/OperationForm.jsx";
@@ -16,93 +15,140 @@ import {
 const Main = () => {
   const navigate = useNavigate();
   const { loggedIn, user } = useAuth();
-  const { token, loadingToken, refreshToken } = useToken();
+  const { token } = useToken();
 
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [operations, setOperations] = useState([]);
   const [showOperationModal, setShowOperationModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Memoizar la función de navegación
   useEffect(() => {
     if (!loggedIn) {
       navigate("/home");
-      return;
     }
   }, [loggedIn, navigate]);
 
-  // Cuando se selecciona una wallet, carga todas las operaciones
-  useEffect(() => {
-    const operationsLoader = async () => {
-      if (selectedWalletId) {
-        try {
-          const enrichedOperations = await loadEnrichedOperations(
-            selectedWalletId,
-            token
-          );
-          setOperations(enrichedOperations.reverse());
-        } catch (err) {
-          console.log("Error cargando operaciones enriquecidas al main", err);
-          setOperations([]);
-        }
-      }
-    };
-    operationsLoader();
-  }, [selectedWalletId, token]);
-
-  // Función que refresca las operaciones
-  const refreshOperations = async () => {
-    if (!selectedWalletId) return;
+  // Función memoizada para cargar operaciones
+  const loadOperations = useCallback(async (walletId) => {
+    if (!walletId) return;
+    
+    setIsLoading(true);
     try {
-      const enrichedOperations = await loadEnrichedOperations(
-        selectedWalletId,
-        token
-      );
-      setOperations(enrichedOperations);
-      setShowOperationModal(false); // Cerrar modal después de agregar
+      const enrichedOperations = await loadEnrichedOperations(walletId, token);
+      setOperations(enrichedOperations.reverse());
     } catch (err) {
-      console.log("Error refreshing operations:", err);
+      console.log("Error cargando operaciones:", err);
+      setOperations([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [token]);
+
+  // Cargar operaciones cuando cambia la wallet seleccionada
+  useEffect(() => {
+    if (selectedWalletId) {
+      loadOperations(selectedWalletId);
+    } else {
       setOperations([]);
     }
-  };
+  }, [selectedWalletId, loadOperations]);
 
-  const handleOperationAdded = () => {
+  // Función memoizada para refrescar operaciones
+  const refreshOperations = useCallback(async () => {
+    if (!selectedWalletId) return;
+    await loadOperations(selectedWalletId);
+  }, [selectedWalletId, loadOperations]);
+
+  // Función memoizada para manejar operación agregada
+  const handleOperationAdded = useCallback(() => {
     refreshOperations();
-    setShowOperationModal(false); // Cerrar modal después de agregar
-  };
+    setShowOperationModal(false);
+  }, [refreshOperations]);
+
+  // Memoizar el contenido del historial para evitar re-renders
+  const operationsContent = useMemo(() => {
+    if (!selectedWalletId) {
+      return (
+        <div className={styles.emptyState}>
+          <h3>Wallet no seleccionada</h3>
+          <p>Selecciona una wallet para ver las operaciones</p>
+        </div>
+      );
+    }
+
+    if (isLoading) {
+      return (
+        <div className={styles.emptyState}>
+          <h3>Cargando...</h3>
+          <p>Obteniendo operaciones</p>
+        </div>
+      );
+    }
+
+    if (operations.length === 0) {
+      return (
+        <div className={styles.emptyState}>
+          <h3>No hay operaciones</h3>
+          <p>Comienza registrando tu primera operación</p>
+        </div>
+      );
+    }
+
+    return (
+      <OperationList
+        operations={operations}
+        token={token}
+        onChange={refreshOperations}
+      />
+    );
+  }, [selectedWalletId, isLoading, operations, token, refreshOperations]);
+
+  // Memoizar el botón flotante
+  const floatingButton = useMemo(() => {
+    if (!selectedWalletId) return null;
+    
+    return (
+      <button 
+        className={styles.floatingButton}
+        onClick={() => setShowOperationModal(true)}
+      >
+        <span className={styles.floatingIcon}>+</span>
+        Registrar Operación
+      </button>
+    );
+  }, [selectedWalletId]);
+
+  // Memoizar el modal
+  const operationModal = useMemo(() => {
+    if (!showOperationModal) return null;
+
+    return (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modalContent}>
+          <div className={styles.modalHeader}>
+            <h2 className={styles.modalTitle}>Registrar Nueva Operación</h2>
+            <button 
+              className={styles.closeButton}
+              onClick={() => setShowOperationModal(false)}
+            >
+              ×
+            </button>
+          </div>
+          <OperationForm
+            walletId={selectedWalletId}
+            token={token}
+            onOperationAdded={handleOperationAdded}
+          />
+        </div>
+      </div>
+    );
+  }, [showOperationModal, selectedWalletId, token, handleOperationAdded]);
 
   return (
     <div className={styles.container}>
-      {/* Botón flotante para registrar operación */}
-      {selectedWalletId && (
-        <button 
-          className={styles.floatingButton}
-          onClick={() => setShowOperationModal(true)}
-        >
-          <span className={styles.floatingIcon}>+</span>
-          Registrar Operación
-        </button>
-      )}
-
-      {/* Modal para el formulario de operación */}
-      {showOperationModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>Registrar Nueva Operación</h2>
-              <button 
-                className={styles.closeButton}
-                onClick={() => setShowOperationModal(false)}
-              >
-                ×
-              </button>
-            </div>
-            <OperationForm
-              walletId={selectedWalletId}
-              token={token}
-              onOperationAdded={handleOperationAdded}
-            />
-          </div>
-        </div>
-      )}
+      {floatingButton}
+      {operationModal}
 
       {/* Main Content */}
       <div className={styles.contentGrid}>
@@ -121,25 +167,7 @@ const Main = () => {
         {/* Operations List Card */}
         <div className={styles.operationsListCard}>
           <h2 className={styles.cardTitle}>Historial de Operaciones</h2>
-          {selectedWalletId ? (
-            operations.length > 0 ? (
-              <OperationList
-                operations={operations}
-                token={token}
-                onChange={refreshOperations}
-              />
-            ) : (
-              <div className={styles.emptyState}>
-                <h3>No hay operaciones</h3>
-                <p>Comienza registrando tu primera operación</p>
-              </div>
-            )
-          ) : (
-            <div className={styles.emptyState}>
-              <h3>Wallet no seleccionada</h3>
-              <p>Selecciona una wallet para ver las operaciones</p>
-            </div>
-          )}
+          {operationsContent}
         </div>
       </div>
     </div>

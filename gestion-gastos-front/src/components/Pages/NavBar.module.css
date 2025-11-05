@@ -11,37 +11,51 @@
   left: 0;
   top: 0;
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: width 0.2s ease; /* ✅ Transición más rápida */
   overflow: hidden;
   align-items: center;
+  will-change: width; /* ✅ Optimización de performance */
 }
 
 /* Estado expandido con hover */
 .container:hover {
-  width: 260px;
-  padding: 2rem 1rem;
+  width: 200px;
+  padding: 1.5rem 0.8rem;
   align-items: stretch;
 }
 
 .logo {
-  width: 55px;
+  width: 55px; 
   height: 55px;
-  margin-bottom: 1rem; /* Reducido el margen inferior */
+  margin-bottom: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease; 
   border-radius: 8px;
+  object-fit: contain;
+
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
 }
 
 .container:hover .logo {
-  width: 190px;
-  height: auto;
-  margin-bottom: 1.5rem; /* Mantenemos este margen cuando está expandido */
+  width: 120px; /* ✅ Ancho reducido */
+  height: auto; /* ✅ Mantenemos misma altura */
+  margin-bottom: 1.5rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .welcome {
   color: #a6beb9;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   padding: 0.8rem;
   background: rgba(27, 129, 136, 0.1);
   border-radius: 10px;
@@ -49,22 +63,21 @@
   white-space: nowrap;
   overflow: hidden;
   
-  /* IMPORTANTE: En estado colapsado, ocultamos completamente el elemento */
+  /* ✅ Mejor performance usando transform */
+  transform: scale(0);
   opacity: 0;
   height: 0;
-  width: 0;
   margin: 0;
   padding: 0;
   border: none;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .container:hover .welcome {
-  /* Cuando se expande, mostramos el elemento con sus dimensiones normales */
+  transform: scale(1);
   opacity: 1;
   height: auto;
-  width: auto;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   padding: 0.8rem;
   border-left: 3px solid #1b8188;
 }
@@ -80,13 +93,13 @@
 
 .container:hover .navbar {
   align-items: stretch;
-  gap: 0.8rem;
+  gap: 0.6rem;
 }
 
 .navButton {
   background: transparent;
   color: #e9e8ee;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   padding: 0.7rem;
   cursor: pointer;
   border-radius: 10px;
@@ -94,42 +107,40 @@
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  transition: all 0.3s ease;
-  width: 45px;
-  height: 45px;
+  transition: all 0.2s ease; /* ✅ Más rápido */
+  width: 48px;
+  height: 48px;
   white-space: nowrap;
   overflow: hidden;
+  position: relative;
+  will-change: transform; /* ✅ Optimización */
 }
 
 .container:hover .navButton {
   justify-content: flex-start;
   padding: 0.8rem 1rem;
   width: 100%;
-  height: auto;
+  height: 48px;
 }
 
 .navButton span {
   opacity: 0;
   width: 0;
-  height: 0;
-  overflow: hidden;
-  transition: all 0.3s ease;
+  transition: opacity 0.2s ease; /* ✅ Más rápido */
+  font-size: 0.95rem;
 }
 
 .container:hover .navButton span {
   opacity: 1;
   width: auto;
-  height: auto;
 }
 
 .navButton:hover {
-  background: rgba(18, 130, 76, 0.15);
+  background: rgba(18, 130, 76, 0.15); /* ✅ Color más sutil */
   border-color: #12824c;
-  color: #e9e8ee;
   transform: translateX(3px);
-  box-shadow: 0 4px 12px rgba(18, 130, 76, 0.3);
 }
 
 .container:hover .navButton:hover {
@@ -137,16 +148,17 @@
 }
 
 .icon {
-  font-size: 1.4rem;
+  font-size: 1.5rem; /* ✅ Tamaño consistente */
   color: #12824c;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease; /* ✅ Solo transición necesaria */
   flex-shrink: 0;
-  min-width: 20px;
+  min-width: 24px;
   text-align: center;
 }
 
 .navButton:hover .icon {
   color: #e9e8ee;
+  /* ❌ Quitamos transform scale para mejor performance */
 }
 
 .signout {
@@ -160,46 +172,45 @@
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  transition: all 0.3s ease;
-  width: 45px;
-  height: 45px;
+  transition: all 0.2s ease; /* ✅ Más rápido */
+  width: 48px;
+  height: 48px;
   margin-top: auto;
-  margin-bottom: 0.5rem;
   white-space: nowrap;
   overflow: hidden;
+  position: sticky;
+  bottom: 0.5rem;
+  will-change: transform; /* ✅ Optimización */
 }
 
 .container:hover .signout {
   justify-content: flex-start;
   padding: 0.8rem 1rem;
   width: 100%;
-  height: auto;
-  margin-bottom: 1rem;
+  height: 48px;
+  position: relative;
+  bottom: auto;
 }
 
 .signout span {
   opacity: 0;
   width: 0;
-  height: 0;
-  overflow: hidden;
-  transition: all 0.3s ease;
+  transition: opacity 0.2s ease; /* ✅ Más rápido */
 }
 
 .container:hover .signout span {
   opacity: 1;
   width: auto;
-  height: auto;
 }
 
 .signout:hover {
   background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(220, 53, 69, 0.4);
 }
 
-/* Tooltips para estado colapsado */
+/* Tooltips optimizados */
 .tooltip {
   position: relative;
   display: flex;
@@ -219,21 +230,22 @@
   background: #082213;
   color: #e9e8ee;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.9rem;
   white-space: nowrap;
-  margin-left: 8px;
+  margin-left: 10px;
   opacity: 0;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease; /* ✅ Más rápido */
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
   border: 1px solid #12824c;
   z-index: 1002;
+  backdrop-filter: blur(5px); /* ✅ Menos intenso */
 }
 
 .tooltip:hover .tooltipText {
   visibility: visible;
   opacity: 1;
-  transform: translateY(-50%) translateX(5px);
+  transform: translateY(-50%) translateX(8px);
 }
 
 /* Responsive */
@@ -244,43 +256,32 @@
   }
   
   .container:hover {
-    width: 220px;
-    padding: 1.5rem 0.8rem;
+    width: 180px;
+    padding: 1.2rem 0.6rem;
   }
   
   .logo {
     width: 40px;
     height: 40px;
-    margin-bottom: 0.8rem; /* Aún más reducido en mobile */
   }
   
   .container:hover .logo {
-    width: 180px;
-    margin-bottom: 1.5rem;
+    width: 140px;
+    height: 40px;
   }
   
   .navButton, .signout {
-    width: 40px;
-    height: 40px;
-    padding: 0.6rem;
+    width: 44px;
+    height: 44px;
   }
   
   .container:hover .navButton,
   .container:hover .signout {
     width: 100%;
-    height: auto;
-    padding: 0.7rem 0.8rem;
+    height: 44px;
   }
   
   .icon {
-    font-size: 1.2rem;
-  }
-  
-  .navbar {
-    gap: 0.4rem;
-  }
-  
-  .container:hover .navbar {
-    gap: 0.7rem;
+    font-size: 1.4rem;
   }
 }

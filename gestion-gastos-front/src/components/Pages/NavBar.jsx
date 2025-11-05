@@ -11,29 +11,57 @@ import {
   BiHome,
   BiWallet,
 } from "react-icons/bi";
+import { memo, useCallback } from "react"; // ✅ Importamos memo y useCallback
 import styles from "./NavBar.module.css";
-// The logo lives in the public folder. Refer to it with an absolute public path.
 
-const NavBar = () => {
+// ✅ Memoizamos el componente para evitar re-renders innecesarios
+const NavBar = memo(() => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
 
-  const ClickHandler = () => {
+  // ✅ useCallback para funciones de navegación
+  const handleHomeClick = useCallback(() => {
     if (userLoggedIn) {
       navigate("/main");
-    } else navigate("/");
-  };
+    } else {
+      navigate("/");
+    }
+  }, [userLoggedIn, navigate]);
+
+  const handleWalletClick = useCallback(() => {
+    navigate("/create-wallet");
+  }, [navigate]);
+
+  const handleCategoriesClick = useCallback(() => {
+    navigate("/categories");
+  }, [navigate]);
+
+  const handleTagsClick = useCallback(() => {
+    navigate("/tags");
+  }, [navigate]);
+
+  const handleProfileClick = useCallback(() => {
+    navigate("/Profile");
+  }, [navigate]);
+
+  const handleSignOut = useCallback(() => {
+    fbSignOut();
+    navigate("/");
+  }, [navigate]);
+
+  const handleLogoClick = useCallback(() => {
+    navigate("/");
+  }, [navigate]);
 
   return (
     <div className={styles.container}>
-      {/* Logo */}
+      {/* Logo SIN recuadro */}
       <img
         src="/ggs.png"
         alt="Gestión de Gastos"
         className={styles.logo}
-        onClick={() => navigate("/")}
+        onClick={handleLogoClick}
       />
-      
       
       <nav className={styles.navbar}>
         <AuthContext.Consumer>
@@ -48,7 +76,7 @@ const NavBar = () => {
               
               {/* HOME */}
               <div className={styles.tooltip}>
-                <button className={styles.navButton} onClick={ClickHandler}>
+                <button className={styles.navButton} onClick={handleHomeClick}>
                   <BiHome className={styles.icon} />
                   <span>Inicio</span>
                 </button>
@@ -60,7 +88,7 @@ const NavBar = () => {
                 <div className={styles.tooltip}>
                   <button
                     className={styles.navButton}
-                    onClick={() => navigate("/create-wallet")}
+                    onClick={handleWalletClick}
                   >
                     <BiWallet className={styles.icon} />
                     <span>Carteras</span>
@@ -74,7 +102,7 @@ const NavBar = () => {
                 <div className={styles.tooltip}>
                   <button
                     className={styles.navButton}
-                    onClick={() => navigate("/categories")}
+                    onClick={handleCategoriesClick}
                   >
                     <BiCategory className={styles.icon} />
                     <span>Categorías</span>
@@ -88,7 +116,7 @@ const NavBar = () => {
                 <div className={styles.tooltip}>
                   <button
                     className={styles.navButton}
-                    onClick={() => navigate("/tags")}
+                    onClick={handleTagsClick}
                   >
                     <BiTag className={styles.icon} />
                     <span>Etiquetas</span>
@@ -102,7 +130,7 @@ const NavBar = () => {
                 <div className={styles.tooltip}>
                   <button
                     className={styles.navButton}
-                    onClick={() => navigate("/Profile")}
+                    onClick={handleProfileClick}
                   >
                     <BiSolidUserAccount className={styles.icon} />
                     <span>Perfil</span>
@@ -116,10 +144,7 @@ const NavBar = () => {
                 <div className={styles.tooltip}>
                   <button
                     className={styles.signout}
-                    onClick={() => {
-                      fbSignOut();
-                      navigate("/");
-                    }}
+                    onClick={handleSignOut}
                   >
                     <BiLogOut className={styles.icon} />
                     <span>Cerrar Sesión</span>
@@ -133,6 +158,6 @@ const NavBar = () => {
       </nav>
     </div>
   );
-};
+});
 
 export default NavBar;

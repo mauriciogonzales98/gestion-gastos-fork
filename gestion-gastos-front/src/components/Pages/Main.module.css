@@ -1,3 +1,64 @@
+.floatingButton,
+.modalOverlay,
+.modalContent {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* Optimizar el modal */
+.modalOverlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modalContent {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mejorar rendimiento de scroll */
+.operationsListCard {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+
+/* Loading states mejorados */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.loadingSpinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(233, 232, 238, 0.3);
+  border-top: 3px solid #12824c;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .container {
   min-height: 100vh;
   background: linear-gradient(135deg, #050a06 0%, #082213 50%, #0b2d2d 100%);
