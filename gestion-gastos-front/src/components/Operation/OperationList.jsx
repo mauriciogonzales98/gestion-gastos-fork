@@ -5,8 +5,8 @@ import OperationUpdateForm, {
   updateOperation,
 } from "./operationUpdate/OperationUpdateManager.jsx";
 import { useToken } from "../../Contexts/fbTokenContext/TokenContext.jsx";
-import Dropdown from "react-bootstrap/Dropdown";
 
+import TagSelector from "../Tag/TagSelector.jsx";
 import {
   loadEnrichedOperations,
   loadOperations,
@@ -40,6 +40,8 @@ const OperationList = ({
   // Manejo de fechas desde y hasta para el filtro
   const [selectedDates, setSelectedDates] = useState({});
 
+  // Tag seleccionado para el filtro
+  const [selectedTagId, setSelectedTagId] = useState(null);
   const [showOperationList, setShowOperationList] = useState(true);
   const dates = {
     from: selectedDates.from,
@@ -157,11 +159,18 @@ const OperationList = ({
         return opDate <= dates.to;
       };
 
-      // Filtrado por tag
-      const tagFilter = () => {
-        return true;
-      };
-      return categoryFilter() && fromDateFilter() && toDateFilter() && tagFilter();
+      //Filtrado por tag
+ const tagFilter = () => {
+      if (selectedTagId === null || selectedTagId === undefined || selectedTagId === "") return true;
+      const n = Number(selectedTagId);
+      if (Number.isNaN(n)) return true;
+      if (n === -1) 
+        return operation.tagid === null || operation.tagid === undefined;
+      
+      return Number(operation.tagid) === n;
+      
+    };
+      return categoryFilter() && fromDateFilter() && toDateFilter()  && tagFilter() ;
     });
   };
 
@@ -244,6 +253,12 @@ const OperationList = ({
           //onKeyUp={(e) => handleKeyPress(e, operation.id)}
           //onBlur={() => handleBlur(operation.id)}
           className={styles.editInput}
+        />
+        <h4>Tag:</h4>
+        <TagSelector
+          selectedTagId={selectedTagId}
+          onTagSelect={setSelectedTagId}
+          token={token}
         />
       </div>
       {/* Acá arranca el mapeo de la lista de operaciones */}

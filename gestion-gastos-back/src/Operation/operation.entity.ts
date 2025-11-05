@@ -63,7 +63,7 @@ export class Operation extends BaseEntity {
     deleteRule: "set null",
     updateRule: "cascade",
   })
-  tag?: Tag;
+  tagid?: Tag;
 
   @ManyToOne({
     entity: () => Wallet,

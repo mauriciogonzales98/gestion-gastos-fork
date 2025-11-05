@@ -16,7 +16,6 @@ import OperationList from "../Operation/OperationList.jsx";
 import WalletLoading from "../Wallet/WalletLoading.jsx";
 import styles from "../Wallet/WalletSelector.module.css";
 
-import CategoryList from "../Category/CategoryForm/CategoryList.jsx";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -31,7 +30,8 @@ const Main = () => {
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [loadingWallets, setLoadingWallets] = useState(true);
   //const [token, setToken] = useState(null);
-
+// Estado para las categorías
+  const [categories, setCategories] = useState([]);
   // Estado para refrescar las operaciones
   const [doRefreshOperations, setDoRefreshOperations] = useState(false);
 
@@ -42,6 +42,28 @@ const Main = () => {
     }
   }, [loggedIn, navigate]);
 
+  useEffect(() => {
+    const loadCategories = async () => {
+      if (!token) return;
+
+      try {
+        const response = await fetch("http://localhost:3001/api/category/", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setCategories(data.data);
+        }
+      } catch (error) {
+        console.error("Error loading categories:", error);
+      }
+    };
+
+    loadCategories();
+  }, [token]);
   return (
     <div
       style={{
@@ -88,6 +110,7 @@ const Main = () => {
       <div>
         <OperationList
           selectedWalletId={selectedWalletId}
+          categories = {categories}
           token={token}
           onChange={() => {
             setDoRefreshOperations(true);
