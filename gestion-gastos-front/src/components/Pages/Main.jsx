@@ -40,7 +40,7 @@ const Main = () => {
             selectedWalletId,
             token
           );
-          setOperations(enrichedOperations.reverse());
+          setOperations(enrichedOperations);
           console.log("Operaciones cargadas:", enrichedOperations);
         } catch (err) {
           console.log("Error cargando operaciones enriquecidas al main", err);
@@ -64,6 +64,7 @@ const Main = () => {
         {/* Sección Superior: Wallet Selection y Operation Form */}
         <div className={styles.topSection}>
           <div className={styles.topGrid}>
+
             {/* Wallet Selection */}
             <div className={styles.walletCard}>
               <h2 className={styles.cardTitle}>Seleccionar Wallet</h2>
@@ -110,6 +111,8 @@ const Main = () => {
                   selectedWalletId={selectedWalletId}
                   doRefreshOperations={doRefreshOperations}
                   setDoRefreshOperations={setDoRefreshOperations}
+                  // Desactiva los filtros y muestra solo las últimas 5 operaciones
+                  filterEnabled={false}
                 />
               ) : (
                 <div className={styles.emptyState}>

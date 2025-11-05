@@ -21,6 +21,7 @@ const OperationList = ({
   onChange,
   doRefreshOperations,
   setDoRefreshOperations,
+  filterEnabled,
 }) => {
   const [errorMessage, setErrorMessage] = useState("");
   //Estado de borrado
@@ -174,7 +175,15 @@ const OperationList = ({
     });
   };
 
+  //Listado de todas las operaciones una vez pasadas por el filtro.
   const filteredOperations = filterOperationList();
+  filteredOperations.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+  //  Si el filtro está deshabilitado, muestra solo las primeras 5 operaciones.
+  if(!filterEnabled) {
+    filteredOperations.splice(5);
+  }
+
   // Maneja el borrado de operaciones
   const handleDelete = async (operation, token) => {
     if (!token) {
@@ -221,11 +230,11 @@ const OperationList = ({
       {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
 
       <h2 className={styles.title}>
-        Cantidad de Operaciones ({operations.length})
+        Cantidad de Operaciones ({filteredOperations.length})
       </h2>
 
       {/* Sección de Filtros - ESTILOS MEJORADOS */}
-      <div className={styles.filterSection}>
+      {filterEnabled && <div className={styles.filterSection}>
         <div className={styles.filterGrid}>
           {/* Filtro por Categoría */}
           <div className={styles.filterGroup}>
@@ -274,7 +283,7 @@ const OperationList = ({
             </div>
           </div>
         </div>
-      </div>
+      </div>}
 
       {/* Acá arranca el mapeo de la lista de operaciones */}
       <ul className={styles.list}>
