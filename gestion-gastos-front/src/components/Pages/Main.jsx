@@ -24,7 +24,7 @@ const Main = () => {
   const [operations, setOperations] = useState([]);
   const [doRefreshOperations, setDoRefreshOperations] = useState(false);
 
-  // 🔥 NUEVA FUNCIÓN: Manejar selección de wallet y guardar en localStorage
+  // // 🔥 NUEVA FUNCIÓN: Manejar selección de wallet y guardar en localStorage
   const handleWalletSelect = (walletId) => {
     setSelectedWalletId(walletId);
     // Guardar en localStorage para que OperationsPage pueda acceder
@@ -32,14 +32,14 @@ const Main = () => {
     console.log("Wallet guardada en localStorage:", walletId);
   };
 
-  // Cargar wallet del localStorage al iniciar (opcional)
-  useEffect(() => {
-    const savedWalletId = localStorage.getItem('selectedWalletId');
-    if (savedWalletId && savedWalletId !== "null" && savedWalletId !== "undefined") {
-      setSelectedWalletId(savedWalletId);
-      console.log("Wallet cargada desde localStorage:", savedWalletId);
-    }
-  }, []);
+  // // Cargar wallet del localStorage al iniciar (opcional)
+  // useEffect(() => {
+  //   const savedWalletId = localStorage.getItem('selectedWalletId');
+  //   if (savedWalletId && savedWalletId !== "null" && savedWalletId !== "undefined") {
+  //     setSelectedWalletId(savedWalletId);
+  //     console.log("Wallet cargada desde localStorage:", savedWalletId);
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (!loggedIn) {

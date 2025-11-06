@@ -15,8 +15,32 @@ const OperationUpdateForm = ({
 }) => {
   const [selectedTypeValue, setSelectedTypeValue] = useState(null);
   const [selectedWalletId, setSelectedWalletId] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const { token, refreshToken } = useToken();
+
+useEffect(() => {
+    const loadCategories = async () => {
+      if (!token) return;
+
+      try {
+        const response = await fetch("http://localhost:3001/api/category/", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setCategories(data.data);
+        }
+      } catch (error) {
+        console.error("Error loading categories:", error);
+      }
+    };
+
+    loadCategories();
+  }, [token]);
 
   // Maneja el guradado de las operaciones
   const handleSave = async (operationId) => {
@@ -145,6 +169,7 @@ const OperationUpdateForm = ({
         {/*Selección de categoría*/}
       </div>
       <CategoryButtons
+      categories={categories}
         selectedId={selectedCategoryId}
         onSelect={handleCategoryChange}
       />
