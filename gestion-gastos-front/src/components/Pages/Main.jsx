@@ -27,17 +27,43 @@ const Main = () => {
   const handleWalletSelect = (walletId) => {
     setSelectedWalletId(walletId);
     localStorage.setItem('selectedWalletId', walletId);
-    console.log("Wallet guardada en localStorage:", walletId);
   };
 
-  // // Cargar wallet del localStorage al iniciar (opcional)
-  // useEffect(() => {
-  //   const savedWalletId = localStorage.getItem('selectedWalletId');
-  //   if (savedWalletId && savedWalletId !== "null" && savedWalletId !== "undefined") {
-  //     setSelectedWalletId(savedWalletId);
-  //     console.log("Wallet cargada desde localStorage:", savedWalletId);
-  //   }
-  // }, []);
+  const handleWalletsLoaded = (loadedWallets) => {
+    
+    if (!loadedWallets || loadedWallets.length === 0) {
+      return;
+    }
+    
+    const savedWalletId = localStorage.getItem('selectedWalletId');
+    
+    if (savedWalletId && savedWalletId !== "null" && savedWalletId !== "undefined") {
+      const savedWalletIdNum = Number(savedWalletId);
+      
+      const savedWalletExists = loadedWallets.some(wallet => wallet.id === savedWalletIdNum);
+
+      if (savedWalletExists && !selectedWalletId) {
+        setSelectedWalletId(savedWalletIdNum);
+      } else if (!savedWalletExists) {
+        const firstWalletId = loadedWallets[0].id;
+        setSelectedWalletId(firstWalletId);
+        localStorage.setItem('selectedWalletId', firstWalletId);
+      }
+    } else {
+      const firstWalletId = loadedWallets[0].id;
+      setSelectedWalletId(firstWalletId);
+      localStorage.setItem('selectedWalletId', firstWalletId);
+    }
+  };
+
+  useEffect(() => {
+    const savedWalletId = localStorage.getItem('selectedWalletId');
+    
+    if (savedWalletId && savedWalletId !== "null" && savedWalletId !== "undefined") {
+      setSelectedWalletId(Number(savedWalletId));
+    } else {
+    }
+  }, []);
 
   useEffect(() => {
     if (!loggedIn) {
@@ -55,9 +81,7 @@ const Main = () => {
             token
           );
           setOperations(enrichedOperations || []); 
-          console.log("Operaciones cargadas:", enrichedOperations);
         } catch (err) {
-          console.log("Error cargando operaciones enriquecidas al main", err);
           setOperations([]); 
         }
       }
@@ -73,21 +97,19 @@ const Main = () => {
     <div className={styles.container}>
       <div className={styles.mainGrid}>
         
-        {/* Columna Izquierda: Wallet y OperationList */}
         <div className={styles.leftColumn}>
-          {/* Wallet Selection */}
           <div className={styles.walletCard}>
             <h2 className={styles.cardTitle}>Seleccionar Wallet</h2>
             <div className={styles.walletSelector}>
               <WalletLoading
                 token={token}
                 selectedWalletId={selectedWalletId}
-                setSelectedWalletId={handleWalletSelect}  
+                setSelectedWalletId={handleWalletSelect}
+                onWalletsLoaded={handleWalletsLoaded}
               />
             </div>
           </div>
 
-          {/* OperationList */}
           <div className={styles.operationsListCard}>
             <h2 className={styles.cardTitle}>Tus últimas operaciones</h2>
             {selectedWalletId ? (
@@ -116,7 +138,6 @@ const Main = () => {
           </div>
         </div>
 
-        {/* Operation Form */}
         <div className={styles.rightColumn}>
           <div className={`${styles.operationCard} ${styles.largeOperationCard}`}>
             <h2 className={styles.cardTitle}>Registrar Operación</h2>

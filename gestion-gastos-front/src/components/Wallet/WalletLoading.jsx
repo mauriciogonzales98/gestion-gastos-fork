@@ -2,7 +2,7 @@ import styles from "./WalletSelector.module.css";
 import { useState, useEffect } from "react";
 import WalletSelector from "./WalletSelector";
 
-const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
+const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWalletsLoaded }) => {
   const [wallets, setWallets] = useState([]);
   const [loadingWallets, setLoadingWallets] = useState(true);
 
@@ -18,11 +18,9 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
       const name = w.name ?? `Wallet ${id ?? ""}`;
       const coin = w.coin ?? w.currency ?? "";
       
-      // Calculate numeric values first
       const spendValue = typeof w.spend === "number" ? w.spend : parseFloat(w.spend) || 0;
       const incomeValue = typeof w.income === "number" ? w.income : parseFloat(w.income) || 0;
       
-      // Calculate balance
       const balanceValue = w.balance ?? incomeValue - spendValue;
 
       return {
@@ -66,11 +64,14 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
       
       setWallets(walletsData);
 
-      if (walletsData.length > 0 && !selectedWalletId) {
-        const normalizedWallets = normalizeWallets(walletsData);
-        if (normalizedWallets.length > 0) {
-          setSelectedWalletId(normalizedWallets[0].id);
-        }
+      const normalizedWallets = normalizeWallets(walletsData);
+
+      if (onWalletsLoaded && normalizedWallets.length > 0) {
+        onWalletsLoaded(normalizedWallets);
+      }
+
+      if (normalizedWallets.length > 0 && !selectedWalletId) {
+        setSelectedWalletId(normalizedWallets.first().id);
       }
     } catch (error) {
       console.error("Error loading wallets:", error);
