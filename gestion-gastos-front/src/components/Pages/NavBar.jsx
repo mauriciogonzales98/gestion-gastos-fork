@@ -1,4 +1,3 @@
-// NavBar.jsx
 import { useNavigate } from "react-router-dom";
 import { fbSignOut } from "../../Firebase/auth";
 import { AuthContext, useAuth } from "../../Contexts/fbAuthContext";
@@ -10,7 +9,7 @@ import {
   BiTag,
   BiHome,
   BiWallet,
-  BiHistory, // ✅ Nuevo icono para operaciones
+  BiHistory, 
 } from "react-icons/bi";
 import { memo, useCallback } from "react";
 import styles from "./NavBar.module.css";
@@ -19,7 +18,6 @@ const NavBar = memo(() => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
 
-  // ✅ useCallback para funciones de navegación
   const handleHomeClick = useCallback(() => {
     if (userLoggedIn) {
       navigate("/main");
@@ -40,7 +38,6 @@ const NavBar = memo(() => {
     navigate("/tags");
   }, [navigate]);
 
-  // ✅ NUEVA función para Mis Operaciones
   const handleOperationsClick = useCallback(() => {
     navigate("/operations");
   }, [navigate]);
@@ -102,7 +99,7 @@ const NavBar = memo(() => {
                 </div>
               )}
 
-              {/* MIS OPERACIONES - NUEVO BOTÓN */}
+              {/* MIS OPERACIONES */}
               {value.user && (
                 <div className={styles.tooltip}>
                   <button

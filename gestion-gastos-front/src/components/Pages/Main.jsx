@@ -54,11 +54,11 @@ const Main = () => {
             selectedWalletId,
             token
           );
-          setOperations(enrichedOperations || []); // 🔥 Asegurar que siempre sea un array
+          setOperations(enrichedOperations || []); 
           console.log("Operaciones cargadas:", enrichedOperations);
         } catch (err) {
           console.log("Error cargando operaciones enriquecidas al main", err);
-          setOperations([]); // 🔥 En caso de error, establecer array vacío
+          setOperations([]); 
         }
       }
     };
@@ -87,11 +87,11 @@ const Main = () => {
             </div>
           </div>
 
-          {/* OperationList debajo de Wallet */}
+          {/* OperationList */}
           <div className={styles.operationsListCard}>
             <h2 className={styles.cardTitle}>Tus últimas operaciones</h2>
             {selectedWalletId ? (
-              operations && operations.length > 0 ? ( // 🔥 VERIFICAR que operations existe Y tiene length
+              operations && operations.length > 0 ? ( 
                 <OperationList
                   operations={operations}
                   token={token}
@@ -116,7 +116,7 @@ const Main = () => {
           </div>
         </div>
 
-        {/* Columna Derecha: Operation Form */}
+        {/* Operation Form */}
         <div className={styles.rightColumn}>
           <div className={`${styles.operationCard} ${styles.largeOperationCard}`}>
             <h2 className={styles.cardTitle}>Registrar Operación</h2>

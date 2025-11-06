@@ -123,7 +123,6 @@
   transform: scale(1);
 }
 
-/* AÑADIDOS NUEVOS */
 .editing {
   background-color: #f0f8ff !important;
   border: 2px solid #007bff !important;
@@ -240,7 +239,6 @@
   color: #a6beb9;
 }
 
-/* Estilos específicos para los dropdowns de categoría y tag */
 .categoryDropdown, .tagSelector {
   width: 100%;
 }

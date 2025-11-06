@@ -9,7 +9,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
   const [description, setDescription] = useState("");
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  const [selectedTagId, setSelectedTagId] = useState(null); // ✅ ESTADO FALTANTE
+  const [selectedTagId, setSelectedTagId] = useState(null); 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 

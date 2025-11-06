@@ -62,11 +62,10 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
       }
       
       const walletsData = await response.json();
-      console.log("Wallets data:", walletsData); // DEBUG
+      console.log("Wallets data:", walletsData); 
       
       setWallets(walletsData);
 
-      // Auto-select first wallet if none is selected and we have wallets
       if (walletsData.length > 0 && !selectedWalletId) {
         const normalizedWallets = normalizeWallets(walletsData);
         if (normalizedWallets.length > 0) {
@@ -80,7 +79,6 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
     }
   };
 
-  // Load wallets when token changes
   useEffect(() => {
     if (token) {
       console.log("Cargando wallets...");
@@ -102,7 +100,7 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
       />
       
       <div>
-        <label className={styles.label}>Seleccionar Wallet:</label>
+        <label className={styles.label}> Wallet:</label>
         <select
           value={selectedWalletId || ""}
           onChange={(e) => handleWalletSelect(parseInt(e.target.value))}

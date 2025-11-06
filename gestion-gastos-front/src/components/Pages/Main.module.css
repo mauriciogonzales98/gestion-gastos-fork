@@ -7,24 +7,21 @@
   transition: margin-left 0.3s ease;
 }
 
-/* Nuevo grid principal */
 .mainGrid {
   display: grid;
-  grid-template-columns: 1fr 1.5fr; /* 🔥 Izquierda más ancha, derecha más angosta */
+  grid-template-columns: 1fr 1.5fr; 
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
   align-items: start;
 }
 
-/* Columna Izquierda: Wallet arriba, OperationList abajo */
 .leftColumn {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* Columna Derecha: Solo Operation Form */
 .rightColumn {
   display: flex;
   flex-direction: column;
@@ -77,6 +74,7 @@
 
 .walletSelector {
   width: 100%;
+  place-items: center; 
 }
 
 .emptyState {

@@ -238,7 +238,6 @@ useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[en
   return (
     <div className={styles.container}>
       {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
-      {/* Sección de Filtros - ESTILOS MEJORADOS */}
       {filterEnabled && <div className={styles.filterSection}>
         <div className={styles.filterGrid}>
           {/* Filtro por Categoría */}
@@ -303,7 +302,6 @@ useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[en
             }}
           >
             {editingId === operation.id ? (
-              // Modo edición
               <OperationUpdateForm
                 editingId={editingId}
                 setEditingId={setEditingId}
@@ -312,7 +310,7 @@ useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[en
                 onChange={onChange}
               />
             ) : (
-              // Modo display
+
               <>
                 <div className={styles.operationContent}>
                   <div className={styles.operationDescription}>
