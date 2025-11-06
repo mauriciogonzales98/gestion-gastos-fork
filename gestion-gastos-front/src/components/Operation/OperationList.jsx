@@ -329,6 +329,11 @@ useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[en
                         📁 {operation.category.name}
                       </span>
                     )}
+                    {operation.tag && (
+                      <span className={styles.operationTag}>
+                        🏷️ {operation.tag.name}
+                      </span>
+                    )}
                     <span className={styles.operationDate}>
                       📅 {new Date(operation.date).toLocaleDateString("es-ES")}
                     </span>

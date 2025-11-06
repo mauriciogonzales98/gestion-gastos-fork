@@ -22,6 +22,7 @@ export const loadOperations = async (walletId, token) => {
     return;
   }
 };
+
 //Obtiene un objeto que contiene todas las categorías del usuario
 export const loadCategories = async (token) => {
   if (!token) return;
@@ -43,9 +44,28 @@ export const loadCategories = async (token) => {
   }
 };
 
-export const loadEnrichedOperations = async (walletId, token) => {
-  //Obtiene todas las operaciones del usuario
+// AGREGAR ESTA NUEVA FUNCIÓN PARA CARGAR TAGS
+export const loadTags = async (token) => {
+  if (!token) return;
+  try {
+    const response = await fetch("http://localhost:3001/api/tag", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      const tagsData = await response.json();
+      return Array.isArray(tagsData) ? tagsData : tagsData?.data ?? [];
+    }
+  } catch (error) {
+    console.error("Error loading tags:", error);
+    return [];
+  }
+};
 
+export const loadEnrichedOperations = async (walletId, token) => {
   // Reemplaza el id almacenado en operation.category por el objeto completo
   const enrichOperationsWithCategories = (operations, categories) => {
     return operations.data.map((operation) => {
@@ -62,22 +82,33 @@ export const loadEnrichedOperations = async (walletId, token) => {
     });
   };
 
+  // AGREGAR ESTA NUEVA FUNCIÓN PARA ENRIQUECER CON TAGS
+  const enrichOperationsWithTags = (operations, tags) => {
+    return operations.map((operation) => {
+      const fullTag = tags.find((tag) => tag.id == operation.tagid);
+      
+      return {
+        ...operation,
+        tag: fullTag || null, // Agrega el objeto completo del tag si existe
+      };
+    });
+  };
+
   try {
     //operations, categories y enrichedOperations son los tres objetos
     const operations = await loadOperations(walletId, token);
     const categories = await loadCategories(token);
-    const enrichedOperations = enrichOperationsWithCategories(
-      operations,
-      categories
-    );
-    // console.log("enriched operations: ", enrichedOperations);
-    // console.log("operations pre enrichment: ", operations);
-    // console.log("categories: ", categories);
-    // console.log("enriched operations: ", typeof enrichedOperations);
-    // console.log("operations pre enrichment: ", typeof operations);
-    // console.log("categories: ", typeof categories);
+    const tags = await loadTags(token); // AGREGAR CARGA DE TAGS
+    
+    // Primero enriquece con categorías
+    let enrichedOperations = enrichOperationsWithCategories(operations, categories);
+    
+    // Luego enriquece con tags
+    enrichedOperations = enrichOperationsWithTags(enrichedOperations, tags);
+    
+    console.log("Operaciones enriquecidas con tags:", enrichedOperations);
     return enrichedOperations;
   } catch (error) {
-    console.log("Error enriching categories: ", error);
+    console.log("Error enriching operations: ", error);
   }
 };

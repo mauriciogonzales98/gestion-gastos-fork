@@ -255,7 +255,7 @@
   }
 }
 
-/* Estilos para el mensaje de error */
+
 .errorMessage {
   background: rgba(220, 53, 69, 0.2);
   border: 1px solid #dc3545;
@@ -266,4 +266,52 @@
   text-align: center;
   font-size: 14px;
   font-weight: 500;
+}
+.operationTag {
+  margin-left: 15px;
+  padding: 2px 8px;
+  background: rgba(49, 215, 227, 0.154);
+  color: rgb(34, 37, 35);
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.operationDetails {
+  color: #666;
+  font-size: 14px;
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+
+.operationCategory,
+.operationDate,
+.operationType,
+.operationTag {
+  margin-left: 0; 
+}
+
+
+@media (max-width: 768px) {
+  .operationDetails {
+    gap: 6px;
+  }
+  
+  .operationCategory,
+  .operationDate,
+  .operationType,
+  .operationTag {
+    font-size: 12px;
+  }
+  
+  .operationTag {
+    padding: 1px 6px;
+  }
 }
