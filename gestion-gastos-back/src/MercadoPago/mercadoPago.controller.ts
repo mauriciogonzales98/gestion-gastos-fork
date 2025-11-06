@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import { orm } from "../shared/db/orm.js";
 import { User } from "../User/user.entity.js";
-import { Operation } from "../Operation/operation.entity.js";
+import { Operation, OperationType } from "../Operation/operation.entity.js";
 import { Wallet } from "../Wallet/wallet.entity.js";
 import { Category } from "../Category/category.entity.js";
 import { generatePKCE, getCodeVerifier, deleteCodeVerifier } from '../utils/pkce.utils.js';
@@ -198,8 +198,8 @@ async function syncMovements(req: Request, res: Response) {
     lastSyncAt: user.lastSyncAt,
     // ✅ Agregar estadísticas de operation_type
     statistics: {
-      incomes: savedMovements.filter(m => m.type === 'ingreso').length,
-      expenses: savedMovements.filter(m => m.type === 'gasto').length,
+      incomes: savedMovements.filter(m => m.type === OperationType.INGRESO).length,
+      expenses: savedMovements.filter(m => m.type === OperationType.GASTO).length,
       operationTypes: savedMovements.reduce((acc: any, mov) => {
         const opType = mov.operation_type || 'sin_operation_type';
         acc[opType] = (acc[opType] || 0) + 1;
@@ -360,7 +360,7 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
       }
 
       // ✅ LÓGICA MEJORADA CON operation_type
-      let type: string = 'gasto'; // Por defecto GASTO
+      let type: OperationType = OperationType.GASTO; // Por defecto GASTO
       let typeReason = 'asumido gasto por defecto';
       const operationType = payment.operation_type || 'sin_operation_type';
 
@@ -370,20 +370,20 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
           case 'money_transfer':
           case 'account_fund':
           case 'payment_addition':
-            type = 'ingreso';
+            type = OperationType.INGRESO;
             typeReason = `operation_type: ${payment.operation_type} (entrada de dinero)`;
             break;
           case 'regular_payment':
           case 'recurring_payment':
           case 'pos_payment':
           case 'cellphone_recharge':
-            type = 'gasto';
+            type = OperationType.GASTO;
             typeReason = `operation_type: ${payment.operation_type} (pago/salida de dinero)`;
             break;
           case 'investment':
           case 'money_exchange':
             // Estos pueden ser ambiguos, los dejamos como gasto por defecto
-            type = 'gasto';
+            type = OperationType.GASTO;
             typeReason = `operation_type: ${payment.operation_type} (asumido gasto)`;
             break;
           default:
@@ -411,7 +411,7 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
         ];
         
         if (incomeKeywords.some(keyword => descLower.includes(keyword))) {
-          type = 'ingreso';
+          type = OperationType.INGRESO;
           typeReason = 'keyword ingreso detectado: ' + payment.description;
         } else {
           typeReason = 'descripción analizada: ' + payment.description;
@@ -419,7 +419,7 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
       }
 
       // Contar por tipo
-      if (type === 'ingreso') {
+      if (type === OperationType.INGRESO) {
         incomeCount++;
       } else {
         expenseCount++;
@@ -435,20 +435,21 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
       console.log(`✅ Procesando: ${description} - $${amount} (${type}) - Razón: ${typeReason}`);
 
       // Crear operation - ✅ SIN metadata
-      const operation = em.create(Operation, {
-        amount: amount,
-        description: description,
-        date: paymentDate,
-        type: type,
-        wallet: defaultWallet,
-        category: defaultCategory,
-        user: user,
-        externalId: payment.id?.toString(),
-        syncSource: 'mercado_pago',
-        paymentMethod: payment.payment_method_id,
-        status: payment.status
-        // ❌ Eliminada la línea de metadata
-      });
+      const operation = new Operation(
+        amount,
+        description,
+        paymentDate,
+        type,
+        defaultWallet,
+        defaultCategory,
+        user
+      );
+      
+      // Establecer propiedades adicionales después de la construcción
+      operation.externalId = payment.id?.toString();
+      operation.syncSource = 'mercado_pago';
+      operation.paymentMethod = payment.payment_method_id;
+      operation.status = payment.status;
 
       await em.persistAndFlush(operation);
       processedCount++;

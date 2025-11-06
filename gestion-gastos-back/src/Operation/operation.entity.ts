@@ -57,14 +57,7 @@ export class Operation {
   })
   tagid?: Tag;
 
-  @ManyToOne({
-    entity: () => Wallet,
-    nullable: false,
-    deleteRule: "cascade",
-    updateRule: "cascade",
-    fieldName: "walletid",
-  })
-  walletid!: Wallet;
+
 
   @ManyToOne(() => User, { fieldName: 'userid' })
   user!: User;
