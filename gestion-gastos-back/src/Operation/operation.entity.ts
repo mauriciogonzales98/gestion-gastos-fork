@@ -24,7 +24,7 @@ export class Operation {
   @ManyToOne(() => Wallet, { fieldName: 'walletid' })
   wallet!: Wallet;
 
-  @ManyToOne(() => Category, { fieldName: 'categoryid' })
+  @ManyToOne(() => Category, { fieldName: 'categoryid', nullable: true })
   category!: Category;
 
   @ManyToOne(() => User, { fieldName: 'userid' })

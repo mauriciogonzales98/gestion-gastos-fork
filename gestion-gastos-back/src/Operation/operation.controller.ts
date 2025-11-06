@@ -79,7 +79,7 @@ async function findAllFromWallet(req: Request, res: Response) {
     const operations = await em.find(Operation, {
       user: { id: userId },
       wallet: { id: Number(req.params.walletId) }
-    }, {populate: ['category']});
+    });
 
     return res.status(200).json({
       success: true,
@@ -191,12 +191,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export {
-  sanitizeOperationInput,
-  findAll,
-  findOne,
-  add,
-  update,
-  remove,
-  findAllFromWallet,
-};
+export { sanitizeOperationInput, findAll, findOne, add, update, remove, findAllFromWallet};
