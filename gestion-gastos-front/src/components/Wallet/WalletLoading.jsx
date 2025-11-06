@@ -1,12 +1,10 @@
 import styles from "./WalletSelector.module.css";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import WalletSelector from "./WalletSelector";
+
 const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
   const [wallets, setWallets] = useState([]);
-  const handleWalletSelect = (walletId) => {
-    setSelectedWalletId(walletId);
-  };
+  const [loadingWallets, setLoadingWallets] = useState(true);
 
   function normalizeWallets(input) {
     const arr = Array.isArray(input)
@@ -19,32 +17,36 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
       const id = w.id ?? w._id ?? null;
       const name = w.name ?? `Wallet ${id ?? ""}`;
       const coin = w.coin ?? w.currency ?? "";
-      const spend =
-        typeof w.spend === "number" ? w.spend.toFixed(2) : w.spend ?? "0.00";
-      const income =
-        typeof w.income === "number" ? w.income.toFixed(2) : w.income ?? "0.00";
-
-      const balance =
-        w.balance ??
-        Number(w.income ?? 0) - Number(w.spend ?? 0) ??
-        Number(income) - Number(spend) ??
-        "0.00";
+      
+      // Calculate numeric values first
+      const spendValue = typeof w.spend === "number" ? w.spend : parseFloat(w.spend) || 0;
+      const incomeValue = typeof w.income === "number" ? w.income : parseFloat(w.income) || 0;
+      
+      // Calculate balance
+      const balanceValue = w.balance ?? incomeValue - spendValue;
 
       return {
         id: Number(id),
         name,
         coin,
-        spend,
-        income,
-        balance:
-          typeof balance === "number" ? balance.toFixed(2) : String(balance),
+        spend: spendValue.toFixed(2),
+        income: incomeValue.toFixed(2),
+        balance: typeof balanceValue === "number" ? balanceValue.toFixed(2) : "0.00",
         user: w.user ?? w.userid ?? null,
       };
     });
   }
-  const safeWallets = normalizeWallets(wallets);
-  const [loadingWallets, setLoadingWallets] = useState(true);
+
+  const handleWalletSelect = (walletId) => {
+    setSelectedWalletId(walletId);
+  };
+
   const loadWallets = async () => {
+    if (!token) {
+      setLoadingWallets(false);
+      return;
+    }
+
     try {
       setLoadingWallets(true);
       const response = await fetch("http://localhost:3001/api/wallet", {
@@ -54,18 +56,22 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+      
       if (!response.ok) {
         throw new Error("Error al cargar wallets");
       }
+      
       const walletsData = await response.json();
-      //DEBUG
-      console.log(walletsData);
+      console.log("Wallets data:", walletsData); // DEBUG
+      
       setWallets(walletsData);
 
+      // Auto-select first wallet if none is selected and we have wallets
       if (walletsData.length > 0 && !selectedWalletId) {
-        //DEBUG
-        setSelectedWalletId(walletsData[0].id);
-        return walletsData;
+        const normalizedWallets = normalizeWallets(walletsData);
+        if (normalizedWallets.length > 0) {
+          setSelectedWalletId(normalizedWallets[0].id);
+        }
       }
     } catch (error) {
       console.error("Error loading wallets:", error);
@@ -73,16 +79,20 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
       setLoadingWallets(false);
     }
   };
-  // si el usuario, la wallet o el session token cambian, carga las wallets
+
+  // Load wallets when token changes
   useEffect(() => {
-    // Si hay un usuario logueado y autenticado
     if (token) {
-      // carga todas las wallets del usuario
-      console.log("cargando wallets");
+      console.log("Cargando wallets...");
       loadWallets();
-      console.log(wallets);
+    } else {
+      setWallets([]);
+      setLoadingWallets(false);
     }
   }, [token]);
+
+  const safeWallets = normalizeWallets(wallets);
+
   return (
     <>
       <WalletSelector
@@ -90,12 +100,14 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
         loading={loadingWallets}
         safeWallets={safeWallets}
       />
+      
       <div>
         <label className={styles.label}>Seleccionar Wallet:</label>
         <select
           value={selectedWalletId || ""}
           onChange={(e) => handleWalletSelect(parseInt(e.target.value))}
           className={styles.select}
+          disabled={loadingWallets || safeWallets.length === 0}
         >
           <option value="">Selecciona una wallet</option>
           {safeWallets.map((wallet) => (
@@ -104,8 +116,13 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId }) => {
             </option>
           ))}
         </select>
+        {loadingWallets && <span className={styles.loadingText}>Cargando wallets...</span>}
+        {!loadingWallets && safeWallets.length === 0 && (
+          <span className={styles.noWalletsText}>No hay wallets disponibles</span>
+        )}
       </div>
     </>
   );
 };
+
 export default WalletLoading;

@@ -7,37 +7,34 @@
   transition: margin-left 0.3s ease;
 }
 
-/* Layout Vertical */
-.verticalLayout {
-  display: flex;
-  flex-direction: column;
+/* Nuevo grid principal */
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr; /* 🔥 Izquierda más ancha, derecha más angosta */
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-}
-
-/* Sección Superior */
-.topSection {
-  margin-bottom: 1rem;
-}
-
-.topGrid {
-  display: grid;
-  grid-template-columns: 1fr 2fr; /* Form más ancho que wallet selector */
-  gap: 2rem;
   align-items: start;
 }
 
-/* Sección Inferior */
-.bottomSection {
-  flex: 1;
+/* Columna Izquierda: Wallet arriba, OperationList abajo */
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Columna Derecha: Solo Operation Form */
+.rightColumn {
+  display: flex;
+  flex-direction: column;
 }
 
 .walletCard {
   background: rgba(18, 130, 76, 0.15);
   border: 1px solid #12824c;
   border-radius: 20px;
-  padding: 2rem;
+  padding: 1.5rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   height: fit-content;
@@ -50,26 +47,21 @@
   padding: 2rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  min-height: 500px;
+  min-height: 550px;
   display: flex;
   flex-direction: column;
-}
-
-/* Operation Form más grande */
-.largeOperationCard {
-  min-height: 550px;
-  flex: 1;
 }
 
 .operationsListCard {
   background: rgba(16, 21, 17, 0.6);
   border: 1px solid #386d6d;
   border-radius: 20px;
-  padding: 2rem;
+  padding: 1.5rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  min-height: 600px;
-  max-height: 70vh;
+  flex: 1; 
+  min-height: 500px;
+  max-height: 100vh;
   overflow-y: auto;
 }
 
@@ -90,7 +82,7 @@
 .emptyState {
   text-align: center;
   color: #a6beb9;
-  padding: 3rem 2rem;
+  padding: 2rem;
   font-style: italic;
   flex: 1;
   display: flex;
@@ -106,17 +98,12 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
-  .topGrid {
+  .mainGrid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   
-  .operationCard,
-  .operationsListCard {
-    min-height: auto;
-  }
-  
-  .largeOperationCard {
+  .operationCard {
     min-height: 500px;
   }
 }
@@ -125,10 +112,6 @@
   .container {
     margin-left: 0;
     padding: 1rem;
-  }
-  
-  .verticalLayout {
-    gap: 1.5rem;
   }
   
   .walletCard,
@@ -140,16 +123,4 @@
   .cardTitle {
     font-size: 1.2rem;
   }
-  
-  .operationsListCard {
-    max-height: none;
-    min-height: 500px;
-  }
-}
-
-/* Para el formulario de operaciones */
-.operationFormContainer {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
 }

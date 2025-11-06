@@ -24,10 +24,8 @@ const Main = () => {
   const [operations, setOperations] = useState([]);
   const [doRefreshOperations, setDoRefreshOperations] = useState(false);
 
-  // // 🔥 NUEVA FUNCIÓN: Manejar selección de wallet y guardar en localStorage
   const handleWalletSelect = (walletId) => {
     setSelectedWalletId(walletId);
-    // Guardar en localStorage para que OperationsPage pueda acceder
     localStorage.setItem('selectedWalletId', walletId);
     console.log("Wallet guardada en localStorage:", walletId);
   };
@@ -48,7 +46,6 @@ const Main = () => {
     }
   }, [loggedIn, navigate]);
 
-  // Cuando se selecciona una wallet, carga todas las operaciones
   useEffect(() => {
     const operationsLoader = async () => {
       if (selectedWalletId) {
@@ -57,73 +54,44 @@ const Main = () => {
             selectedWalletId,
             token
           );
-          setOperations(enrichedOperations);
+          setOperations(enrichedOperations || []); // 🔥 Asegurar que siempre sea un array
           console.log("Operaciones cargadas:", enrichedOperations);
         } catch (err) {
           console.log("Error cargando operaciones enriquecidas al main", err);
-          setOperations([]);
+          setOperations([]); // 🔥 En caso de error, establecer array vacío
         }
       }
     };
     operationsLoader();
   }, [selectedWalletId, token, doRefreshOperations]);
 
-  // Función que refresca las operaciones
   const refreshOperations = () => {
     setDoRefreshOperations(prev => !prev);
   };
 
   return (
     <div className={styles.container}>
-      {/* Layout Vertical - Arriba: Wallet y Form, Abajo: Historial */}
-      <div className={styles.verticalLayout}>
+      <div className={styles.mainGrid}>
         
-        {/* Sección Superior: Wallet Selection y Operation Form */}
-        <div className={styles.topSection}>
-          <div className={styles.topGrid}>
-
-            {/* Wallet Selection */}
-            <div className={styles.walletCard}>
-              <h2 className={styles.cardTitle}>Seleccionar Wallet</h2>
-              <div className={styles.walletSelector}>
-                {/* 🔥 ACTUALIZADO: Pasar handleWalletSelect en lugar de setSelectedWalletId */}
-                <WalletLoading
-                  token={token}
-                  selectedWalletId={selectedWalletId}
-                  setSelectedWalletId={handleWalletSelect}  // 🔥 CAMBIADO AQUÍ
-                />
-              </div>
-
-
+        {/* Columna Izquierda: Wallet y OperationList */}
+        <div className={styles.leftColumn}>
+          {/* Wallet Selection */}
+          <div className={styles.walletCard}>
+            <h2 className={styles.cardTitle}>Seleccionar Wallet</h2>
+            <div className={styles.walletSelector}>
+              <WalletLoading
+                token={token}
+                selectedWalletId={selectedWalletId}
+                setSelectedWalletId={handleWalletSelect}  
+              />
             </div>
+          </div>
 
-
-
-            {/* Operation Form - MÁS GRANDE */}
-            <div className={`${styles.operationCard} ${styles.largeOperationCard}`}>
-              <h2 className={styles.cardTitle}>Registrar Operación</h2>
-              {selectedWalletId ? (
-                <OperationForm
-                  walletId={selectedWalletId}
-                  token={token}
-                  onOperationAdded={refreshOperations}
-                  doRefreshOperations={doRefreshOperations}
-                  setDoRefreshOperations={setDoRefreshOperations}
-                />
-              ) : (
-                <div className={styles.emptyState}>
-                  <h3>Selecciona una Wallet</h3>
-                  <p>Para registrar operaciones, primero selecciona una wallet</p>
-                </div>
-              )}
-            </div>
-
-            
-            {/* Historial de Operaciones */}
+          {/* OperationList debajo de Wallet */}
           <div className={styles.operationsListCard}>
-            <h2 className={styles.cardTitle}>Historial de Operaciones</h2>
+            <h2 className={styles.cardTitle}>Tus últimas operaciones</h2>
             {selectedWalletId ? (
-              operations.length > 0 ? (
+              operations && operations.length > 0 ? ( // 🔥 VERIFICAR que operations existe Y tiene length
                 <OperationList
                   operations={operations}
                   token={token}
@@ -131,7 +99,6 @@ const Main = () => {
                   selectedWalletId={selectedWalletId}
                   doRefreshOperations={doRefreshOperations}
                   setDoRefreshOperations={setDoRefreshOperations}
-                  // Desactiva los filtros y muestra solo las últimas 5 operaciones
                   filterEnabled={false}
                 />
               ) : (
@@ -147,13 +114,27 @@ const Main = () => {
               </div>
             )}
           </div>
-
-          </div>
         </div>
 
-        {/* Sección Inferior: Historial de Operaciones con Filtros */}
-        <div className={styles.bottomSection}>
-
+        {/* Columna Derecha: Operation Form */}
+        <div className={styles.rightColumn}>
+          <div className={`${styles.operationCard} ${styles.largeOperationCard}`}>
+            <h2 className={styles.cardTitle}>Registrar Operación</h2>
+            {selectedWalletId ? (
+              <OperationForm
+                walletId={selectedWalletId}
+                token={token}
+                onOperationAdded={refreshOperations}
+                doRefreshOperations={doRefreshOperations}
+                setDoRefreshOperations={setDoRefreshOperations}
+              />
+            ) : (
+              <div className={styles.emptyState}>
+                <h3>Selecciona una Wallet</h3>
+                <p>Para registrar operaciones, primero selecciona una wallet</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
