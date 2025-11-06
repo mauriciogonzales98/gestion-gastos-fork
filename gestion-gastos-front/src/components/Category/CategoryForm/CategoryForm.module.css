@@ -1,66 +1,76 @@
 .container {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: rgba(6, 23, 13, 0.7);
+  border: 1px solid #386d6d;
+  border-radius: 16px;
+  color: #e9e8ee;
+  width: calc(100% - 3rem);
 }
 
 .title {
-  color: #333;
-  margin-bottom: 30px;
+  color: #e9e8ee;
+  margin-bottom: 2rem;
   text-align: center;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.sectionTitle {
-  color: #555;
-  margin: 0 0 8px 0;
-  font-size: 16px;
+  font-size: 1.75rem;
   font-weight: 600;
 }
 
-.input {
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  width: 100%;
-  box-sizing: border-box;
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.submitButton {
-  padding: 12px 24px;
-  background-color: #007bff;
-  color: white;
+.createButton {
+  background: #12824c;
+  color: #e9e8ee;
   border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
-.submitButton:hover {
-  background-color: #0056b3;
+.createButton:hover {
+  background: #0f7242;
+  transform: translateY(-1px);
 }
 
-.submitButton:active {
-  background-color: #004085;
+@media (max-width: 768px) {
+  .container {
+    margin: 1.5rem auto;
+    padding: 2rem 1.5rem;
+    width: calc(100% - 2rem);
+  }
+  
+  .headerContainer {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .createButton {
+    width: 100%;
+  }
 }
 
-.fieldGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+@media (max-width: 480px) {
+  .container {
+    margin: 1rem auto;
+    padding: 1.5rem 1.25rem;
+    width: calc(100% - 1.5rem);
+  }
 }

@@ -1,0 +1,120 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #050a06 0%, #082213 50%, #0b2d2d 100%);
+  padding: 2rem;
+  color: #e9e8ee;
+  margin-left: none;
+  transition: margin-left 0.3s ease;
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.section {
+  background: rgba(16, 21, 17, 0.6);
+  border: 1px solid #386d6d;
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  color: #e9e8ee;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border-bottom: 2px solid rgba(233, 232, 238, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.button {
+  background: #1b8188;
+  color: #e9e8ee;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  margin: 0.5rem 0;
+  width: 100%;
+  max-width: 300px;
+}
+
+.button:hover {
+  background: #167179;
+  transform: translateY(-1px);
+}
+
+.dangerButton {
+  background: #dc3545;
+  color: white;
+}
+
+.dangerButton:hover {
+  background: #c82333;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.errorMessage {
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #ff6b6b;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.formContainer {
+  background: rgba(8, 34, 38, 0.8);
+  border: 1px solid #1b8188;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.googleWarning {
+  background: rgba(179, 133, 0, 0.1);
+  border: 1px solid #b38500;
+  color: #e9e8ee;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .section {
+    padding: 1.5rem;
+  }
+  
+  .button {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .buttonGroup {
+    gap: 0.75rem;
+  }
+}

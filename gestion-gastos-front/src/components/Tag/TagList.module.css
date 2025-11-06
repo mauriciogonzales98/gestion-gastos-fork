@@ -1,60 +1,75 @@
-/* TagList.module.css */
 .container {
   padding: 20px;
+  background: rgba(7, 27, 30, 0.9);
+  border: 1px solid #15646a;
+  border-radius: 16px;
+  margin-bottom: 2rem;
 }
 
 .title {
   margin-bottom: 20px;
   text-align: center;
+  color: #e9e8ee;
+  font-size: 1.4rem;
+  font-weight: 600;
 }
 
 .loadingContainer {
-  padding: 20px;
+  padding: 40px;
   text-align: center;
+  color: #e9e8ee;
 }
 
 .errorContainer {
   padding: 20px;
-  color: #dc3545;
+  color: #ff6b6b;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  border-radius: 8px;
+  text-align: center;
 }
 
 .retryButton {
   margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #dc3545;
+  padding: 8px 16px;
+  background: #dc3545;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
 
 .retryButton:hover {
-  background-color: #c82333;
+  background: #c82333;
 }
 
 .emptyState {
   text-align: center;
   padding: 40px;
+  color: #a6beb9;
 }
 
 .reloadButton {
   padding: 10px 20px;
-  background-color: #007bff;
+  background: #15646a;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   margin-top: 10px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
 
 .reloadButton:hover {
-  background-color: #0056b3;
+  background: #12555a;
 }
 
 .tagsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 15px;
   justify-content: center;
   align-items: start;
@@ -66,20 +81,18 @@
   align-items: center;
   gap: 8px;
   padding: 15px;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 12px;
+  background: rgba(233, 232, 238, 0.05);
+  border: 1px solid #15646a;
+  border-radius: 8px;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
   position: relative;
 }
 
 .tagCard:hover {
-  background-color: #e9ecef;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  border-color: #12824c;
+  background: rgba(21, 100, 106, 0.1);
+  border-color: #15646a;
 }
 
 .tagCard:hover::after {
@@ -87,7 +100,7 @@
   position: absolute;
   top: -5px;
   right: -5px;
-  background: #12824c;
+  background: #15646a;
   color: white;
   border-radius: 50%;
   width: 20px;
@@ -96,19 +109,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 
 @media (max-width: 768px) {

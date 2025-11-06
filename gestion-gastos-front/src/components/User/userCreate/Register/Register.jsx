@@ -5,10 +5,9 @@ import {
   fbEmailPasswordSignIn,
   fbGoogleSignIn,
 } from "../../../../Firebase/auth.js";
-import Form from "react-bootstrap/Form";
 import { getAuth } from "firebase/auth";
-
 import StatusService from "../../../../Services/status/serviceStatus.js";
+import styles from "./Register.module.css";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -57,11 +56,9 @@ const Register = () => {
   // Register with email and password
   const submitForm = async (e) => {
     e.preventDefault();
-
     setErrorMessage("");
 
     if (isRegistering) return;
-
     setIsRegistering(true);
 
     try {
@@ -120,13 +117,11 @@ const Register = () => {
     setErrorMessage("");
 
     if (isRegistering) return;
-
     setIsRegistering(true);
 
     try {
       // Google sign up creates the Firebase user immediately
       await fbGoogleSignIn();
-      // const user = result.user;
       const user = getAuth().currentUser;
 
       console.log("Google registration successful:", user);
@@ -139,10 +134,7 @@ const Register = () => {
           email: user.email,
         };
 
-        // Register in backend
-        // await registrationProcess(userData);
         await registerWithGoogle(user, userData);
-
         navigate("/Main");
       }
     } catch (err) {
@@ -177,89 +169,110 @@ const Register = () => {
     } catch (error) {
       console.log(error);
     }
-    };
+  };
+
   return (
-    <>
-      <div className="register-container">
-        <h2>Register</h2>
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h2 className={styles.title}>Crear Cuenta</h2>
         {errorMessage && (
-          <p
-            className="error-message"
-            style={{ color: "brown", backgroundColor: "lightyellow" }}
-          >
+          <div className={styles.errorMessage}>
             {errorMessage}
-          </p>
+          </div>
         )}
 
-        <form className="register-form" onSubmit={submitForm}>
-          <Form.Group>
-            <label htmlFor="name">Name</label>
-            <Form.Control
+        <form className={styles.form} onSubmit={submitForm}>
+          <div className={styles.formGroup}>
+            <label htmlFor="name" className={styles.label}>Nombre</label>
+            <input
               type="text"
               id="name"
               name="name"
+              className={styles.input}
               required
               disabled={isRegistering}
             />
-            <label htmlFor="surname">Surname</label>
-            <Form.Control
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="surname" className={styles.label}>Apellido</label>
+            <input
               type="text"
               id="surname"
               name="surname"
+              className={styles.input}
               required
               disabled={isRegistering}
             />
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="email">Email</label>
-            <Form.Control
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="email" className={styles.label}>Email</label>
+            <input
               type="email"
               id="email"
               name="email"
+              className={styles.input}
               required
               disabled={isRegistering}
             />
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="password">Password</label>
-            <Form.Control
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="password" className={styles.label}>Contraseña</label>
+            <input
               type="password"
               id="password"
               name="password"
+              className={styles.input}
               required
               disabled={isRegistering}
               minLength={8}
             />
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <Form.Control
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="confirmPassword" className={styles.label}>Confirmar Contraseña</label>
+            <input
               type="password"
               id="confirmPassword"
               name="confirmPassword"
+              className={styles.input}
               required
               disabled={isRegistering}
               minLength={8}
             />
-          </Form.Group>
-          <button type="submit" disabled={isRegistering}>
-            {isRegistering ? "Registering..." : "Register"}
+          </div>
+
+          <button 
+            type="submit" 
+            className={styles.submitButton}
+            disabled={isRegistering}
+          >
+            {isRegistering ? "Creando cuenta..." : "Registrarse"}
           </button>
         </form>
 
-        <p>
-          ¿Le diste al link sin querer? Inicia sesión acá.{" "}
-          <a href="/login">Iniciar sesión</a>
-        </p>
+        <div className={styles.divider}>
+          <div className={styles.dividerLine}></div>
+          <span className={styles.dividerText}>o</span>
+          <div className={styles.dividerLine}></div>
+        </div>
 
-        <p>
-          ¿Preferís venderle tus datos a google?
-          <button onClick={onGoogleRegister} disabled={isRegistering}>
-            {isRegistering ? "Registering..." : "Registrarse con Google"}
-          </button>
-        </p>
+        <button 
+          onClick={onGoogleRegister}
+          className={styles.googleButton}
+          disabled={isRegistering}
+        >
+          {isRegistering ? "Procesando..." : "Registrarse con Google"}
+        </button>
+
+        <div className={styles.linkContainer}>
+          ¿Ya tienes una cuenta?{" "}
+          <a href="/login" className={styles.link}>Iniciar sesión</a>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

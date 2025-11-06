@@ -14,33 +14,37 @@ const TagList = ({ tags, loading, onEdit }) => {
 
   if (loading) {
     return (
-      <div className={styles.loadingContainer}>
-        <div>Cargando tags...</div>
+      <div className={styles.container}>
+        <div className={styles.loadingContainer}>
+          <div>Cargando etiquetas...</div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={styles.errorContainer}>
-        <div>Error: {error}</div>
-        <button
-          onClick={() => window.location.reload()}
-          className={styles.retryButton}
-        >
-          Reintentar
-        </button>
+      <div className={styles.container}>
+        <div className={styles.errorContainer}>
+          <div>Error al cargar las etiquetas</div>
+          <button
+            onClick={() => window.location.reload()}
+            className={styles.retryButton}
+          >
+            Reintentar
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <>
-      <h2 className={styles.title}>Mis Tags ({tags.length})</h2>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Mis Etiquetas ({tags.length})</h2>
 
       {tags.length === 0 ? (
         <div className={styles.emptyState}>
-          <p>No tienes tags creados</p>
+          <p>No tienes etiquetas creadas</p>
           <button
             onClick={() => window.location.reload()}
             className={styles.reloadButton}
@@ -62,7 +66,7 @@ const TagList = ({ tags, loading, onEdit }) => {
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
