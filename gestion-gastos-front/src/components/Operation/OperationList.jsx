@@ -44,6 +44,8 @@ const OperationList = ({
   // Tag seleccionado para el filtro
   const [selectedTagId, setSelectedTagId] = useState(null);
   const [showOperationList, setShowOperationList] = useState(true);
+
+  const [enrichedOperations, setEnrichedOperations] = useState([]);
   const dates = {
     from: selectedDates.from,
     to: selectedDates.to,
@@ -81,7 +83,9 @@ const OperationList = ({
         selectedWalletId,
         token
       );
-      setOperations(enrichedOperations);
+      setOperations(enrichedOperations).then(() => {
+        console.log("Operaciones refrescadas:", enrichedOperations);
+      });
     } catch (err) {
       console.log("Error refreshing operations:", err);
       setOperations([]);
@@ -92,6 +96,9 @@ const OperationList = ({
     setDoRefreshOperations(false);
   }
   //Cuando se selecciona una wallet, carga todas las operaciones, cargando las categorías e insertandolas en el objeto
+
+
+
   const operationsLoader = async () => {
     if (selectedWalletId) {
       try {
@@ -111,6 +118,9 @@ const OperationList = ({
       }
     }
   };
+
+useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[enrichedOperations, setEnrichedOperations]);
+
   useEffect(() => {
     operationsLoader();
   }, [selectedWalletId, token]);
