@@ -5,9 +5,10 @@
 }
 
 .app-container {
-  display: flex;
-  min-height: 100%;
-  background: #ccc4c4;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #050a06 0%, #082213 50%, #0b2d2d 100%);
+  margin-left: none;
+  transition: margin-left 0.3s ease;
 }
 
 .App-logo {

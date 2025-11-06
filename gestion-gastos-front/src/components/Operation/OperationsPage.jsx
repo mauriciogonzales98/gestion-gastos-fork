@@ -26,7 +26,14 @@ const OperationsPage = () => {
         const savedWalletId = localStorage.getItem('selectedWalletId');
         console.log("Wallet ID desde localStorage:", savedWalletId);
         
-        if (savedWalletId && savedWalletId !== "null" && savedWalletId !== "undefined") {
+        // Verificación más robusta
+        const isValidWalletId = savedWalletId && 
+                               savedWalletId !== "null" && 
+                               savedWalletId !== "undefined" && 
+                               savedWalletId !== "" &&
+                               savedWalletId !== "0";
+        
+        if (isValidWalletId) {
           setSelectedWalletId(savedWalletId);
           
           // Cargar operaciones de esa wallet
@@ -36,6 +43,7 @@ const OperationsPage = () => {
           );
           setOperations(enrichedOperations ? enrichedOperations.reverse() : []);
         } else {
+          console.log("No hay wallet válida seleccionada");
           setSelectedWalletId(null);
           setOperations([]);
         }
@@ -63,6 +71,12 @@ const OperationsPage = () => {
     navigate("/main");
   };
 
+  // DEBUG: Agregar console.log para ver el estado
+  useEffect(() => {
+    console.log("Estado actual - selectedWalletId:", selectedWalletId, "Tipo:", typeof selectedWalletId);
+    console.log("Operaciones cargadas:", operations.length);
+  }, [selectedWalletId, operations]);
+
   if (loading) {
     return (
       <div className={styles.container}>
@@ -78,10 +92,6 @@ const OperationsPage = () => {
       <div className={styles.header}>
         <h1 className={styles.title}>Mis Operaciones</h1>
         <p className={styles.subtitle}>
-          {selectedWalletId 
-            ? "Historial de operaciones de tu wallet seleccionada"
-            : "No hay wallet seleccionada"
-          }
         </p>
       </div>
 
@@ -99,7 +109,7 @@ const OperationsPage = () => {
             />
           ) : (
             <div className={styles.emptyState}>
-              <h2>No hay operaciones en esta wallet</h2>
+              <h2>No hay operaciones para mostrar</h2>
               <p>Esta wallet no tiene operaciones registradas</p>
               <button 
                 className={styles.homeButton}

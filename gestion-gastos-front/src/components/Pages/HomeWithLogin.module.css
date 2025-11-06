@@ -1,0 +1,51 @@
+.splitLayout {
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(135deg, #050a06 0%, #082213 50%, #0b2d2d 100%);
+  overflow: hidden;
+}
+
+.leftPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem; /* Menos padding */
+  background: rgba(16, 21, 17, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.rightPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem; /* Menos padding */
+  position: relative;
+  overflow: hidden;
+}
+
+.rightPanel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(18, 130, 76, 0.1), rgba(27, 129, 136, 0.1));
+  z-index: 1;
+}
+
+@media (max-width: 968px) {
+  .splitLayout {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .leftPanel, .rightPanel {
+    min-height: 50vh;
+    flex: none;
+    padding: 2rem 1rem;
+  }
+}

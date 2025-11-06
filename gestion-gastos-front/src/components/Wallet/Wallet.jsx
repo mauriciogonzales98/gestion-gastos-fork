@@ -140,7 +140,7 @@ const WalletSelector = ({
             }}
           >
             <div style={{ fontWeight: "bold", fontSize: "16px" }}>
-              Wallet seleccionada: {selectedWallet.name}
+              Seleccionaste: {selectedWallet.name}
             </div>
             <div style={{ fontSize: "14px", opacity: "0.9" }}>
               Balance: ${selectedWallet.balance || "0.00"}
