@@ -9,6 +9,8 @@ import { PasswordInput } from "../Login/PasswordInputs.jsx";
 import ChangePassword from "../User/userUpdate/PasswordChangeManager.jsx";
 import ChangeEmail from "../User/userUpdate/EmailChangeManager.jsx";
 import FullNameChange from "../User/userUpdate/FullNameChangeManager.jsx";
+import MercadoPagoSync from "../User/userMercadoPago/MercadoPagoSync.jsx";
+
 const Profile = () => {
   // El usuario actual, traído de FB
   const currentUser = getAuth().currentUser;
@@ -33,6 +35,11 @@ const Profile = () => {
       <AuthContext.Consumer>
         {(value) => (
           <>
+
+            <div>
+              <h2>Sincronización con Mercado Pago</h2>
+              <MercadoPagoSync />
+            </div>
             <div>
               {/* COMIENZO del JSX para borrado de cuenta */}
               {/* Botón que abre el formulario de Borrado de Cuenta */}

@@ -1,102 +1,81 @@
-import { MercadoPagoConfig, Payment } from 'mercadopago';
-import 'dotenv/config';
+// // mercadoPago.service.ts
+// export class MercadoPagoService {
+  
+//   public async syncUserMovements(userId: string) {
+//     try {
+//       // 1. Obtener tokens del usuario desde tu DB
+//       const userTokens = await this.getUserTokens(userId);
+      
+//       if (!userTokens) {
+//         throw new Error('User not connected to Mercado Pago');
+//       }
 
-export class MercadoPagoImportService {
-  private client: MercadoPagoConfig;
-  private payment: Payment;
+//       // 2. Obtener movimientos de Mercado Pago
+//       const movements = await this.fetchMovements(userTokens.mp_access_token);
+      
+//       // 3. Procesar y guardar en tu base de datos
+//       const savedMovements = await this.processAndSaveMovements(userId, movements);
+      
+//       return savedMovements;
+      
+//     } catch (error) {
+//       console.error('Sync error:', error);
+//       throw error;
+//     }
+//   }
 
-  // constructor() {
-  //   this.client = new MercadoPagoConfig({ 
-  //     accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN! 
-  //   });
-  //   this.payment = new Payment(this.client);
-  // }
-
-  constructor() {
-    const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+//   private async fetchMovements(accessToken: string) {
+//     const today = new Date();
+//     const thirtyDaysAgo = new Date(today.setDate(today.getDate() - 30));
     
-    // Debug: verificar que el token existe
-    console.log('Mercado Pago Access Token:', accessToken ? '✅ Presente' : '❌ Faltante');
-    if (!accessToken) {
-      console.error('❌ MERCADO_PAGO_ACCESS_TOKEN no está definido en las variables de entorno');
-    }
+//     const response = await fetch(`https://api.mercadopago.com/v1/payments/search?date_created.from=${thirtyDaysAgo.toISOString()}&sort=date_created&criteria=desc`, {
+//       headers: {
+//         'Authorization': `Bearer ${accessToken}`
+//       }
+//     });
 
-    this.client = new MercadoPagoConfig({ 
-      accessToken: accessToken!
-    });
-    this.payment = new Payment(this.client);
+//     if (!response.ok) {
+//       throw new Error('Failed to fetch movements');
+//     }
 
-    console.log('🔧 Cliente Mercado Pago configurado');
-  }
+//     return await response.json();
+//   }
 
-  async importMovements(startDate: string, endDate: string) {
-    try {
-      console.log('Buscando movimientos desde', startDate, 'hasta', endDate);
-
-      const paymentsResponse = await this.payment.search({
-        options: {
-          date_created_from: `${startDate}T00:00:00.000-00:00`,
-          date_created_to: `${endDate}T23:59:59.000-00:00`,
-          sort: 'date_created',
-          criteria: 'desc'
-        }
-      });
-
-      const payments = paymentsResponse.results || [];
-      console.log(`Encontrados ${payments.length} pagos`);
-
-      // Usar tipo any para evitar problemas de tipos
-      const movements = payments.map((payment: any) => ({
-        externalId: `mp_${payment.id}`,
-        type: (payment.operation_type === 'money_in' || payment.payment_type_id === 'account_money') ? 'income' : 'expense',
-        amount: Math.abs(payment.transaction_amount || 0),
-        description: payment.description || 'Movimiento Mercado Pago',
-        date: new Date(payment.date_created),
-        category: this.mapCategory(payment),
-        paymentMethod: this.getPaymentMethod(payment),
-        status: payment.status || 'unknown'
-      }));
-
-      return {
-        success: true,
-        data: movements,
-        summary: {
-          total: movements.length,
-          incomes: movements.filter((m: any) => m.type === 'income').length,
-          expenses: movements.filter((m: any) => m.type === 'expense').length
-        }
-      };
-
-    } catch (error: any) {
-      console.error('Error importing from Mercado Pago:', error);
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-
-  private mapCategory(payment: any): string {
-    const defaultCategories: { [key: string]: string } = {
-      'credit_card': 'Compras',
-      'debit_card': 'Compras', 
-      'account_money': 'Transferencia',
-      'ticket': 'Pago en efectivo',
-      'bank_transfer': 'Transferencia bancaria'
-    };
+//   private async processAndSaveMovements(userId: string, mpMovements: any) {
+//     const processedMovements = [];
     
-    return defaultCategories[payment.payment_type_id] || 'Otros';
-  }
-
-  private getPaymentMethod(payment: any): string {
-    const methods: { [key: string]: string } = {
-      'credit_card': 'Tarjeta de crédito',
-      'debit_card': 'Tarjeta de débito',
-      'account_money': 'Saldo MP',
-      'ticket': 'Efectivo',
-      'bank_transfer': 'Transferencia'
-    };
+//     for (const movement of mpMovements.results) {
+//       // Mapear movimiento de MP a tu esquema
+//       const processedMovement = {
+//         user_id: userId,
+//         external_id: movement.id,
+//         amount: movement.transaction_amount,
+//         type: movement.transaction_amount > 0 ? 'income' : 'expense',
+//         description: movement.description || 'Movimiento MP',
+//         category: this.mapMPCategory(movement),
+//         date: new Date(movement.date_created),
+//         payment_method: movement.payment_method_id,
+//         status: movement.status,
+//         sync_source: 'mercado_pago'
+//       };
+      
+//       // Guardar en tu base de datos
+//       const saved = await this.saveMovement(processedMovement);
+//       processedMovements.push(saved);
+//     }
     
-    return methods[payment.payment_type_id] || 'Mercado Pago';
-  }
-}
+//     return processedMovements;
+//   }
+
+//   private mapMPCategory(movement: any): string {
+//     // Mapear categorías de MP a tus categorías
+//     const categoryMap: { [key: string]: string } = {
+//       'account_funding': 'income',
+//       'payment': 'expense',
+//       'transfer': 'transfer',
+//       'withdrawal': 'withdrawal'
+//     };
+    
+//     return categoryMap[movement.payment_type_id] || 'other';
+//   }
+// }

@@ -1,34 +1,24 @@
-import {
-  BaseEntity,
-  DateTimeType,
-  Entity,
-  ManyToOne,
-  PrimaryKey,
-  Enum,
-} from "@mikro-orm/core";
-import { Property } from "@mikro-orm/core";
-import { User } from "../User/user.entity.js";
-import { Category } from "../Category/category.entity.js";
-import { Tag } from "../Tag/tag.entity.js";
-import { Wallet } from "../Wallet/wallet.entity.js";
+import { BaseEntity, Entity, PrimaryKey, DateTimeType, Property, ManyToOne, Unique, Enum } from '@mikro-orm/core';
+import { User } from '../User/user.entity.js';
+import { Category } from '../Category/category.entity.js';
+import { Wallet } from '../Wallet/wallet.entity.js';
+import { Tag } from '../Tag/tag.entity.js';
 
 export enum OperationType {
   GASTO = "gasto",
   INGRESO = "ingreso",
 }
 
+// @Unique({ properties: ['user', 'externalId'] })
 @Entity()
-export class Operation extends BaseEntity {
+export class Operation {
   @PrimaryKey()
   id!: number;
 
-  @Property({ nullable: true })
+  @Property({ type: 'decimal', precision: 12, scale: 2 })
   amount!: number;
 
-  @Property({ type: DateTimeType, nullable: true })
-  date!: Date;
-
-  @Property({ nullable: true })
+  @Property()
   description!: string;
 
   @Enum({
@@ -38,24 +28,26 @@ export class Operation extends BaseEntity {
   })
   type!: OperationType;
 
-  @ManyToOne({
-    entity: () => User,
-    nullable: false,
-    deleteRule: "cascade",
-    updateRule: "cascade",
-    fieldName: "userid",
-  })
-  user!: User;
+  @Property({ type: DateTimeType, nullable: true })
+  date!: Date;
 
-  @ManyToOne({
-    entity: () => Category,
-    nullable: true,
-    deleteRule: "cascade",
-    updateRule: "cascade",
-    fieldName: "categoryid",
-  })
-  categoryid!: Category;
+  @ManyToOne(() => Wallet, { fieldName: 'walletid' })
+  wallet!: Wallet;
 
+  @ManyToOne(() => Category, { fieldName: 'categoryid', nullable: true })
+  category!: Category;
+
+  @Property({ fieldName: 'external_id', nullable: true })
+  externalId?: string;
+
+  @Property({ fieldName: 'sync_source', nullable: true })
+  syncSource?: string;
+
+  @Property({ fieldName: 'payment_method', nullable: true })
+  paymentMethod?: string;
+
+  @Property({ nullable: true })
+  status?: string;
   @ManyToOne({
     entity: () => Tag,
     nullable: true,
@@ -73,4 +65,17 @@ export class Operation extends BaseEntity {
     fieldName: "walletid",
   })
   walletid!: Wallet;
+
+  @ManyToOne(() => User, { fieldName: 'userid' })
+  user!: User;
+
+  constructor(amount: number, description: string, date: Date, type: OperationType, wallet: Wallet, category: Category, user: User) {
+    this.amount = amount;
+    this.description = description;
+    this.date = date;
+    this.type = type;
+    this.wallet = wallet;
+    this.category = category;
+    this.user = user;
+  }
 }

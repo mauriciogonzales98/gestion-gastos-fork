@@ -7,6 +7,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
   const [operationType, setOperationType] = useState("gasto");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [operationDate, setOperationDate] = useState(""); // Nuevo estado para la fecha
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [selectedTagId, setSelectedTagId] = useState(null); 
@@ -34,6 +35,11 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
     };
 
     loadCategories();
+    
+    // Establecer fecha actual por defecto
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    setOperationDate(formattedDate);
   }, [token]);
 
   const handleSubmit = async (e) => {
@@ -54,6 +60,11 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
       return;
     }
 
+    if (!operationDate) {
+      setMessage("Selecciona una fecha para la operación");
+      return;
+    }
+
     setLoading(true);
     setMessage("");
 
@@ -64,7 +75,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
       walletid: walletId,
       categoryid: parseInt(selectedCategoryId) || null,
       tagid: selectedTagId == -1 ? null : selectedTagId, // Manejo en caso de haber seleccionado "sin etiqueta"
-      date: new Date().toISOString(),
+      date: new Date(operationDate + 'T12:00:00').toISOString(), // Agregar hora para evitar problemas de zona horaria
     };
 
     console.log("Submitting operation:", operationData);
@@ -86,6 +97,11 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
         setDescription("");
         setSelectedCategoryId("");
         setSelectedTagId(null); // ✅ LIMPIAR EL TAG TAMBIÉN
+        
+        // Restablecer a fecha actual
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+        setOperationDate(formattedDate);
 
         if (onOperationAdded) {
           onOperationAdded();
@@ -169,6 +185,21 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
 
       <form onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
+          <label className={styles.label}>Monto:</label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+            disabled={!walletId || loading}
+            className={styles.input}
+            step="1"
+            min="0.0"
+            placeholder="0.00"
+          />
+        </div>
+
+        <div className={styles.formGroup}>
           <label className={styles.label}>Descripción:</label>
           <input
             type="text"
@@ -181,19 +212,17 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
           />
         </div>
 
+        {/* ✅ Date Picker para seleccionar fecha */}
         <div className={styles.formGroup}>
-          <label className={styles.label}>Monto:</label>
+          <label className={styles.label}>Fecha de la Operación:</label>
           <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            type="date"
+            value={operationDate}
+            onChange={(e) => setOperationDate(e.target.value)}
             required
             disabled={!walletId || loading}
             className={styles.input}
-            step="0.01"
-            min="0.01"
-            max="9999999999.99"
-            placeholder="0.00"
+            max={new Date().toISOString().split('T')[0]} // No permitir fechas futuras
           />
         </div>
 
@@ -215,7 +244,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
 
         <button
           type="submit"
-          disabled={!walletId || loading || !amount}
+          disabled={!walletId || loading || !amount || !operationDate}
           className={`${styles.submitButton} ${getSubmitButtonStyle()}`}
         >
           {loading
