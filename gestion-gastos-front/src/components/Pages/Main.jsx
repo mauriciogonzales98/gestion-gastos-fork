@@ -15,10 +15,10 @@ import {
 
 const Main = () => {
   const navigate = useNavigate();
-  const { loggedIn, user } = useAuth();
+  const { loggedIn } = useAuth();
   const currentUser = getAuth().currentUser;
 
-  const { token, loadingToken, refreshToken } = useToken();
+  const { token } = useToken();
 
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [operations, setOperations] = useState([]);
