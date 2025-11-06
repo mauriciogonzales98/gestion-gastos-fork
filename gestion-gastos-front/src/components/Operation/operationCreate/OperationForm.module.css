@@ -136,6 +136,68 @@
   opacity: 0.7;
 }
 
+/* ✅ ESTILOS ESPECÍFICOS PARA EL DATE PICKER */
+.input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: white;
+  font-family: inherit;
+}
+
+.input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 3px;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
+
+.input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  background-color: #e9ecef;
+}
+
+.input[type="date"]::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  background: transparent;
+}
+
+.input[type="date"]::-webkit-datetime-edit-text {
+  color: #6c757d;
+  padding: 0 2px;
+}
+
+.input[type="date"]::-webkit-datetime-edit-month-field,
+.input[type="date"]::-webkit-datetime-edit-day-field,
+.input[type="date"]::-webkit-datetime-edit-year-field {
+  color: #495057;
+}
+
+.input[type="date"]:focus::-webkit-calendar-picker-indicator {
+  background-color: #e3f2fd;
+}
+
+/* Estilos para Firefox */
+.input[type="date"]::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.input[type="date"]::-moz-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 3px;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
+
+.input[type="date"]::-moz-calendar-picker-indicator:hover {
+  background-color: #e9ecef;
+}
+
 .categorySection {
   margin-bottom: 25px;
 }

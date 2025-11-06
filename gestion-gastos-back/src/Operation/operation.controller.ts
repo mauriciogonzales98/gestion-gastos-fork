@@ -45,7 +45,7 @@ async function findAll(req: Request, res: Response) {
 
     const user = await em.findOne(User, { id: userId });
 
-    const operations = await em.find(Operation, { user: { id: userId } });
+    const operations = await em.find(Operation, { user: { id: userId } }, {populate: ['category']});
 
     return res.status(200).json({
       success: true,
@@ -75,10 +75,11 @@ async function findAllFromWallet(req: Request, res: Response) {
 
     const user = await em.findOne(User, { id: userId });
 
+    // const categoryId = Number(req.params.categoryId) || 0;
     const operations = await em.find(Operation, {
       user: { id: userId },
-      wallet: { id: Number(req.params.walletId) },
-    });
+      wallet: { id: Number(req.params.walletId) }
+    }, {populate: ['category']});
 
     return res.status(200).json({
       success: true,
@@ -150,12 +151,28 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const operationToUpdate = await em.findOneOrFail(Operation, { id: id });
+    const operationToUpdate = await em.findOneOrFail(Operation, { id });
+
+    // Actualizar manualmente relaciones
+    if (req.body.sanitizedInput.walletid) {
+      const wallet = await em.findOneOrFail(Wallet, { id: req.body.sanitizedInput.walletid });
+      req.body.sanitizedInput.wallet = wallet;
+      delete req.body.sanitizedInput.walletid;
+    }
+
+    if (req.body.sanitizedInput.categoryid) {
+      const category = await em.findOneOrFail(Category, { id: req.body.sanitizedInput.categoryid });
+      req.body.sanitizedInput.category = category;
+      delete req.body.sanitizedInput.categoryid;
+    }
+
     em.assign(operationToUpdate, req.body.sanitizedInput);
     await em.flush();
-    res
-      .status(200)
-      .json({ message: "operation updated", data: operationToUpdate });
+
+    res.status(200).json({
+      message: "operation updated",
+      data: operationToUpdate,
+    });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
