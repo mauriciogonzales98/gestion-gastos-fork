@@ -45,7 +45,7 @@ const WalletSelector = ({ selectedWalletId, loading, safeWallets }) => {
             Wallet seleccionada: {selectedWallet.name}
           </div>
           <div className={styles.walletBalance}>
-            Balance: ${selectedWallet.balance || "0.00"}
+            Balance: $ {selectedWallet.balance || "0.00"}
           </div>
         </div>
       )}

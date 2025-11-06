@@ -142,6 +142,10 @@ async function add(req: Request, res: Response) {
     });
 
     await em.persistAndFlush(operation);
+
+    const { calculateWalletBalances } = await import('../Wallet/wallet.controller.js');
+    await calculateWalletBalances(operation.wallet.id);
+
     res.status(201).json({ message: "operation created", data: operation });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -169,6 +173,9 @@ async function update(req: Request, res: Response) {
     em.assign(operationToUpdate, req.body.sanitizedInput);
     await em.flush();
 
+    const { calculateWalletBalances } = await import('../Wallet/wallet.controller.js');
+    await calculateWalletBalances(operationToUpdate.wallet.id);
+
     res.status(200).json({
       message: "operation updated",
       data: operationToUpdate,
@@ -185,6 +192,10 @@ async function remove(req: Request, res: Response) {
     // await em.removeAndFlush(category)
     const operationToRemove = await em.findOneOrFail(Operation, { id: id });
     await em.removeAndFlush(operationToRemove);
+
+    const { calculateWalletBalances } = await import('../Wallet/wallet.controller.js');
+    await calculateWalletBalances(operationToRemove.wallet.id);
+
     res.status(200).json({ message: "operation removed" });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

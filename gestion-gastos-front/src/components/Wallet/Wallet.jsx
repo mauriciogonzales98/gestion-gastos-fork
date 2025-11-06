@@ -15,16 +15,11 @@ function normalizeWallets(input) {
     const id = w.id ?? w._id ?? null;
     const name = w.name ?? `Wallet ${id ?? ""}`;
     const coin = w.coin ?? w.currency ?? "";
-    const spend =
-      typeof w.spend === "number" ? w.spend.toFixed(2) : w.spend ?? "0.00";
-    const income =
-      typeof w.income === "number" ? w.income.toFixed(2) : w.income ?? "0.00";
-
-    const balance =
-      w.balance ??
-      Number(w.income ?? 0) - Number(w.spend ?? 0) ??
-      Number(income) - Number(spend) ??
-      "0.00";
+    
+    // Usar los valores calculados del backend
+    const spend = typeof w.spend === "number" ? w.spend.toFixed(2) : "0.00";
+    const income = typeof w.income === "number" ? w.income.toFixed(2) : "0.00";
+    const balance = typeof w.balance === "number" ? w.balance.toFixed(2) : "0.00";
 
     return {
       id: Number(id),
@@ -32,8 +27,7 @@ function normalizeWallets(input) {
       coin,
       spend,
       income,
-      balance:
-        typeof balance === "number" ? balance.toFixed(2) : String(balance),
+      balance,
       user: w.user ?? w.userid ?? null,
     };
   });
@@ -124,7 +118,7 @@ const WalletSelector = ({
             <option value="">Selecciona una wallet</option>
             {safeWallets.map((wallet) => (
               <option key={wallet.id} value={wallet.id}>
-                {wallet.name} - ${wallet.balance || "0.00"}
+                {wallet.name} ${wallet.balance || "0.00"}
               </option>
             ))}
           </select>
