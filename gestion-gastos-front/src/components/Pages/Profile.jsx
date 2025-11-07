@@ -9,7 +9,7 @@ import { PasswordInput } from "../Login/PasswordInputs.jsx";
 import ChangePassword from "../User/userUpdate/PasswordChangeManager.jsx";
 import ChangeEmail from "../User/userUpdate/EmailChangeManager.jsx";
 import FullNameChange from "../User/userUpdate/FullNameChangeManager.jsx";
-import MercadoPagoSync from "../User/userMercadoPago/MercadoPagoSync.jsx";
+import MercadoPagoSync from "../User/UserMercadoPago/MercadoPagoSync.jsx";
 import styles from "./Profile.module.css";
 
 const Profile = () => {
@@ -27,20 +27,26 @@ const Profile = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
-        
+        {errorMessage && (
+          <div className={styles.errorMessage}>{errorMessage}</div>
+        )}
+
         <AuthContext.Consumer>
           {(value) => (
             <>
               {/* Sección Mercado Pago */}
               <div className={styles.section}>
-                <h2 className={styles.sectionTitle}>Sincronización con Mercado Pago</h2>
+                <h2 className={styles.sectionTitle}>
+                  Sincronización con Mercado Pago
+                </h2>
                 <MercadoPagoSync />
               </div>
 
               {/* Sección Cambio de Nombre */}
               <div className={styles.section}>
-                <h2 className={styles.sectionTitle}>Cambiar Nombre y Apellido</h2>
+                <h2 className={styles.sectionTitle}>
+                  Cambiar Nombre y Apellido
+                </h2>
                 <div className={styles.buttonGroup}>
                   {!isChangingFullName && (
                     <button
@@ -53,7 +59,7 @@ const Profile = () => {
                       Cambiar Nombre y Apellido
                     </button>
                   )}
-                  
+
                   {isChangingFullName && (
                     <div className={styles.formContainer}>
                       <FullNameChange
@@ -74,13 +80,16 @@ const Profile = () => {
                       <>
                         {isGoogleUser && (
                           <div className={styles.googleWarning}>
-                            Los usuarios de Google no necesitan modificar su contraseña
+                            Los usuarios de Google no necesitan modificar su
+                            contraseña
                           </div>
                         )}
                         <button
                           onClick={() => {
                             if (isGoogleUser) {
-                              setErrorMessage("Los usuarios de Google no necesitan modificar su contraseña");
+                              setErrorMessage(
+                                "Los usuarios de Google no necesitan modificar su contraseña"
+                              );
                               return;
                             }
                             setErrorMessage("");
@@ -93,7 +102,7 @@ const Profile = () => {
                         </button>
                       </>
                     )}
-                    
+
                     {isChangingPassword && (
                       <div className={styles.formContainer}>
                         <ChangePassword
@@ -121,7 +130,7 @@ const Profile = () => {
                   >
                     Borrar Cuenta
                   </button>
-                  
+
                   {isDeletingAccount && (
                     <div className={styles.formContainer}>
                       <DeleteAccount

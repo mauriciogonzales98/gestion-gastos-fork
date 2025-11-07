@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import CategoryButtons from "../../Category/CategoryForm/CategoryButtons";
+import CategoryButtons from "../../Category/CategoryForm/CategoryButtons.jsx";
 import styles from "./OperationForm.module.css";
 import TagSelector from "../../Tag/TagSelector.jsx";
 

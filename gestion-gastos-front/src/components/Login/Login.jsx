@@ -4,9 +4,10 @@ import React, { useState, useEffect, Children } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import Form from "react-bootstrap/Form";
-import { PasswordInput } from "./PasswordInputs.jsx";
+// import { PasswordInput } from "./PasswordInputs.jsx";
 import styles from "./Login.module.css";
 import logo from "./ggs2.png";
+import { EyeIcon, EyeOffIcon } from "./Icons.jsx";
 import StatusService from "../../Services/status/serviceStatus.js";
 
 const Login = () => {
@@ -14,6 +15,9 @@ const Login = () => {
   const { userLoggedIn } = useAuth();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [friendlyErrorMessage, setFriendlyErrorMessage] = useState("");
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (userLoggedIn) {
@@ -129,15 +133,12 @@ const Login = () => {
       <div className={styles.logo}>
         <img src={logo} alt="Gestión de Gastos" />
       </div>
-      
+
       <div className={styles.card}>
-        
         <form onSubmit={submitLoginForm} className={styles.form}>
           <h1 className={styles.title}>Inicia Sesión</h1>
           {friendlyErrorMessage && (
-          <div className={styles.errorMessage}>
-            {friendlyErrorMessage}
-          </div>
+            <div className={styles.errorMessage}>{friendlyErrorMessage}</div>
           )}
           <div className={styles.formGroup}>
             <label className={styles.label}>Email:</label>
@@ -149,29 +150,45 @@ const Login = () => {
               className={styles.input}
             />
           </div>
-          
+
           <div className={styles.formGroup}>
             <label className={styles.label}>Contraseña:</label>
             <Form.Control
-              as={PasswordInput}
-              type="password"
+              // as={PasswordInput}
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               placeholder="Ingrese su contraseña"
               className={styles.input}
             />
+
+            <button
+              className={styles.passwordToggle}
+              type="button"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? (
+                <EyeOffIcon className={styles.eyeIcon} />
+              ) : (
+                <EyeIcon className={styles.eyeIcon} />
+              )}
+            </button>
           </div>
-          
-          <button type="submit" className={styles.submitButton} disabled={isSigningIn}>
+
+          <button
+            type="submit"
+            disabled={isSigningIn}
+            className={styles.submitButton}
+          >
             {isSigningIn ? "Iniciando sesión..." : "Iniciar Sesión"}
           </button>
-          
+
           <div className={styles.divider}>
             <div className={styles.dividerLine}></div>
             <span className={styles.dividerText}>O</span>
             <div className={styles.dividerLine}></div>
           </div>
-          
+
           <button
             className={styles.googleButton}
             onClick={onGoogleSignIn}
@@ -181,7 +198,7 @@ const Login = () => {
             <span>🔗</span>
             Continuar con Google
           </button>
-          
+
           <div className={styles.linkContainer}>
             ¿No tiene una cuenta?
             <a href="/register" className={styles.link}>

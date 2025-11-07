@@ -1,8 +1,7 @@
 import { useEffect } from "react";
-import CreateWallet from "./CreateWallet/CreateWallet.jsx";
+import CreateWallet from "./createWallet/CreateWallet.jsx";
 import { useState } from "react";
-import DeleteWallet from "./DeleteWallet/DeleteWalletManager.jsx";
-
+import DeleteWallet from "./deleteWallet/DeleteWalletManager.jsx";
 import { useToken } from "../../Contexts/fbTokenContext/TokenContext.jsx";
 import WalletLoading from "./WalletLoading.jsx";
 import styles from "../Pages/Main.module.css";

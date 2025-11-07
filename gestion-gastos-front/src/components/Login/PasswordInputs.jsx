@@ -213,34 +213,36 @@ const StrongPasswordInput = React.forwardRef((props, ref) => {
 });
 
 // Esta es una versión más simple del componente completo, para la confimación de contraseña, el login, etc.
-export const PasswordInput = React.forwardRef(({ className, ...props }, ref) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("");
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+export const PasswordInput = React.forwardRef(
+  ({ className, ...props }, ref) => {
+    const togglePasswordVisibility = () => setShowPassword(!showPassword);
+    const [showPassword, setShowPassword] = useState(false);
+    const [password, setPassword] = useState("");
 
-  return (
-    <div className="w-full max-w-sm space-y-2">
-      <div className="relative">
-        <input
-          ref={ref}
-          id="password"
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className={className} // <-- Aquí se aplica el estilo del módulo
-          {...props}
-        />
-        <button
-          type="button"
-          onClick={togglePasswordVisibility}
-          className="absolute inset-y-0 right-0 flex items-center pr-3"
-          aria-label="Toggle password visibility"
-        >
-          {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-        </button>
+    return (
+      <div className="w-full max-w-sm space-y-2">
+        <div className="relative">
+          <input
+            ref={ref}
+            id="password"
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={className} // <-- Aquí se aplica el estilo del módulo
+            {...props}
+          />
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="absolute inset-y-0 right-0 flex items-center pr-3"
+            aria-label="Toggle password visibility"
+          >
+            {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+          </button>
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 export default StrongPasswordInput;
