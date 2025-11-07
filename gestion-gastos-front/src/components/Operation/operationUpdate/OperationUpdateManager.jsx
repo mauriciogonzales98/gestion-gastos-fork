@@ -2,7 +2,7 @@ import { useToken } from "../../../Contexts/fbTokenContext/TokenContext";
 import { useEffect, useState } from "react";
 import WalletLoading from "../../Wallet/WalletLoading";
 import CategoryButtons from "../../Category/CategoryForm/CategoryButtons";
-import TagSelector from "../../Tag/TagSelector"; // Importar el mismo TagSelector
+import TagSelector from "../../Tag/TagSelector";
 import styles from "./OperationUpdateManager.module.css";
 
 const OperationUpdateForm = ({
@@ -17,8 +17,9 @@ const OperationUpdateForm = ({
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  const [selectedTagId, setSelectedTagId] = useState(null); // Estado para tag
+  const [selectedTagId, setSelectedTagId] = useState(null);
   const { token, refreshToken } = useToken();
+  const [refreshWallets, setRefreshWallets] = useState(false); // Nuevo estado para refrescar wallets
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -49,10 +50,9 @@ const OperationUpdateForm = ({
       const operationToEdit = operationData.find(op => op.id === editingId);
       if (operationToEdit) {
         setSelectedCategoryId(operationToEdit.category?.id || "");
-        setSelectedTagId(operationToEdit.tagid?.id || null); // Inicializar tag
+        setSelectedTagId(operationToEdit.tagid?.id || null);
         setSelectedWalletId(operationToEdit.wallet?.id || null);
         
-        // También inicializar los editedValues si es necesario
         setEditedValues({
           description: operationToEdit.description || "",
           amount: operationToEdit.amount || "",
@@ -62,6 +62,11 @@ const OperationUpdateForm = ({
       }
     }
   }, [editingId, operationData, setEditedValues]);
+
+  // Función para refrescar wallets en este componente
+  const triggerWalletRefresh = () => {
+    setRefreshWallets(prev => !prev);
+  };
 
   // Maneja el guardado de las operaciones
   const handleSave = async (operationId) => {
@@ -77,10 +82,11 @@ const OperationUpdateForm = ({
         date: editedValues.date,
         type: editedValues.type,
         categoryid: selectedCategoryId || null,
-        tagid: selectedTagId === -1 ? null : selectedTagId, // Manejar "sin etiqueta"
+        tagid: selectedTagId === -1 ? null : selectedTagId,
         walletid: selectedWalletId,
       };
-      
+
+      console.log("💾 Guardando updates:", updates); // Mantener el log para debugging
 
       await updateOperation(operationId, updates, currentToken);
       setEditingId(null);
@@ -88,6 +94,9 @@ const OperationUpdateForm = ({
       setSelectedCategoryId("");
       setSelectedTagId(null);
       setSelectedWalletId(null);
+
+      // Refrescar wallets después de guardar
+      triggerWalletRefresh();
 
       if (onChange) onChange();
     } catch (error) {
@@ -213,6 +222,7 @@ const OperationUpdateForm = ({
             token={token}
             selectedWalletId={selectedWalletId}
             setSelectedWalletId={handleWalletChange}
+            refreshTrigger={refreshWallets} // ✅ Pasar el refreshTrigger
           />
         </div>
       </div>
@@ -228,7 +238,7 @@ const OperationUpdateForm = ({
         </div>
       </div>
 
-      {/* ✅ Selector de Tags (igual que en OperationForm) */}
+      {/* ✅ Selector de Tags */}
       <div className={styles.formGroup}>
         <label className={styles.label}>Etiqueta:</label>
         <div className={styles.tagSelectorContainer}>

@@ -2,7 +2,7 @@ import styles from "./WalletSelector.module.css";
 import { useState, useEffect } from "react";
 import WalletSelector from "./WalletSelector";
 
-const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWalletsLoaded }) => {
+const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWalletsLoaded, refreshTrigger }) => {
   const [wallets, setWallets] = useState([]);
   const [loadingWallets, setLoadingWallets] = useState(true);
 
@@ -39,6 +39,7 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
     setSelectedWalletId(walletId);
   };
 
+  // ✅ SOLO UNA función loadWallets
   const loadWallets = async () => {
     if (!token) {
       setLoadingWallets(false);
@@ -60,6 +61,7 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
       }
       
       const walletsData = await response.json();
+      console.log("Wallets data:", walletsData); 
       
       setWallets(walletsData);
 
@@ -69,8 +71,9 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
         onWalletsLoaded(normalizedWallets);
       }
 
+      // ✅ CORRECCIÓN: Cambiar .first() por [0]
       if (normalizedWallets.length > 0 && !selectedWalletId) {
-        setSelectedWalletId(normalizedWallets.first().id);
+        setSelectedWalletId(normalizedWallets[0].id);
       }
     } catch (error) {
       console.error("Error loading wallets:", error);
@@ -79,14 +82,16 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
     }
   };
 
+  // Cargar wallets cuando cambie el token o el refreshTrigger
   useEffect(() => {
     if (token) {
+      console.log("Cargando wallets...");
       loadWallets();
     } else {
       setWallets([]);
       setLoadingWallets(false);
     }
-  }, [token]);
+  }, [token, refreshTrigger]); // ✅ Agregar refreshTrigger como dependencia
 
   const safeWallets = normalizeWallets(wallets);
 

@@ -23,10 +23,20 @@ const Main = () => {
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [operations, setOperations] = useState([]);
   const [doRefreshOperations, setDoRefreshOperations] = useState(false);
+  const [doRefreshWallets, setDoRefreshWallets] = useState(false);
 
   const handleWalletSelect = (walletId) => {
     setSelectedWalletId(walletId);
     localStorage.setItem('selectedWalletId', walletId);
+  };
+
+  const refreshWallets = () => {
+    setDoRefreshWallets(prev => !prev);
+  };
+
+  const refreshAll = () => {
+    refreshOperations();
+    refreshWallets();
   };
 
   const handleWalletsLoaded = (loadedWallets) => {
@@ -106,6 +116,7 @@ const Main = () => {
                 selectedWalletId={selectedWalletId}
                 setSelectedWalletId={handleWalletSelect}
                 onWalletsLoaded={handleWalletsLoaded}
+                refreshTrigger={doRefreshWallets}
               />
             </div>
           </div>
@@ -117,6 +128,7 @@ const Main = () => {
                 <OperationList
                   operations={operations}
                   token={token}
+                  onOperationAdded={refreshAll}
                   onChange={refreshOperations}
                   selectedWalletId={selectedWalletId}
                   doRefreshOperations={doRefreshOperations}
