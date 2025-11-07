@@ -10,7 +10,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
   const [operationDate, setOperationDate] = useState(""); // Nuevo estado para la fecha
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  const [selectedTagId, setSelectedTagId] = useState(null); 
+  const [selectedTagId, setSelectedTagId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -35,10 +35,10 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
     };
 
     loadCategories();
-    
+
     // Establecer fecha actual por defecto
     const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0];
+    const formattedDate = today.toISOString().split("T")[0];
     setOperationDate(formattedDate);
   }, [token]);
 
@@ -74,8 +74,9 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
       description,
       walletid: walletId,
       categoryid: parseInt(selectedCategoryId) || null,
-      tagid: selectedTagId == -1 ? null : selectedTagId, // Manejo en caso de haber seleccionado "sin etiqueta"
-      date: new Date(operationDate + 'T12:00:00').toISOString(), // Agregar hora para evitar problemas de zona horaria
+      date: new Date(
+        operationDate + "T" + new Date().toTimeString().split(" ")[0]
+      ).toISOString(), // Use current time with selected date
     };
 
     console.log("Submitting operation:", operationData);
@@ -97,10 +98,10 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
         setDescription("");
         setSelectedCategoryId("");
         setSelectedTagId(null); // ✅ LIMPIAR EL TAG TAMBIÉN
-        
+
         // Restablecer a fecha actual
         const today = new Date();
-        const formattedDate = today.toISOString().split('T')[0];
+        const formattedDate = today.toISOString().split("T")[0];
         setOperationDate(formattedDate);
 
         if (onOperationAdded) {
@@ -222,7 +223,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
             required
             disabled={!walletId || loading}
             className={styles.input}
-            max={new Date().toISOString().split('T')[0]} // No permitir fechas futuras
+            max={new Date().toISOString().split("T")[0]} // No permitir fechas futuras
           />
         </div>
 
@@ -236,7 +237,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
         </div>
 
         {/* ✅ SELECTOR DE TAGS */}
-        <TagSelector 
+        <TagSelector
           selectedTagId={selectedTagId}
           onTagSelect={setSelectedTagId}
           token={token}

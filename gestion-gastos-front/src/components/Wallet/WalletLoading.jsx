@@ -2,7 +2,13 @@ import styles from "./WalletSelector.module.css";
 import { useState, useEffect } from "react";
 import WalletSelector from "./WalletSelector";
 
-const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWalletsLoaded }) => {
+const WalletLoading = ({
+  token,
+  selectedWalletId,
+  setSelectedWalletId,
+  onWalletsLoaded,
+  refreshTrigger,
+}) => {
   const [wallets, setWallets] = useState([]);
   const [loadingWallets, setLoadingWallets] = useState(true);
 
@@ -17,10 +23,12 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
       const id = w.id ?? w._id ?? null;
       const name = w.name ?? `Wallet ${id ?? ""}`;
       const coin = w.coin ?? w.currency ?? "";
-      
-      const spendValue = typeof w.spend === "number" ? w.spend : parseFloat(w.spend) || 0;
-      const incomeValue = typeof w.income === "number" ? w.income : parseFloat(w.income) || 0;
-      
+
+      const spendValue =
+        typeof w.spend === "number" ? w.spend : parseFloat(w.spend) || 0;
+      const incomeValue =
+        typeof w.income === "number" ? w.income : parseFloat(w.income) || 0;
+
       const balanceValue = w.balance ?? incomeValue - spendValue;
 
       return {
@@ -29,7 +37,8 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
         coin,
         spend: spendValue.toFixed(2),
         income: incomeValue.toFixed(2),
-        balance: typeof balanceValue === "number" ? balanceValue.toFixed(2) : "0.00",
+        balance:
+          typeof balanceValue === "number" ? balanceValue.toFixed(2) : "0.00",
         user: w.user ?? w.userid ?? null,
       };
     });
@@ -54,14 +63,14 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       if (!response.ok) {
         throw new Error("Error al cargar wallets");
       }
-      
+
       const walletsData = await response.json();
-      console.log("Wallets data:", walletsData); 
-      
+      console.log("Wallets data:", walletsData);
+
       setWallets(walletsData);
 
       const normalizedWallets = normalizeWallets(walletsData);
@@ -88,7 +97,7 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
       setWallets([]);
       setLoadingWallets(false);
     }
-  }, [token]);
+  }, [token, refreshTrigger]);
 
   const safeWallets = normalizeWallets(wallets);
 
@@ -99,7 +108,7 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
         loading={loadingWallets}
         safeWallets={safeWallets}
       />
-      
+
       <div>
         <label className={styles.label}> Wallet:</label>
         <select
@@ -115,9 +124,13 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
             </option>
           ))}
         </select>
-        {loadingWallets && <span className={styles.loadingText}>Cargando wallets...</span>}
+        {loadingWallets && (
+          <span className={styles.loadingText}>Cargando wallets...</span>
+        )}
         {!loadingWallets && safeWallets.length === 0 && (
-          <span className={styles.noWalletsText}>No hay wallets disponibles</span>
+          <span className={styles.noWalletsText}>
+            No hay wallets disponibles
+          </span>
         )}
       </div>
     </>
