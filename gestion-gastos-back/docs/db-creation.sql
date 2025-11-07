@@ -55,10 +55,11 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`operation` (
   `walletid` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES `user`(`id`),
-  FOREIGN KEY (`categoryid`) REFERENCES `category`(`id`),
-  FOREIGN KEY (`tagid`) REFERENCES `tag`(`id`),
-  FOREIGN KEY (`walletid`) REFERENCES `wallet`(`id`)
+  FOREIGN KEY (`categoryid`) REFERENCES `category`(`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`tagid`) REFERENCES `tag`(`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`walletid`) REFERENCES `wallet`(`id`) ON DELETE CASCADE
 );
+
 CREATE TABLE IF NOT EXISTS `registration_process` (
   `id` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
@@ -73,8 +74,6 @@ CREATE TABLE IF NOT EXISTS `registration_process` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
-
--- sync mercado pago
 
 -- Agregar campos a User
 ALTER TABLE user 
