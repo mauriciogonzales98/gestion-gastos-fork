@@ -61,7 +61,7 @@ const CategoryList = ({ categories, loading, onEdit }) => {
             <div
               key={category.id}
               className={styles.categoryCard}
-              onDoubleClick={() => handleDoubleClick(category)}
+              onClick={() => handleDoubleClick(category)}
               title="Doble click para editar"
               data-fullname={category.name}
             >
