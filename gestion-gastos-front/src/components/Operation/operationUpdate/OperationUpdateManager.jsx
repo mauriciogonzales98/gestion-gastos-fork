@@ -1,11 +1,8 @@
 import { useToken } from "../../../Contexts/fbTokenContext/TokenContext";
-import styles from "../OperationList.module.css";
 import { useEffect, useState } from "react";
 import WalletLoading from "../../Wallet/WalletLoading";
-
-import CategoryList from "../../Category/CategoryForm/CategoryList";
 import CategoryButtons from "../../Category/CategoryForm/CategoryButtons";
-
+import styles from "./OperationUpdateManager.module.css";
 const OperationUpdateForm = ({
   editingId,
   setEditingId,
@@ -20,7 +17,7 @@ const OperationUpdateForm = ({
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const { token, refreshToken } = useToken();
 
-useEffect(() => {
+  useEffect(() => {
     const loadCategories = async () => {
       if (!token) return;
 
@@ -102,7 +99,7 @@ useEffect(() => {
 
   return (
     <div className={styles.editForm}>
-      <h4>✏️ Editando Operación</h4>
+      <h4>Editando Operación</h4>
       
       <div className={styles.formGroup}>
         <label className={styles.label}>Descripción:</label>
@@ -169,7 +166,6 @@ useEffect(() => {
                 handleInputChange("type", "ingreso");
                 setSelectedTypeValue("ingreso");
               }} 
-                
             />{" "}
             💰 Ingreso
           </label>
@@ -178,20 +174,27 @@ useEffect(() => {
       
       <div className={styles.formGroup}>
         <label className={styles.label}>Wallet:</label>
-        <WalletLoading
-          token={token}
-          selectedWalletId={selectedWalletId}
-          setSelectedWalletId={handleWalletChange}
-        />
+        <div className={styles.walletContainer}>
+          <WalletLoading
+            token={token}
+            selectedWalletId={selectedWalletId}
+            setSelectedWalletId={handleWalletChange}
+          />
+        </div>
       </div>
-      <CategoryButtons
-      categories={categories}
-        selectedId={selectedCategoryId}
-        onSelect={handleCategoryChange}
-      />
-      <div></div>
-      {/*Botones para aceptar y cancelar*/}
 
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Categoría:</label>
+        <div className={styles.categoryButtonsContainer}>
+          <CategoryButtons
+            categories={categories}
+            selectedId={selectedCategoryId}
+            onSelect={handleCategoryChange}
+          />
+        </div>
+      </div>
+
+      {/*Botones para aceptar y cancelar*/}
       <div className={styles.editActions}>
         <button
           onClick={() => handleSave(editingId)}
