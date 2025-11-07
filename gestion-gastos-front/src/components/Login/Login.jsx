@@ -33,7 +33,7 @@ const Login = () => {
     }
 
     // Mensaje de error si ya está logueado
-    if (getAuth().currentUser) setErrorMessage("Ya está logueado");
+    if (getAuth().currentUser) setFriendlyErrorMessage("Ya está logueado");
 
     //Obtiene datos del formulario y los transforma en un objeto
     const formData = new FormData(e.target);
@@ -116,7 +116,7 @@ const Login = () => {
       try {
         await fbGoogleSignIn();
       } catch (err) {
-        setErrorMessage(err.message);
+        setFriendlyErrorMessage(err.message);
       }
       setIsSigningIn(false);
       navigate("/Main");
@@ -125,73 +125,72 @@ const Login = () => {
 
   // Page
   return (
-    <>
-      <div className={styles.container}>
-        <div className={styles.logo}>
-          <img src={logo} />
-        </div>
+    <div className={styles.container}>
+      <div className={styles.logo}>
+        <img src={logo} alt="Gestión de Gastos" />
       </div>
-      {friendlyErrorMessage && (
-        <>
-          <h1>Login Page</h1>
-        </>
-      )}
-
-      {friendlyErrorMessage && (
-        <p
-          className="error-message"
-          style={{ color: "brown", backgroundColor: "lightyellow" }}
-        >
-          {friendlyErrorMessage}
-        </p>
-      )}
-      <form onSubmit={submitLoginForm} className={styles.form}>
-        <h1 className={styles.title}>Inicia Sesión</h1>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Email:</label>
-          <Form.Control
-            type="text"
-            id="email"
-            name="email"
-            placeholder="Ingrese su correo electrónico"
-            className={styles.input}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Contraseña:</label>
-          <Form.Control
-            as={PasswordInput}
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Ingrese su contraseña"
-            className={styles.input}
-          />
-        </div>
-        s
-        <button type="submit" className={styles.submitButton}>
-          Iniciar Sesión
-        </button>
-        <div className={styles.divider}>
-          <div className={styles.dividerLine}></div>
-          <span className={styles.dividerText}>O</span>
-          <div className={styles.dividerLine}></div>
-        </div>
-        <button
-          className={styles.googleButton}
-          onClick={onGoogleSignIn}
-          type="button"
-        >
-          Continuar con Google
-        </button>
-        <div className={styles.linkContainer}>
-          ¿No tiene una cuenta?
-          <a href="/register" className={styles.link}>
-            Regístrese aquí
-          </a>
-        </div>
-      </form>
-    </>
+      
+      <div className={styles.card}>
+        
+        <form onSubmit={submitLoginForm} className={styles.form}>
+          <h1 className={styles.title}>Inicia Sesión</h1>
+          {friendlyErrorMessage && (
+          <div className={styles.errorMessage}>
+            {friendlyErrorMessage}
+          </div>
+          )}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Email:</label>
+            <Form.Control
+              type="text"
+              id="email"
+              name="email"
+              placeholder="Ingrese su correo electrónico"
+              className={styles.input}
+            />
+          </div>
+          
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Contraseña:</label>
+            <Form.Control
+              as={PasswordInput}
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Ingrese su contraseña"
+              className={styles.input}
+            />
+          </div>
+          
+          <button type="submit" className={styles.submitButton} disabled={isSigningIn}>
+            {isSigningIn ? "Iniciando sesión..." : "Iniciar Sesión"}
+          </button>
+          
+          <div className={styles.divider}>
+            <div className={styles.dividerLine}></div>
+            <span className={styles.dividerText}>O</span>
+            <div className={styles.dividerLine}></div>
+          </div>
+          
+          <button
+            className={styles.googleButton}
+            onClick={onGoogleSignIn}
+            type="button"
+            disabled={isSigningIn}
+          >
+            <span>🔗</span>
+            Continuar con Google
+          </button>
+          
+          <div className={styles.linkContainer}>
+            ¿No tiene una cuenta?
+            <a href="/register" className={styles.link}>
+              Regístrese aquí
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 

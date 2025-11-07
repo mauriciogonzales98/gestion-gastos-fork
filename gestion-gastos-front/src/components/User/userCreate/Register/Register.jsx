@@ -5,15 +5,28 @@ import {
   fbEmailPasswordSignIn,
   fbGoogleSignIn,
 } from "../../../../Firebase/auth.js";
-import Form from "react-bootstrap/Form";
 import { getAuth } from "firebase/auth";
-
 import StatusService from "../../../../Services/status/serviceStatus.js";
+import styles from "./Register.module.css";
 
 const Register = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Reglas de validación de contraseña
+  const passwordRules = {
+    minLength: password.length >= 8,
+    hasUpperCase: /[A-Z]/.test(password),
+    hasLowerCase: /[a-z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+  };
+
+  const isPasswordValid = Object.values(passwordRules).every(rule => rule);
+  const passwordsMatch = password === confirmPassword;
 
   const registrationProcess = async (userData) => {
     const statusService = new StatusService();
@@ -23,7 +36,6 @@ const Register = () => {
       navigate("/serverdown");
       throw new Error("BACKEND_DOWN");
     }
-    console.log("Starting registration process with data:", userData);
     try {
       const response = await fetch(`http://localhost:3001/api/registration`, {
         method: "POST",
@@ -41,7 +53,6 @@ const Register = () => {
       }
 
       const result = await response.json();
-      console.log("Registration result:", result);
       if (result.data && result.data.userId) {
         console.log("User created successfully in backend");
         return result;
@@ -57,11 +68,9 @@ const Register = () => {
   // Register with email and password
   const submitForm = async (e) => {
     e.preventDefault();
-
     setErrorMessage("");
 
     if (isRegistering) return;
-
     setIsRegistering(true);
 
     try {
@@ -69,8 +78,13 @@ const Register = () => {
       const payload = Object.fromEntries(formData);
 
       // Validate passwords match
-      if (payload.password !== payload.confirmPassword) {
-        throw new Error("Passwords do not match");
+      if (!passwordsMatch) {
+        throw new Error("Las contraseñas no coinciden");
+      }
+
+      // Validate password strength
+      if (!isPasswordValid) {
+        throw new Error("La contraseña no cumple con todos los requisitos");
       }
 
       // Prepare registration data
@@ -79,6 +93,7 @@ const Register = () => {
         surname: payload.surname,
         email: payload.email,
         password: payload.password,
+        isGoogleSignUp: false,
       };
 
       console.log("Starting registration process...");
@@ -119,28 +134,23 @@ const Register = () => {
     setErrorMessage("");
 
     if (isRegistering) return;
-
     setIsRegistering(true);
 
     try {
       // Google sign up creates the Firebase user immediately
-      const result = await fbGoogleSignIn();
-      const user = result.user;
+      await fbGoogleSignIn();
+      const user = getAuth().currentUser;
 
-      console.log("Google registration successful:", user);
 
       if (user) {
         const userData = {
+          id: user.uid,
           name: user.displayName ? user.displayName.split(" ")[0] : "",
-          surname: user.displayName
-            ? user.displayName.split(" ").slice(1).join(" ")
-            : "",
+          surname: user.displayName ? user.displayName.split(" ").slice(1).join(" ") : "",
           email: user.email,
         };
 
-        // Register in backend
-        await registrationProcess(userData);
-
+        await registerWithGoogle(user, userData);
         navigate("/Main");
       }
     } catch (err) {
@@ -150,88 +160,167 @@ const Register = () => {
     }
   };
 
+  const registerWithGoogle = async (user, userData) => {
+    try {
+      await fetch(`http://localhost:3001/api/user`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+        body: JSON.stringify(userData),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res && res.success != false) {
+            console.log("Usuario creado en BE");
+          } else {
+            console.log(
+              "Error al crear usuario en BE",
+              res?.message || "Unknown error"
+            );
+          }
+        });
+    } catch (error) {
+    }
+  };
+
   return (
-    <>
-      <div className="register-container">
-        <h2>Register</h2>
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h2 className={styles.title}>Crear Cuenta</h2>
         {errorMessage && (
-          <p
-            className="error-message"
-            style={{ color: "brown", backgroundColor: "lightyellow" }}
-          >
+          <div className={styles.errorMessage}>
             {errorMessage}
-          </p>
+          </div>
         )}
 
-        <form className="register-form" onSubmit={submitForm}>
-          <Form.Group>
-            <label htmlFor="name">Name</label>
-            <Form.Control
+        <form className={styles.form} onSubmit={submitForm}>
+          <div className={styles.formGroup}>
+            <label htmlFor="name" className={styles.label}>Nombre</label>
+            <input
               type="text"
               id="name"
               name="name"
+              className={styles.input}
               required
               disabled={isRegistering}
             />
-            <label htmlFor="surname">Surname</label>
-            <Form.Control
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="surname" className={styles.label}>Apellido</label>
+            <input
               type="text"
               id="surname"
               name="surname"
+              className={styles.input}
               required
               disabled={isRegistering}
             />
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="email">Email</label>
-            <Form.Control
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="email" className={styles.label}>Email</label>
+            <input
               type="email"
               id="email"
               name="email"
+              className={styles.input}
               required
               disabled={isRegistering}
             />
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="password">Password</label>
-            <Form.Control
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="password" className={styles.label}>Contraseña</label>
+            <input
               type="password"
               id="password"
               name="password"
+              className={styles.input}
               required
               disabled={isRegistering}
-              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <Form.Control
+            
+            {/* Lista de reglas de contraseña */}
+            {password && (
+              <div className={styles.passwordRules}>
+                <h4 className={styles.rulesTitle}>La contraseña debe contener:</h4>
+                <ul className={styles.rulesList}>
+                  <li className={passwordRules.minLength ? styles.ruleValid : styles.ruleInvalid}>
+                    {passwordRules.minLength ? "✅" : "❌"} Mínimo 8 caracteres
+                  </li>
+                  <li className={passwordRules.hasUpperCase ? styles.ruleValid : styles.ruleInvalid}>
+                    {passwordRules.hasUpperCase ? "✅" : "❌"} Una letra mayúscula
+                  </li>
+                  <li className={passwordRules.hasLowerCase ? styles.ruleValid : styles.ruleInvalid}>
+                    {passwordRules.hasLowerCase ? "✅" : "❌"} Una letra minúscula
+                  </li>
+                  <li className={passwordRules.hasNumber ? styles.ruleValid : styles.ruleInvalid}>
+                    {passwordRules.hasNumber ? "✅" : "❌"} Un número
+                  </li>
+                  <li className={passwordRules.hasSpecialChar ? styles.ruleValid : styles.ruleInvalid}>
+                    {passwordRules.hasSpecialChar ? "✅" : "❌"} Un carácter especial (!@#$%^&* etc.)
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="confirmPassword" className={styles.label}>Confirmar Contraseña</label>
+            <input
               type="password"
               id="confirmPassword"
               name="confirmPassword"
+              className={styles.input}
               required
               disabled={isRegistering}
-              minLength={8}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
-          </Form.Group>
-          <button type="submit" disabled={isRegistering}>
-            {isRegistering ? "Registering..." : "Register"}
+            
+            {/* Indicador de coincidencia de contraseñas */}
+            {confirmPassword && (
+              <div className={passwordsMatch ? styles.matchValid : styles.matchInvalid}>
+                {passwordsMatch ? "✅" : "❌"} Las contraseñas {passwordsMatch ? "coinciden" : "no coinciden"}
+              </div>
+            )}
+          </div>
+
+          <button 
+            type="submit" 
+            className={styles.submitButton}
+            disabled={isRegistering || !isPasswordValid || !passwordsMatch}
+          >
+            {isRegistering ? "Creando cuenta..." : "Registrarse"}
           </button>
         </form>
 
-        <p>
-          ¿Le diste al link sin querer? Inicia sesión acá.{" "}
-          <a href="/login">Iniciar sesión</a>
-        </p>
+        <div className={styles.divider}>
+          <div className={styles.dividerLine}></div>
+          <span className={styles.dividerText}>o</span>
+          <div className={styles.dividerLine}></div>
+        </div>
 
-        <p>
-          ¿Preferís venderle tus datos a google?
-          <button onClick={onGoogleRegister} disabled={isRegistering}>
-            {isRegistering ? "Registering..." : "Registrarse con Google"}
-          </button>
-        </p>
+        <button 
+          onClick={onGoogleRegister}
+          className={styles.googleButton}
+          disabled={isRegistering}
+        >
+          {isRegistering ? "Procesando..." : "Registrarse con Google"}
+        </button>
+
+        <div className={styles.linkContainer}>
+          ¿Ya tienes una cuenta?{" "}
+          <a href="/login" className={styles.link}>Iniciar sesión</a>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

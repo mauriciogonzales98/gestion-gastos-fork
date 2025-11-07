@@ -14,6 +14,7 @@ function SanitizeRegistrationInput(
     password: req.body.password,
     name: req.body.name,
     surname: req.body.surname,
+    id: req.body.id
   };
 
   // Remove undefined values
@@ -28,17 +29,18 @@ function SanitizeRegistrationInput(
 
 async function register(req: Request, res: Response) {
   try {
-    const { email, password, name, surname } = req.body.sanitizedInput;
+    // const { email, password, name, surname } = req.body.sanitizedInput;
 
     // Create registration service instance
     const registrationService = new RegistrationService(em);
 
     // Prepare registration request
     const registrationRequest = {
-      email,
-      password,
-      name,
-      surname,
+      email: req.body.sanitizedInput.email,
+      password: req.body.sanitizedInput.password,
+      name: req.body.sanitizedInput.name,
+      surname: req.body.sanitizedInput.surname,
+      id: req.body.sanitizedInput.id || "",
     };
 
     // Execute registration process

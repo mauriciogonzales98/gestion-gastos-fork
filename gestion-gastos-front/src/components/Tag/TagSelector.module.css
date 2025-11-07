@@ -1,0 +1,147 @@
+.container {
+  margin-bottom: 15px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+
+.selector {
+  position: relative;
+  width: 100%;
+}
+
+.selectedContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  min-height: 40px;
+  min-width: 200px;
+}
+
+.selectedContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.selectedContainer:hover {
+  border-color: #12824c;
+}
+
+.placeholder {
+  color: #555; 
+  font-style: italic;
+}
+
+.arrow {
+  color: #555; 
+  font-size: 12px;
+  transition: transform 0.2s;
+  width: 16px;
+  text-align: center;
+}
+
+.selectedContainer:hover .arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  min-width: 200px;
+}
+
+.dropdownDown {
+  top: 100%;
+  margin-top: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dropdownUp {
+  bottom: 100%;
+  margin-bottom: 5px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  font-weight: 500;
+  color: #333;
+}
+
+.clearButton {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.clearButton:hover {
+  background-color: #fff5f5;
+}
+
+.tagsList {
+  padding: 8px 0;
+}
+
+.tagOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #333;
+  font-weight: 400;
+}
+
+.tagOption:hover {
+  background-color: #f8f9fa;
+}
+
+.noTags {
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.loading {
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.tagOption:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.tagOption:nth-child(even):hover {
+  background-color: #f0f0f0;
+}

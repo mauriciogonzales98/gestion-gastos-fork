@@ -1,0 +1,134 @@
+.container {
+  padding: 20px;
+  background: rgba(7, 27, 30, 0.9);
+  border: 1px solid #15646a;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+}
+
+.title {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #e9e8ee;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.loadingContainer {
+  padding: 40px;
+  text-align: center;
+  color: #e9e8ee;
+}
+
+.errorContainer {
+  padding: 20px;
+  color: #ff6b6b;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.retryButton {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.retryButton:hover {
+  background: #c82333;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px;
+  color: #a6beb9;
+}
+
+.reloadButton {
+  padding: 10px 20px;
+  background: #15646a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.reloadButton:hover {
+  background: #12555a;
+}
+
+.tagsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  justify-content: center;
+  align-items: start;
+}
+
+.tagCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 15px;
+  background: rgba(233, 232, 238, 0.05);
+  border: 1px solid #15646a;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.tagCard:hover {
+  background: rgba(21, 100, 106, 0.1);
+  border-color: #15646a;
+}
+
+.tagCard:hover::after {
+  content: '✏️';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #15646a;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .tagsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  
+  .tagCard {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tagsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  
+  .tagCard {
+    padding: 10px;
+  }
+}

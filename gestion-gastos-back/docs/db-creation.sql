@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`category` (
 CREATE TABLE IF NOT EXISTS `gestion_gastos`.`wallet` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NOT NULL,
-  `coin` VARCHAR(50) NULL,
+  `coin` VARCHAR(5) NULL,
   `spend` DECIMAL(15, 2) NULL,
   `income` DECIMAL(15, 2) NULL,
   `userid` VARCHAR(28) NOT NULL,
@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`tag` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
   `name` VARCHAR(50) NULL,
   `userid` VARCHAR(28) NOT NULL,
+  `color` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES `user`(`id`)
 );
@@ -54,10 +55,11 @@ CREATE TABLE IF NOT EXISTS `gestion_gastos`.`operation` (
   `walletid` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES `user`(`id`),
-  FOREIGN KEY (`categoryid`) REFERENCES `category`(`id`),
-  FOREIGN KEY (`tagid`) REFERENCES `tag`(`id`),
-  FOREIGN KEY (`walletid`) REFERENCES `wallet`(`id`)
+  FOREIGN KEY (`categoryid`) REFERENCES `category`(`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`tagid`) REFERENCES `tag`(`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`walletid`) REFERENCES `wallet`(`id`) ON DELETE CASCADE
 );
+
 CREATE TABLE IF NOT EXISTS `registration_process` (
   `id` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
@@ -72,3 +74,19 @@ CREATE TABLE IF NOT EXISTS `registration_process` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
+
+-- Agregar campos a User
+ALTER TABLE user 
+ADD COLUMN mp_access_token TEXT NULL,
+ADD COLUMN mp_refresh_token TEXT NULL,
+ADD COLUMN mp_token_expires_at DATETIME NULL,
+ADD COLUMN mp_user_id VARCHAR(255) NULL,
+ADD COLUMN last_sync_at DATETIME NULL;
+
+-- Agregar campos a Operation  
+ALTER TABLE operation 
+ADD COLUMN external_id VARCHAR(255) NULL,
+ADD COLUMN sync_source VARCHAR(50) NULL,
+ADD COLUMN payment_method VARCHAR(100) NULL,
+ADD COLUMN status VARCHAR(50) NULL,
+ADD UNIQUE INDEX unique_external_operation (userid, external_id);

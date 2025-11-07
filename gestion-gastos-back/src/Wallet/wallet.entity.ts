@@ -14,10 +14,10 @@ export class Wallet extends BaseEntity {
   @Property({ nullable: true })
   coin!: string;
 
-  @Property({ nullable: true })
+  @Property({ type: 'decimal', precision: 12, scale: 2, default: 0, nullable: true })
   spend!: number;
 
-  @Property({ nullable: true })
+  @Property({ type: 'decimal', precision: 12, scale: 2, default: 0, nullable: true })
   income!: number;
 
   @ManyToOne({

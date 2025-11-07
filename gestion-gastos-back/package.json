@@ -15,10 +15,12 @@
     "@mikro-orm/core": "6.4.16",
     "@mikro-orm/mysql": "^6.4.16",
     "@mikro-orm/sql-highlighter": "^1.0.1",
+    "@types/mercadopago": "^1.5.11",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "~4.21.2",
     "firebase-admin": "^13.5.0",
+    "mercadopago": "^2.9.0",
     "mysql2": "^3.14.3",
     "reflect-metadata": "^0.2.2",
     "ts-node-esm": "^0.0.6"

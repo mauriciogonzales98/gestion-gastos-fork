@@ -45,7 +45,7 @@ async function findAll(req: Request, res: Response) {
 
     const user = await em.findOne(User, { id: userId });
 
-    const operations = await em.find(Operation, { user: { id: userId } });
+    const operations = await em.find(Operation, { user: { id: userId } }, {populate: ['category']});
 
     return res.status(200).json({
       success: true,
@@ -75,9 +75,10 @@ async function findAllFromWallet(req: Request, res: Response) {
 
     const user = await em.findOne(User, { id: userId });
 
+    // const categoryId = Number(req.params.categoryId) || 0;
     const operations = await em.find(Operation, {
       user: { id: userId },
-      walletid: { id: Number(req.params.walletId) },
+      wallet: { id: Number(req.params.walletId) }
     });
 
     return res.status(200).json({
@@ -96,7 +97,6 @@ async function findAllFromWallet(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const idToFind = Number(req.params.id);
-    console.log("idToFind", req.params.id);
     const operation = await em.findOneOrFail(
       Operation,
       { id: idToFind },
@@ -141,6 +141,10 @@ async function add(req: Request, res: Response) {
     });
 
     await em.persistAndFlush(operation);
+
+    const { calculateWalletBalances } = await import('../Wallet/wallet.controller.js');
+    await calculateWalletBalances(operation.wallet.id);
+
     res.status(201).json({ message: "operation created", data: operation });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -150,12 +154,31 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const operationToUpdate = await em.findOneOrFail(Operation, { id: id });
+    const operationToUpdate = await em.findOneOrFail(Operation, { id });
+
+    // Actualizar manualmente relaciones
+    if (req.body.sanitizedInput.walletid) {
+      const wallet = await em.findOneOrFail(Wallet, { id: req.body.sanitizedInput.walletid });
+      req.body.sanitizedInput.wallet = wallet;
+      delete req.body.sanitizedInput.walletid;
+    }
+
+    if (req.body.sanitizedInput.categoryid) {
+      const category = await em.findOneOrFail(Category, { id: req.body.sanitizedInput.categoryid });
+      req.body.sanitizedInput.category = category;
+      delete req.body.sanitizedInput.categoryid;
+    }
+
     em.assign(operationToUpdate, req.body.sanitizedInput);
     await em.flush();
-    res
-      .status(200)
-      .json({ message: "operation updated", data: operationToUpdate });
+
+    const { calculateWalletBalances } = await import('../Wallet/wallet.controller.js');
+    await calculateWalletBalances(operationToUpdate.wallet.id);
+
+    res.status(200).json({
+      message: "operation updated",
+      data: operationToUpdate,
+    });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -168,18 +191,14 @@ async function remove(req: Request, res: Response) {
     // await em.removeAndFlush(category)
     const operationToRemove = await em.findOneOrFail(Operation, { id: id });
     await em.removeAndFlush(operationToRemove);
+
+    const { calculateWalletBalances } = await import('../Wallet/wallet.controller.js');
+    await calculateWalletBalances(operationToRemove.wallet.id);
+
     res.status(200).json({ message: "operation removed" });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
-export {
-  sanitizeOperationInput,
-  findAll,
-  findOne,
-  add,
-  update,
-  remove,
-  findAllFromWallet,
-};
+export { sanitizeOperationInput, findAll, findOne, add, update, remove, findAllFromWallet};
