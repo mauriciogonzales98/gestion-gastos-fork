@@ -1,54 +1,70 @@
 .container {
   padding: 20px;
+  background: rgba(12, 28, 18, 0.8);
+  border: 1px solid #386d6d;
+  border-radius: 16px;
+  margin-bottom: 2rem;
 }
 
 .title {
   margin-bottom: 20px;
   text-align: center;
+  color: #e9e8ee;
+  font-size: 1.4rem;
+  font-weight: 600;
 }
 
 .loadingContainer {
-  padding: 20px;
+  padding: 40px;
   text-align: center;
+  color: #e9e8ee;
 }
 
 .errorContainer {
   padding: 20px;
-  color: #dc3545;
+  color: #ff6b6b;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  border-radius: 8px;
+  text-align: center;
 }
 
 .retryButton {
   margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #dc3545;
+  padding: 8px 16px;
+  background: #dc3545;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
 
 .retryButton:hover {
-  background-color: #c82333;
+  background: #c82333;
 }
 
 .emptyState {
   text-align: center;
   padding: 40px;
+  color: #a6beb9;
 }
 
 .reloadButton {
   padding: 10px 20px;
-  background-color: #007bff;
+  background: #12824c;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   margin-top: 10px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
 
 .reloadButton:hover {
-  background-color: #0056b3;
+  background: #0f7242;
 }
 
 .categoriesGrid {
@@ -65,11 +81,11 @@
   align-items: center;
   gap: 8px;
   padding: 15px 5px;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 12px;
+  background: rgba(233, 232, 238, 0.05);
+  border: 1px solid #386d6d;
+  border-radius: 8px;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
   width: 90px;
   height: 90px;
@@ -77,13 +93,10 @@
 }
 
 .categoryCard:hover {
-  background-color: #e9ecef;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background: rgba(18, 130, 76, 0.1);
   border-color: #12824c;
 }
 
-/* Efecto de pulso al hacer hover para indicar que es clickeable */
 .categoryCard:hover::after {
   content: '✏️';
   position: absolute;
@@ -98,32 +111,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 
 .iconContainer {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: white;
+  background: rgba(233, 232, 238, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #dee2e6;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.3s ease;
+  border: 1px solid #386d6d;
+  transition: border-color 0.2s ease;
 }
 
 .categoryCard:hover .iconContainer {
@@ -131,37 +130,24 @@
 }
 
 .categoryName {
-  font-weight: bold;
-  font-size: 0.85rem;
-  color: #495057;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: #e9e8ee;
   line-height: 1.2;
   max-width: 80px;
   word-wrap: break-word;
 }
 
-/* Estilos para cuando hay descripción (opcional) */
 .categoryDescription {
-  display: none; /* Ocultamos la descripción en la vista de grid */
+  display: none;
 }
 
-/* Versión alternativa si quieres mostrar tooltip al hover */
-.categoryCard:hover .categoryName::after {
-  content: attr(data-fullname);
-  position: absolute;
-  bottom: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #333;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  white-space: nowrap;
-  z-index: 10;
-}
-
-/* Media queries para responsividad */
 @media (max-width: 768px) {
+  .container {
+    padding: 15px;
+    margin: 0 1rem 1.5rem 1rem;
+  }
+  
   .categoriesGrid {
     grid-template-columns: repeat(auto-fill, minmax(90px, 90px));
     gap: 12px;

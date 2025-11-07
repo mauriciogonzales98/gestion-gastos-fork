@@ -62,7 +62,8 @@ async function add(req: Request, res: Response) {
     em.persist(newWallet);
     await em.flush();
 
-    const cat = await CategoryService.createDefaultCategories(em, user);
+    // const cat = await CategoryService.createDefaultCategories(em, user);
+    await CategoryService.createDefaultCategories(em, user);
     await em.flush();
 
     res.status(201).json({ message: "usuario creado", data: user });

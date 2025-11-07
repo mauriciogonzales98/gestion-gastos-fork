@@ -98,24 +98,11 @@ const CategoryForm = () => {
 
   return (
     <div className={styles.container}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className={styles.headerContainer}>
         <h1 className={styles.title}>Categorías</h1>
         <button
           onClick={handleCreate}
-          style={{
-            background: "#12824c",
-            color: "white",
-            border: "none",
-            padding: "8px 12px",
-            borderRadius: 8,
-            cursor: "pointer",
-          }}
+          className={styles.createButton}
         >
           + Nueva categoría
         </button>

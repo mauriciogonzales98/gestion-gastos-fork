@@ -10,12 +10,17 @@ import Register from "./components/User/userCreate/Register/Register.jsx";
 
 import Main from "./components/Pages/Main.jsx";
 import CategoryForm from "./components/Category/CategoryForm/CategoryForm.jsx";
-import CreateWallet from "./components/Wallet/createWallet/CreateWallet.jsx";
+import TagForm from "./components/Tag/TagForm.jsx";
 
 import Profile from "./components/Pages/Profile.jsx";
 
 import ServerDown from "./components/Pages/ServicePages/ServerDown.jsx";
 import PageNotFound from "./components/Pages/ServicePages/PageNotFound.jsx";
+
+import MercadoPagoTest from "./components/PruebaMP/PruebaMP.jsx";
+
+import OperationsPage from './components/Operation/OperationsPage.jsx';
+import WalletPage from "./components/Wallet/WalletPage.jsx";
 
 function App() {
   const { loggedIn } = useAuth();
@@ -33,13 +38,16 @@ function App() {
             <Route path="/register" element={<Register />} />
 
             <Route path="/main" element={<Main />} />
+            <Route path="/operations" element={<OperationsPage />} />
             <Route path="/categories" element={<CategoryForm />} />
-            <Route path="/create-wallet" element={<CreateWallet />} />
+            <Route path="/create-wallet" element={<WalletPage />} />
+            <Route path="/tags" element={<TagForm />} />
 
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/serverdown" element={<ServerDown />} />
             <Route path="*" element={<PageNotFound />} />
+            <Route path="mptest" element={<MercadoPagoTest />} />
           </Routes>
         </div>
       </div>

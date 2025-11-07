@@ -1,25 +1,21 @@
-// create table if not exists `gestion_gastos`.`tag` (
-//   `tagId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-//   `tagName` VARCHAR(50) NULL UNIQUE,
-//   `userId` INT UNSIGNED NOT NULL,
-//   PRIMARY KEY (`tagId`),
-//   FOREIGN KEY (`userId`) REFERENCES `user`(`userId`)
-// );
-import { BaseEntity, Entity, ManyToOne, PrimaryKey } from "@mikro-orm/core";
-import { Property } from "@mikro-orm/core";
+import { Entity, PrimaryKey, Property, ManyToOne } from "@mikro-orm/core";
 import { User } from "../User/user.entity.js";
 
 @Entity()
-export class Tag extends BaseEntity {
+export class Tag {
   @PrimaryKey()
   id!: number;
 
   @Property({ nullable: false })
   name!: string;
 
+  @Property({ nullable: false })
+  color!: string;
+
   @ManyToOne({
     entity: () => User,
     nullable: false,
+    fieldName: "userid",
     deleteRule: "cascade",
     updateRule: "cascade",
   })

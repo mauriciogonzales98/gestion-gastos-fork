@@ -6,100 +6,174 @@ import {
   BiDollarCircle,
   BiLogOut,
   BiSolidUserAccount,
+  BiTag,
+  BiHome,
+  BiWallet,
+  BiHistory, 
 } from "react-icons/bi";
-import { FiHome } from "react-icons/fi";
+import { memo, useCallback } from "react";
 import styles from "./NavBar.module.css";
 
-const NavBar = () => {
+const NavBar = memo(() => {
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
 
-  const ClickHandler = () => {
+  const handleHomeClick = useCallback(() => {
     if (userLoggedIn) {
       navigate("/main");
-    } else navigate("/");
-  };
+    } else {
+      navigate("/");
+    }
+  }, [userLoggedIn, navigate]);
+
+  const handleWalletClick = useCallback(() => {
+    navigate("/create-wallet");
+  }, [navigate]);
+
+  const handleCategoriesClick = useCallback(() => {
+    navigate("/categories");
+  }, [navigate]);
+
+  const handleTagsClick = useCallback(() => {
+    navigate("/tags");
+  }, [navigate]);
+
+  const handleOperationsClick = useCallback(() => {
+    navigate("/operations");
+  }, [navigate]);
+
+  const handleProfileClick = useCallback(() => {
+    navigate("/Profile");
+  }, [navigate]);
+
+  const handleSignOut = useCallback(() => {
+    fbSignOut();
+    navigate("/");
+  }, [navigate]);
+
+  const handleLogoClick = useCallback(() => {
+    navigate("/");
+  }, [navigate]);
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title} onClick={() => navigate("/")}>
-        GG - Gestion de Gastos
-      </h1>
+
+      <img
+        src="/ggs.png"
+        alt="Gestión de Gastos"
+        className={styles.logo}
+        onClick={handleLogoClick}
+      />
+      
       <nav className={styles.navbar}>
         <AuthContext.Consumer>
           {(value) => (
             <>
-              {/* WELCOME MESSAGE */}
-              <div>
-                {" "}
-                {value.user && <span> Welcome, {value.user.email}</span>}{" "}
-              </div>
-              {/* HOME */}
-              <button className={styles.homeicon} onClick={ClickHandler}>
-                <FiHome />
-              </button>
-              {/* CATEGORIES */}
-              <div>
-                {value.user && (
-                  <button
-                    className={styles.signout}
-                    onClick={() => {
-                      navigate("/categories");
-                    }}
-                  >
-                    <BiCategory />
-                  </button>
-                )}
-              </div>
-              <div>
-                <button
-                  className={styles.button}
-                  onClick={() => {
-                    navigate("/create-wallet");
-                  }}
-                >
-                  <BiDollarCircle />
-                </button>
-              </div>
-              {/* PROFILE */}
-              <div>
-                {value.user && (
-                  <button
-                    className={styles.homeicon}
-                    onClick={() => {
-                      navigate("/Profile");
-                    }}
-                  >
-                    <BiSolidUserAccount />
-                  </button>
-                )}
-              </div>
-              {/* SIGN OUT */}
-              <div>
-                {value.user && (
-                  <button
-                    className={styles.signout}
-                    onClick={() => {
-                      fbSignOut();
-                      navigate("/");
-                    }}
-                  >
-                    <BiLogOut />
-                  </button>
-                )}
-              </div>
-
-              {/* <div>
-              {!value.user && (
-                <button onClick={() => navigate("/login")}>Sign In</button>
+          {/* WELCOME MESSAGE 
+              {value.user && (
+                <div className={styles.welcome}>
+                  Bienvenido,<br/>{value.user.email}
+                </div>
               )}
-            </div> */}
+          */}
+
+              {/* HOME */}
+              <div className={styles.tooltip}>
+                <button className={styles.navButton} onClick={handleHomeClick}>
+                  <BiHome className={styles.icon} />
+                  <span>Inicio</span>
+                </button>
+                <div className={styles.tooltipText}>Inicio</div>
+              </div>
+              {/* WALLETS */}
+              {value.user && (
+                <div className={styles.tooltip}>
+                  <button
+                    className={styles.navButton}
+                    onClick={handleWalletClick}
+                  >
+                    <BiWallet className={styles.icon} />
+                    <span>Wallets</span>
+                  </button>
+                  <div className={styles.tooltipText}>Wallets</div>
+                </div>
+              )}
+
+              {/* MIS OPERACIONES */}
+              {value.user && (
+                <div className={styles.tooltip}>
+                  <button
+                    className={styles.navButton}
+                    onClick={handleOperationsClick}
+                  >
+                    <BiHistory className={styles.icon} />
+                    <span>Mis Operaciones</span>
+                  </button>
+                  <div className={styles.tooltipText}>Mis Operaciones</div>
+                </div>
+              )}
+
+              {/* CATEGORIES */}
+              {value.user && (
+                <div className={styles.tooltip}>
+                  <button
+                    className={styles.navButton}
+                    onClick={handleCategoriesClick}
+                  >
+                    <BiCategory className={styles.icon} />
+                    <span>Categorías</span>
+                  </button>
+                  <div className={styles.tooltipText}>Categorías</div>
+                </div>
+              )}
+
+              {/* TAGS */}
+              {value.user && (
+                <div className={styles.tooltip}>
+                  <button
+                    className={styles.navButton}
+                    onClick={handleTagsClick}
+                  >
+                    <BiTag className={styles.icon} />
+                    <span>Etiquetas</span>
+                  </button>
+                  <div className={styles.tooltipText}>Etiquetas</div>
+                </div>
+              )}
+
+              {/* PROFILE */}
+              {value.user && (
+                <div className={styles.tooltip}>
+                  <button
+                    className={styles.navButton}
+                    onClick={handleProfileClick}
+                  >
+                    <BiSolidUserAccount className={styles.icon} />
+                    <span>Perfil</span>
+                  </button>
+                  <div className={styles.tooltipText}>Perfil</div>
+                </div>
+              )}
+
+              {/* SIGN OUT */}
+              {value.user && (
+                <div className={styles.tooltip}>
+                  <button
+                    className={styles.signout}
+                    onClick={handleSignOut}
+                  >
+                    <BiLogOut className={styles.icon} />
+                    <span>Cerrar Sesión</span>
+                  </button>
+                  <div className={styles.tooltipText}>Cerrar Sesión</div>
+                </div>
+              )}
             </>
           )}
         </AuthContext.Consumer>
       </nav>
-      <hr></hr>
     </div>
   );
-};
+});
+
 export default NavBar;

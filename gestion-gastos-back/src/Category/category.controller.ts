@@ -3,6 +3,7 @@ import { Category } from "./category.entity.js";
 import { orm } from "../shared/db/orm.js";
 import { User } from "../User/user.entity.js";
 import { CategoryService } from "../Services/category.service.js";
+import { Operation } from "../Operation/operation.entity.js";
 
 const em = orm.em;
 
@@ -119,12 +120,35 @@ async function remove(req: Request, res: Response) {
         message: 'Usuario no autenticado' 
       });
     }
+
     const id = Number.parseInt(req.params.id);
-    const categoryToRemove = await em.findOneOrFail(Category, { id: id });
+    const userId = firebaseUser.uid;
+    
+    const categoryToRemove = await em.findOneOrFail(Category, { 
+      id: id,
+      user: { id: userId } 
+    });
+
+    const operationsCount = await em.count(Operation, { category: categoryToRemove });
+    
     await em.removeAndFlush(categoryToRemove);
-    res.status(200).json({ message: "category removed" });
+    
+    res.status(200).json({ 
+      message: "category removed",
+      operationsUpdated: operationsCount
+    });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (error.name === 'NotFoundError') {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Categoría no encontrada' 
+      });
+    }
+    
+    res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 }
 

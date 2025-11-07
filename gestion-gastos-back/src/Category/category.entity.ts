@@ -1,6 +1,8 @@
-import { BaseEntity, Entity, ManyToOne, PrimaryKey } from "@mikro-orm/core";
+import { BaseEntity, Entity, ManyToOne, OneToMany, PrimaryKey } from "@mikro-orm/core";
 import { Property } from "@mikro-orm/core";
 import { User } from "../User/user.entity.js";
+import { Operation } from "../Operation/operation.entity.js";
+import { Collection } from "@mikro-orm/core";
 
 @Entity()
 export class Category {
@@ -24,4 +26,8 @@ export class Category {
     updateRule: "cascade",
   })
   user!: User;
+
+  @OneToMany('Operation', 'category')
+  operations = new Collection<Operation>(this);
+
 }
