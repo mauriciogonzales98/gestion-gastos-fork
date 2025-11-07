@@ -15,11 +15,12 @@ function normalizeWallets(input) {
     const id = w.id ?? w._id ?? null;
     const name = w.name ?? `Wallet ${id ?? ""}`;
     const coin = w.coin ?? w.currency ?? "";
-    
+
     // Usar los valores calculados del backend
     const spend = typeof w.spend === "number" ? w.spend.toFixed(2) : "0.00";
     const income = typeof w.income === "number" ? w.income.toFixed(2) : "0.00";
-    const balance = typeof w.balance === "number" ? w.balance.toFixed(2) : "0.00";
+    const balance =
+      typeof w.balance === "number" ? w.balance.toFixed(2) : "0.00";
 
     return {
       id: Number(id),
