@@ -9,7 +9,6 @@ import { useToken } from "../../Contexts/fbTokenContext/TokenContext.jsx";
 import TagSelector from "../Tag/TagSelector.jsx";
 import {
   loadEnrichedOperations,
-  loadOperations,
 } from "./operationCreate/OperationEnrichManager.jsx";
 
 // import CategoryButtons from "../Category/CategoryForm/CategoryButtons.jsx";
@@ -43,7 +42,6 @@ const OperationList = ({
 
   // Tag seleccionado para el filtro
   const [selectedTagId, setSelectedTagId] = useState(null);
-  const [showOperationList, setShowOperationList] = useState(true);
 
   const [enrichedOperations, setEnrichedOperations] = useState([]);
   const dates = {
@@ -75,30 +73,43 @@ const OperationList = ({
     }));
   };
 
+
+
+
+
   // Función que refresca las operaciones
-  const refreshOperations = async () => {
-    if (!selectedWalletId) return;
-    try {
-      const enrichedOperations = await loadEnrichedOperations(
-        selectedWalletId,
-        token
-      );
-      setOperations(enrichedOperations).then(() => {
-        console.log("Operaciones refrescadas:", enrichedOperations);
-      });
-    } catch (err) {
-      console.log("Error refreshing operations:", err);
-      setOperations([]);
-    }
-  };
-  if (doRefreshOperations) {
-    refreshOperations();
-    setDoRefreshOperations(false);
+  // const refreshOperations = async () => {
+  //   if (!selectedWalletId) return;
+  //   try {
+  //     const enrichedOperations = await loadEnrichedOperations(
+  //       selectedWalletId,
+  //       token
+  //     );
+  //     setOperations(enrichedOperations)
+  //       console.log("Operaciones refrescadas:", enrichedOperations);
+      
+  //   } catch (err) {
+  //     console.log("Error refreshing operations:", err);
+  //     setOperations([]);
+  //   }
+  // };
+
+  useEffect(() => {
+  if (!doRefreshOperations) {
+    console.log("useEffect en operationList: no se requiere refresh");
+    return;
   }
+
+  const doRefresh = async () => {
+    await operationsLoader();
+    console.log("useEffect en operationList: refresh completado");
+    setDoRefreshOperations(false);
+  };
+
+  doRefresh();
+}, [doRefreshOperations]);
+
   //Cuando se selecciona una wallet, carga todas las operaciones, cargando las categorías e insertandolas en el objeto
-
-
-
   const operationsLoader = async () => {
     if (selectedWalletId) {
       try {
@@ -119,7 +130,10 @@ const OperationList = ({
     }
   };
 
-useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[enrichedOperations, setEnrichedOperations]);
+
+
+
+  useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[enrichedOperations, setEnrichedOperations]);
 
   useEffect(() => {
     operationsLoader();
@@ -133,6 +147,9 @@ useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[en
       </div>
     );
   }
+
+
+
   // Maneja el filtrado de las operaciones
   const filterOperationList = () => {
     const normalizedCategoryId = (() => {
@@ -194,6 +211,8 @@ useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[en
     filteredOperations.splice(5);
   }
 
+
+
   // Maneja el borrado de operaciones
   const handleDelete = async (operation, token) => {
     if (!token) {
@@ -222,6 +241,9 @@ useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[en
       setIsDeleting(false);
     }
   };
+
+
+
   // Inicia el modo de edición, llamando al componente OperationUpdateForm
   const handleDoubleClick = (operation) => {
     setEditingId(operation.id);
@@ -337,6 +359,7 @@ useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[en
                     <span className={styles.operationDate}>
                       📅 {new Date(operation.date).toLocaleDateString("es-ES")}
                     </span>
+
                     <span
                       className={`${styles.operationType} ${
                         operation.type === "gasto" ? styles.expense : ""

@@ -42,15 +42,17 @@ const Profile = () => {
               <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Cambiar Nombre y Apellido</h2>
                 <div className={styles.buttonGroup}>
-                  <button
-                    onClick={() => {
-                      setErrorMessage("");
-                      setIsChangingFullName(true);
-                    }}
-                    className={styles.button}
-                  >
-                    Cambiar Nombre y Apellido
-                  </button>
+                  {!isChangingFullName && (
+                    <button
+                      onClick={() => {
+                        setErrorMessage("");
+                        setIsChangingFullName(true);
+                      }}
+                      className={styles.button}
+                    >
+                      Cambiar Nombre y Apellido
+                    </button>
+                  )}
                   
                   {isChangingFullName && (
                     <div className={styles.formContainer}>

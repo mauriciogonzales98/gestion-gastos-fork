@@ -13,6 +13,20 @@ const Register = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Reglas de validación de contraseña
+  const passwordRules = {
+    minLength: password.length >= 8,
+    hasUpperCase: /[A-Z]/.test(password),
+    hasLowerCase: /[a-z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+  };
+
+  const isPasswordValid = Object.values(passwordRules).every(rule => rule);
+  const passwordsMatch = password === confirmPassword;
 
   const registrationProcess = async (userData) => {
     const statusService = new StatusService();
@@ -66,8 +80,13 @@ const Register = () => {
       const payload = Object.fromEntries(formData);
 
       // Validate passwords match
-      if (payload.password !== payload.confirmPassword) {
-        throw new Error("Passwords do not match");
+      if (!passwordsMatch) {
+        throw new Error("Las contraseñas no coinciden");
+      }
+
+      // Validate password strength
+      if (!isPasswordValid) {
+        throw new Error("La contraseña no cumple con todos los requisitos");
       }
 
       // Prepare registration data
@@ -227,8 +246,33 @@ const Register = () => {
               className={styles.input}
               required
               disabled={isRegistering}
-              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
+            
+            {/* Lista de reglas de contraseña */}
+            {password && (
+              <div className={styles.passwordRules}>
+                <h4 className={styles.rulesTitle}>La contraseña debe contener:</h4>
+                <ul className={styles.rulesList}>
+                  <li className={passwordRules.minLength ? styles.ruleValid : styles.ruleInvalid}>
+                    {passwordRules.minLength ? "✅" : "❌"} Mínimo 8 caracteres
+                  </li>
+                  <li className={passwordRules.hasUpperCase ? styles.ruleValid : styles.ruleInvalid}>
+                    {passwordRules.hasUpperCase ? "✅" : "❌"} Una letra mayúscula
+                  </li>
+                  <li className={passwordRules.hasLowerCase ? styles.ruleValid : styles.ruleInvalid}>
+                    {passwordRules.hasLowerCase ? "✅" : "❌"} Una letra minúscula
+                  </li>
+                  <li className={passwordRules.hasNumber ? styles.ruleValid : styles.ruleInvalid}>
+                    {passwordRules.hasNumber ? "✅" : "❌"} Un número
+                  </li>
+                  <li className={passwordRules.hasSpecialChar ? styles.ruleValid : styles.ruleInvalid}>
+                    {passwordRules.hasSpecialChar ? "✅" : "❌"} Un carácter especial (!@#$%^&* etc.)
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -240,14 +284,22 @@ const Register = () => {
               className={styles.input}
               required
               disabled={isRegistering}
-              minLength={8}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
+            
+            {/* Indicador de coincidencia de contraseñas */}
+            {confirmPassword && (
+              <div className={passwordsMatch ? styles.matchValid : styles.matchInvalid}>
+                {passwordsMatch ? "✅" : "❌"} Las contraseñas {passwordsMatch ? "coinciden" : "no coinciden"}
+              </div>
+            )}
           </div>
 
           <button 
             type="submit" 
             className={styles.submitButton}
-            disabled={isRegistering}
+            disabled={isRegistering || !isPasswordValid || !passwordsMatch}
           >
             {isRegistering ? "Creando cuenta..." : "Registrarse"}
           </button>

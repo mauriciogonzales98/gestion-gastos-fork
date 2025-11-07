@@ -78,7 +78,6 @@ async function add(req: Request, res: Response) {
     const userId = firebaseUser.uid;
     const user = await em.findOneOrFail(User, { id: userId });
 
-    // ✅ VALIDACIÓN: Verificar si ya existe un tag con el mismo nombre para este usuario
     const existingTag = await em.findOne(Tag, { 
       name: req.body.sanitizedInput.name,
       user: { id: userId }
@@ -117,7 +116,6 @@ async function update(req: Request, res: Response) {
 
     const userId = firebaseUser.uid;
 
-    // ✅ VALIDACIÓN: Verificar si otro tag tiene el mismo nombre (excluyendo el actual)
     const existingTag = await em.findOne(Tag, { 
       name: req.body.sanitizedInput.name,
       user: { id: userId },
