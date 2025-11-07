@@ -66,7 +66,8 @@ const Main = () => {
   }, [selectedWalletId, token, doRefreshOperations]);
 
   const refreshOperations = () => {
-    setDoRefreshOperations(prev => !prev);
+    setDoRefreshOperations(true);
+    console.log("Refrescando operaciones con doRefreshOperations:", doRefreshOperations);
   };
 
   return (
