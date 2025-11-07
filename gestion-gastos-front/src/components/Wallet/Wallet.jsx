@@ -1,5 +1,5 @@
 import React from "react";
-import createWallet from "./createWallet/CreateWallet";
+import createWallet from "./CreateWallet/CreateWallet";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./WalletSelector.module.css";
