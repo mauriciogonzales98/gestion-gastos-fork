@@ -1,11 +1,10 @@
-// TagSelector.jsx
 import React, { useState, useEffect } from 'react';
 import TagBadge from './TagBadge.jsx';
 import styles from './TagSelector.module.css';
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:3001";
 
-const TagSelector = ({ selectedTagId, onTagSelect, token }) => {
+const TagSelector = ({ selectedTagId, onTagSelect, token, dropdownDirection = "down" }) => {
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -56,16 +55,18 @@ const TagSelector = ({ selectedTagId, onTagSelect, token }) => {
           className={styles.selectedContainer}
           onClick={() => setShowDropdown(!showDropdown)}
         >
-          {selectedTag ? (
-            <TagBadge tag={selectedTag} />
-          ) : (
-            <span className={styles.placeholder}>Seleccionar etiqueta...</span>
-          )}
+          <div className={styles.selectedContent}>
+            {selectedTag ? (
+              <TagBadge tag={selectedTag} />
+            ) : (
+              <span className={styles.placeholder}>Seleccionar etiqueta...</span>
+            )}
+          </div>
           <span className={styles.arrow}>▼</span>
         </div>
 
         {showDropdown && (
-          <div className={styles.dropdown}>
+          <div className={`${styles.dropdown} ${dropdownDirection === "up" ? styles.dropdownUp : styles.dropdownDown}`}>
             {loading ? (
               <div className={styles.loading}>Cargando tags...</div>
             ) : (

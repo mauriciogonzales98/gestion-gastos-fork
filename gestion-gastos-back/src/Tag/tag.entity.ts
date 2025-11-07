@@ -1,4 +1,3 @@
-// src/entities/tag.entity.ts
 import { Entity, PrimaryKey, Property, ManyToOne } from "@mikro-orm/core";
 import { User } from "../User/user.entity.js";
 

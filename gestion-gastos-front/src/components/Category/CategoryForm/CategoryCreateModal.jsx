@@ -112,7 +112,6 @@ const CategoryCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate, categ
   setDeleteLoading(true);
   setError("");
   try {
-    console.log("Deleting category id=", category.id);
     
     const res = await fetch(`${API_BASE}/api/category/${category.id}`, {
       method: "DELETE",
@@ -122,8 +121,6 @@ const CategoryCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate, categ
       },
       credentials: "include",
     });
-
-    console.log("Delete response status:", res.status);
 
     if (res.status === 204 || res.ok) {
       console.log("Delete successful");

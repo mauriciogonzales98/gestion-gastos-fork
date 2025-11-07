@@ -61,7 +61,6 @@ const WalletSelector = ({
         <button
           onClick={(e) => {
             setIsCreatingWallet(true);
-            console.log(isCreatingWallet);
             navigate("/create-wallet");
           }}
           className={styles.createButton}
@@ -145,7 +144,6 @@ const WalletSelector = ({
       <button
         onClick={(e) => {
           setIsCreatingWallet(true);
-          console.log(isCreatingWallet);
           navigate("/create-wallet");
         }}
         style={{

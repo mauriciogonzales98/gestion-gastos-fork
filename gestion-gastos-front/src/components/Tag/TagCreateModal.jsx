@@ -12,7 +12,7 @@ const TagCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate, tag, onDel
   const [error, setError] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [existingTags, setExistingTags] = useState([]); // ✅ NUEVO: Para validación frontend
+  const [existingTags, setExistingTags] = useState([]); 
 
   const defaultColors = [
     '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#20c997', 
@@ -21,7 +21,6 @@ const TagCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate, tag, onDel
 
   useEffect(() => {
     if (isOpen && token) {
-      // ✅ Cargar tags existentes cuando se abre el modal
       fetchExistingTags();
     }
   }, [isOpen, token]);
@@ -35,10 +34,9 @@ const TagCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate, tag, onDel
       setColor("#6c757d");
     }
     setShowDeleteConfirm(false);
-    setError(""); // ✅ Limpiar errores al abrir/cerrar
+    setError(""); 
   }, [tag, isOpen]);
 
-  // ✅ NUEVO: Función para cargar tags existentes
   const fetchExistingTags = async () => {
     try {
       const response = await fetch(`${API_BASE}/api/tag/`, {
@@ -58,23 +56,20 @@ const TagCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate, tag, onDel
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // ✅ VALIDACIÓN FRONTEND: Nombre requerido
     if (!name.trim()) {
       setError("Nombre requerido");
       return;
     }
 
-    // ✅ VALIDACIÓN FRONTEND: Longitud máxima
     if (name.trim().length > 50) {
       setError("El nombre no puede tener más de 50 caracteres");
       return;
     }
 
-    // ✅ VALIDACIÓN FRONTEND: Verificar nombre duplicado
     const normalizedNewName = name.trim().toLowerCase();
     const isNameDuplicate = existingTags.some(existingTag => {
       const normalizedExistingName = existingTag.name.toLowerCase();
-      // En modo edición, excluir el tag actual
+
       if (tag && existingTag.id === tag.id) {
         return false;
       }
@@ -129,7 +124,7 @@ const TagCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate, tag, onDel
         }
         handleClose();
       } else {
-        // ✅ El backend también validará, así que mostramos su mensaje de error
+
         setError(json.message || `Error al ${tag ? 'actualizar' : 'crear'} tag`);
       }
     } catch (err) {
@@ -243,7 +238,7 @@ const TagCreateModal = ({ isOpen, onClose, onCreate, token, onUpdate, tag, onDel
             required
             autoFocus
             disabled={loading || deleteLoading}
-            maxLength={50} // ✅ Limitar longitud
+            maxLength={50} 
           />
 
           <div className={styles.colorPickerContainer}>

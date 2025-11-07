@@ -56,7 +56,6 @@ const OperationUpdateForm = ({
         walletid: selectedWalletId,
       };
       
-      console.log("💾 Guardando updates:", updates);
 
       await updateOperation(operationId, updates, token);
       setEditingId(null);

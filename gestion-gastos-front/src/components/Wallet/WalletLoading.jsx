@@ -60,7 +60,6 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
       }
       
       const walletsData = await response.json();
-      console.log("Wallets data:", walletsData); 
       
       setWallets(walletsData);
 
@@ -82,7 +81,6 @@ const WalletLoading = ({ token, selectedWalletId, setSelectedWalletId, onWallets
 
   useEffect(() => {
     if (token) {
-      console.log("Cargando wallets...");
       loadWallets();
     } else {
       setWallets([]);

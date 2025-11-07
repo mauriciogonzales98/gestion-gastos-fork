@@ -97,7 +97,6 @@ async function findAllFromWallet(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const idToFind = Number(req.params.id);
-    console.log("idToFind", req.params.id);
     const operation = await em.findOneOrFail(
       Operation,
       { id: idToFind },

@@ -52,11 +52,8 @@ const OperationList = ({
     //Valores actuales de from y to
     const currentFrom = selectedDates.from || "";
     const currentTo = selectedDates.to || "";
-    console.log("Handling change...");
     //Evita que la fecha de inicio sea mayor a la de fin
     // y que la de fin sea menor a la de inicio, colocando el último campo que se intenta seleccionar en null
-    console.log("Valores que entran: ", field, " ", value);
-    console.log("Valores actuales: ", currentFrom, currentTo);
     if (
       (currentFrom && field == "to" && value < currentFrom) ||
       (currentTo && field == "from" && value > currentTo)
@@ -118,22 +115,11 @@ const OperationList = ({
           token
         );
         setOperations(enrichedOperations.reverse());
-        // DEBUG
-        console.log(
-          "Operaciones seleccionadas en operationsLoader:",
-          enrichedOperations
-        );
       } catch (err) {
-        console.log("Error cargando operaciones enriqucidas al main", err);
         setOperations([]);
       }
     }
   };
-
-
-
-
-  useEffect(() => {console.log("operaciones enriquecidas",enrichedOperations)},[enrichedOperations, setEnrichedOperations]);
 
   useEffect(() => {
     operationsLoader();
@@ -176,14 +162,12 @@ const OperationList = ({
       const fromDateFilter = () => {
         if (!dates.from || dates.from == " ") return true;
         const opDate = new Date(operation.date).toISOString().split('T')[0];
-        console.log("date from: ", opDate >= dates.from);
         return opDate >= dates.from;
       };
       // Filtrado por fecha hasta
       const toDateFilter = () => {
         if (!dates.to || dates.to == " ") return true;
         const opDate = new Date(operation.date).toISOString().split('T')[0];
-        console.log("Date to: ", opDate <= dates.to);
         return opDate <= dates.to;
       };
 

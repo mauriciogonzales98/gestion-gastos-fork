@@ -7,7 +7,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
   const [operationType, setOperationType] = useState("gasto");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
-  const [operationDate, setOperationDate] = useState(""); // Nuevo estado para la fecha
+  const [operationDate, setOperationDate] = useState(""); 
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [selectedTagId, setSelectedTagId] = useState(null); 
@@ -78,7 +78,6 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
       date: new Date(operationDate + 'T12:00:00').toISOString(), // Agregar hora para evitar problemas de zona horaria
     };
 
-    console.log("Submitting operation:", operationData);
 
     try {
       const response = await fetch("http://localhost:3001/api/operation/", {
@@ -96,7 +95,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
         setAmount("");
         setDescription("");
         setSelectedCategoryId("");
-        setSelectedTagId(null); // ✅ LIMPIAR EL TAG TAMBIÉN
+        setSelectedTagId(null); 
         
         // Restablecer a fecha actual
         const today = new Date();
@@ -212,7 +211,7 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
           />
         </div>
 
-        {/* ✅ Date Picker para seleccionar fecha */}
+        {/* Date Picker para seleccionar fecha */}
         <div className={styles.formGroup}>
           <label className={styles.label}>Fecha de la Operación:</label>
           <input
@@ -235,11 +234,13 @@ const OperationForm = ({ walletId, token, onOperationAdded }) => {
           />
         </div>
 
-        {/* ✅ SELECTOR DE TAGS */}
+        {/* SELECTOR DE TAGS */}
+        <label className={styles.label}>Etiqueta (opcional):</label>
         <TagSelector 
           selectedTagId={selectedTagId}
           onTagSelect={setSelectedTagId}
           token={token}
+          dropdownDirection="up" 
         />
 
         <button

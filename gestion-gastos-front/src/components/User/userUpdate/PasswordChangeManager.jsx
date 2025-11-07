@@ -82,7 +82,6 @@ const ChangePassword = ({
     // Cambia la contraseña en Firebase Auth
     try {
       await fbPasswordChange(newPassword);
-      console.log("Contraseña Cambiada exitosamente");
       setSuccessMessage("🎉 ¡Contraseña cambiada exitosamente!");
       setShowSuccessOnly(true); // ← Mostrar solo el mensaje de éxito
       

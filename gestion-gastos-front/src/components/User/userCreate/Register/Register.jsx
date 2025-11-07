@@ -36,7 +36,6 @@ const Register = () => {
       navigate("/serverdown");
       throw new Error("BACKEND_DOWN");
     }
-    console.log("Starting registration process with data:", userData);
     try {
       const response = await fetch(`http://localhost:3001/api/registration`, {
         method: "POST",
@@ -54,7 +53,6 @@ const Register = () => {
       }
 
       const result = await response.json();
-      console.log("Registration result:", result);
       if (result.data && result.data.userId) {
         console.log("User created successfully in backend");
         return result;
@@ -143,7 +141,6 @@ const Register = () => {
       await fbGoogleSignIn();
       const user = getAuth().currentUser;
 
-      console.log("Google registration successful:", user);
 
       if (user) {
         const userData = {
@@ -186,7 +183,6 @@ const Register = () => {
           }
         });
     } catch (error) {
-      console.log(error);
     }
   };
 

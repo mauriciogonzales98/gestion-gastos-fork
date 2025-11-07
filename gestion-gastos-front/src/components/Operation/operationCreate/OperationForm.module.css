@@ -136,7 +136,6 @@
   opacity: 0.7;
 }
 
-/* ✅ ESTILOS ESPECÍFICOS PARA EL DATE PICKER */
 .input[type="date"] {
   appearance: none;
   -webkit-appearance: none;

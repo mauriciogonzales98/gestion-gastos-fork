@@ -32,8 +32,6 @@ const CreateWallet = () => {
     payload.income = 0;
     payload.spend = 0;
 
-    console.log(payload);
-
     try {
       const token = await user.getIdToken(true);
 
@@ -52,11 +50,9 @@ const CreateWallet = () => {
         navigate("/main");
       } else {
         const errorData = await response.json();
-        setErrorMessage(errorData?.message || "Error al crear la cartera");
-        console.log("Error al crear Wallet en BE", errorData?.message || "Error desconocido");
+        setErrorMessage(errorData?.message || "Error al crear la Wallet");
       }
     } catch (err) {
-      console.log("Error creando wallet: ", err);
       setErrorMessage("Error de conexión. Intente nuevamente.");
     } finally {
       setIsLoading(false);
@@ -71,7 +67,7 @@ const CreateWallet = () => {
     <div className={styles.container}>
       <div className={`${styles.card} ${isLoading ? styles.loading : ""}`}>
 
-        <h2 className={styles.title}>Crear Nueva Cartera</h2>
+        <h2 className={styles.title}>Crear Nueva Wallet</h2>
         
         {errorMessage && (
           <div className={styles.errorMessage}>
@@ -82,7 +78,7 @@ const CreateWallet = () => {
         <form onSubmit={handleCreation}>
           <div className={styles.formGroup}>
             <label htmlFor="name" className={styles.label}>
-              Nombre de la Cartera
+              Nombre de la Wallet
             </label>
             <Form.Control
               type="text"
@@ -120,7 +116,7 @@ const CreateWallet = () => {
             className={styles.submitButton}
             disabled={isLoading}
           >
-            {isLoading ? "Creando Cartera..." : "Crear Cartera"}
+            {isLoading ? "Creando Wallet..." : "Crear Wallet"}
           </button>
         </form>
       </div>

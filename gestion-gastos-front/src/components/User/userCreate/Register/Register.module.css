@@ -222,7 +222,7 @@
     font-size: 0.95rem;
   }
 }
-/* Estilos para las reglas de contraseña */
+
 .passwordRules {
   background: rgba(27, 129, 136, 0.1);
   border: 1px solid #386d6d;
@@ -261,7 +261,6 @@
   color: #ff6b6b;
 }
 
-/* Estilos para el indicador de coincidencia de contraseñas */
 .matchValid {
   color: #12824c;
   font-size: 0.8rem;
@@ -280,7 +279,6 @@
   gap: 0.5rem;
 }
 
-/* Responsive para las reglas de contraseña */
 @media (max-width: 768px) {
   .passwordRules {
     padding: 0.8rem;

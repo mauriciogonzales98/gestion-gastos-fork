@@ -24,7 +24,6 @@ const OperationsPage = () => {
         
         // Obtener la wallet seleccionada del localStorage
         const savedWalletId = localStorage.getItem('selectedWalletId');
-        console.log("Wallet ID desde localStorage:", savedWalletId);
         
         // Verificación más robusta
         const isValidWalletId = savedWalletId && 
@@ -48,7 +47,6 @@ const OperationsPage = () => {
           setOperations([]);
         }
       } catch (err) {
-        console.log("Error cargando operaciones:", err);
         setOperations([]);
         setSelectedWalletId(null);
       } finally {
@@ -70,12 +68,6 @@ const OperationsPage = () => {
   const handleGoToMain = () => {
     navigate("/main");
   };
-
-  // DEBUG: Agregar console.log para ver el estado
-  useEffect(() => {
-    console.log("Estado actual - selectedWalletId:", selectedWalletId, "Tipo:", typeof selectedWalletId);
-    console.log("Operaciones cargadas:", operations.length);
-  }, [selectedWalletId, operations]);
 
   if (loading) {
     return (
