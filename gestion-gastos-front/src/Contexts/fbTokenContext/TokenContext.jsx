@@ -77,7 +77,7 @@ export const TokenProvider = ({ children }) => {
   );
 };
 
-//  Hook personalizado
+
 export const useToken = () => {
   const context = useContext(TokenContext);
   if (!context) {
