@@ -57,7 +57,7 @@ const NavBar = memo(() => {
 
   return (
     <div className={styles.container}>
-      {/* Logo SIN recuadro */}
+
       <img
         src="/ggs.png"
         alt="Gestión de Gastos"
@@ -93,9 +93,9 @@ const NavBar = memo(() => {
                     onClick={handleWalletClick}
                   >
                     <BiWallet className={styles.icon} />
-                    <span>Carteras</span>
+                    <span>Wallets</span>
                   </button>
-                  <div className={styles.tooltipText}>Carteras</div>
+                  <div className={styles.tooltipText}>Wallets</div>
                 </div>
               )}
 

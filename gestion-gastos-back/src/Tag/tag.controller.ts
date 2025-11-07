@@ -119,7 +119,7 @@ async function update(req: Request, res: Response) {
     const existingTag = await em.findOne(Tag, { 
       name: req.body.sanitizedInput.name,
       user: { id: userId },
-      id: { $ne: id } // Excluir el tag actual
+      id: { $ne: id } 
     });
 
     if (existingTag) {

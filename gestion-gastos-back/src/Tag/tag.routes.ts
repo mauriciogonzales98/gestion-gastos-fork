@@ -1,4 +1,3 @@
-// tag.routes.ts
 import { Router } from "express";
 import {
   sanitizeTagInput,

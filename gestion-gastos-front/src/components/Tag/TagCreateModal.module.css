@@ -1,4 +1,3 @@
-/* TagCreateModal.module.css */
 .overlay {
   position: fixed;
   inset: 0;
@@ -64,7 +63,6 @@
 }
 
 .btnPrimary {
-  /* composes: btn; */
   background: #12824c;
   color: #fff;
 }
@@ -75,7 +73,6 @@
 }
 
 .btnSecondary {
-  /* composes: btn; */
   background: #e9ecef;
   color: #333;
 }
@@ -85,7 +82,6 @@
 }
 
 .btnDanger {
-  /* composes: btn; */
   background: #dc3545;
   color: #fff;
 }
@@ -95,7 +91,6 @@
   transform: translateY(-1px);
 }
 
-/* Color Picker Styles */
 .colorPickerContainer {
   margin-bottom: 10px;
 }
@@ -156,7 +151,6 @@
 }
 
 .colorButtonSelected {
-  /* composes: colorButton; */
   border-color: #333;
   transform: scale(1.1);
 }
@@ -181,7 +175,6 @@
   cursor: pointer;
 }
 
-/* Delete Confirmation Modal */
 .deleteOverlay {
   position: fixed;
   inset: 0;
@@ -228,7 +221,6 @@
   margin-top: 16px;
 }
 
-/* Form Layout */
 .form {
   display: flex;
   flex-direction: column;

@@ -75,7 +75,6 @@ export class RegistrationService {
 
       // STEP 1: Create user in Firebase Auth (generates UID)
       const authUser = await this.createAuthUser(process, request);
-      console.log("Firebase auth user created: ", authUser.uid);
 
       // STEP 2: Create user in local database using Firebase UID
       console.log(" Step 2: Creating local database user...");
@@ -125,8 +124,6 @@ export class RegistrationService {
 
       process.userId = user.id;
       await this.em.flush();
-
-      console.log("Process updated with user ID:", user.id);
     
   }
 
@@ -134,9 +131,6 @@ export class RegistrationService {
     process: RegistrationProcess,
     error: Error
   ): Promise<void> {
-    console.log("🔄 Handling registration error...");
-    console.log("   Current process step:", process.step);
-    console.log("   Auth UID:", process.userId);
     // Solo compensa si se ha creado el usuario en FB
     // pero falló la creación del usuario en BE
     if (process.step === "auth_creation_completed" && process.authCreated) {
@@ -155,10 +149,8 @@ export class RegistrationService {
   ): Promise<void> {
     process.markCompensating();
     await this.em.flush();
-    console.log(" Compensation started for process:", process.id);
 
     try {
-      console.log(" Deleting Firebase user:", process.userId);
       // Delete the Firebase auth user that was created
       await this.deleteAuthUser(process.userId!);
       // Marca la compensación como completada, y a la creación del usuario en BE como fallida.

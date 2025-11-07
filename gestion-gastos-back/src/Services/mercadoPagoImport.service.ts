@@ -1,4 +1,3 @@
-// // mercadoPago.service.ts
 // export class MercadoPagoService {
   
 //   public async syncUserMovements(userId: string) {

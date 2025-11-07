@@ -201,7 +201,6 @@ const SyncMercadoPago = () => {
 
       const data = await response.json();
       setDebugInfo(data.success ? "✅ Token MP válido" : "❌ Token MP inválido");
-      console.log("Token verification:", data);
       
     } catch (err) {
       console.error("Error verificando token:", err);
@@ -228,7 +227,6 @@ const SyncMercadoPago = () => {
         `✅ Pagos funcionan (${data.data?.paymentsCount || 0} resultados)` : 
         "❌ Error en pagos"
       );
-      console.log("Payments test:", data);
       
     } catch (err) {
       console.error("Error probando pagos:", err);

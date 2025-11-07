@@ -25,8 +25,12 @@
   cursor: pointer;
   transition: border-color 0.2s;
   min-height: 40px;
-  color: #222; 
-  font-weight: 500; 
+  min-width: 200px;
+}
+
+.selectedContent {
+  flex: 1;
+  min-width: 0;
 }
 
 .selectedContainer:hover {
@@ -42,6 +46,8 @@
   color: #555; 
   font-size: 12px;
   transition: transform 0.2s;
+  width: 16px;
+  text-align: center;
 }
 
 .selectedContainer:hover .arrow {
@@ -50,16 +56,27 @@
 
 .dropdown {
   position: absolute;
-  top: 100%;
   left: 0;
   right: 0;
   background: white;
   border: 1px solid #ddd;
   border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   max-height: 300px;
   overflow-y: auto;
+  min-width: 200px;
+}
+
+.dropdownDown {
+  top: 100%;
+  margin-top: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dropdownUp {
+  bottom: 100%;
+  margin-bottom: 5px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .dropdownHeader {
@@ -70,7 +87,7 @@
   border-bottom: 1px solid #e9ecef;
   background-color: #f8f9fa;
   font-weight: 500;
-  color: #222; 
+  color: #333;
 }
 
 .clearButton {
@@ -82,6 +99,7 @@
   padding: 4px 8px;
   border-radius: 4px;
   transition: background-color 0.2s;
+  font-weight: 500;
 }
 
 .clearButton:hover {
@@ -99,7 +117,8 @@
   padding: 8px 12px;
   cursor: pointer;
   transition: background-color 0.2s;
-  color: #222; 
+  color: #333;
+  font-weight: 400;
 }
 
 .tagOption:hover {
@@ -109,12 +128,20 @@
 .noTags {
   padding: 20px;
   text-align: center;
-  color: #555; 
+  color: #6c757d;
   font-style: italic;
 }
 
 .loading {
   padding: 20px;
   text-align: center;
-  color: #555; 
+  color: #6c757d;
+}
+
+.tagOption:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.tagOption:nth-child(even):hover {
+  background-color: #f0f0f0;
 }

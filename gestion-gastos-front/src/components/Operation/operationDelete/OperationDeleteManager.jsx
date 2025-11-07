@@ -28,7 +28,6 @@ const deleteOperation = async (operationId, token) => {
 
     return await response.json();
   } catch (error) {
-    console.log("Error al eliminar la operación: ", error);
   }
 };
 

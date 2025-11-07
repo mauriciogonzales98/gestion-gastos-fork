@@ -1,4 +1,3 @@
-// mercadoPago.routes.ts
 import { Router } from 'express';
 import { 
   initiateOAuth, 

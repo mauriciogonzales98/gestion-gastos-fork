@@ -1,4 +1,3 @@
-// tag.service.ts
 import { User } from "../User/user.entity.js";
 import { Tag } from "../Tag/tag.entity.js";
 

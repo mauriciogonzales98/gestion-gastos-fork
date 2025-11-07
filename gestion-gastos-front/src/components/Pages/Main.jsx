@@ -91,7 +91,6 @@ const Main = () => {
 
   const refreshOperations = () => {
     setDoRefreshOperations(true);
-    console.log("Refrescando operaciones con doRefreshOperations:", doRefreshOperations);
   };
 
   return (

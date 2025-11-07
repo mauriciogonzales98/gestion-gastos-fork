@@ -57,7 +57,6 @@
       });
       if (response.ok) {
         const tagsData = await response.json();
-        console.log("Tags data loaded:", tagsData);
         return tagsData.data;
       }
     } catch (error) {
@@ -104,7 +103,6 @@ export const loadEnrichedOperations = async (walletId, token) => {
 
    
   } catch (error) {
-    console.log("Error enriching categories: ", error);
     throw error;
   }
 };

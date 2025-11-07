@@ -53,7 +53,4 @@ export const fbDeleteUser = async (user) => {
     .then(() => {
       console.log("FB Auth: User deleted");
     })
-    .catch((error) => {
-      console.log("FB Auth: Error deleting user:", error);
-    });
 };

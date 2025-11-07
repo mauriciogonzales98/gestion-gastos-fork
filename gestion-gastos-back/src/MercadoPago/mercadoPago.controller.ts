@@ -1,4 +1,3 @@
-// mercadoPago.controller.ts
 import { Request, Response, NextFunction } from "express";
 import { orm } from "../shared/db/orm.js";
 import { User } from "../User/user.entity.js";
@@ -14,10 +13,9 @@ async function initiateOAuth(req: Request, res: Response) {
     const firebaseUser = (req as any).firebaseUser;
     const userId = firebaseUser.uid;
 
-    // Generar PKCE (ya lo tienes bien)
+    // Generar PKCE 
     const { codeVerifier, codeChallenge } = generatePKCE(userId);
 
-    // Construir URL de autorización con PKCE
     const authUrl = new URL('https://auth.mercadopago.com/authorization');
     authUrl.searchParams.append('client_id', process.env.MP_CLIENT_ID!);
     authUrl.searchParams.append('response_type', 'code');
@@ -27,11 +25,6 @@ async function initiateOAuth(req: Request, res: Response) {
     authUrl.searchParams.append('code_challenge', codeChallenge);
     authUrl.searchParams.append('code_challenge_method', 'S256');
 
-    console.log('🔵 === OAUTH CON PKCE ===');
-    console.log('🔵 User ID:', userId);
-    console.log('🔵 Code Verifier:', codeVerifier); // Solo para debug
-    console.log('🔵 Code Challenge:', codeChallenge);
-    console.log('🔵 Auth URL:', authUrl.toString());
 
     return res.status(200).json({
       success: true,
@@ -49,17 +42,14 @@ async function initiateOAuth(req: Request, res: Response) {
 
 async function oauthCallback(req: Request, res: Response) {
   try {
-    console.log('🔵 OAuth Callback - INICIO');
-    const { code, state: userId } = req.query;
 
-    console.log('🟡 Datos recibidos:', { code, userId });
+    const { code, state: userId } = req.query;
 
     if (!code || !userId) {
       console.error('❌ Faltan parámetros:', { code, userId });
       return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/configuracion?mp_error=missing_parameters`);
     }
 
-    // Obtener el code_verifier usando el userId
     const codeVerifier = getCodeVerifier(userId as string);
     
     if (!codeVerifier) {
@@ -67,9 +57,6 @@ async function oauthCallback(req: Request, res: Response) {
       return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/configuracion?mp_error=session_expired`);
     }
 
-    console.log('🟡 Code Verifier encontrado:', codeVerifier);
-
-    // Hacer el token exchange CON PKCE
     const tokenBody = new URLSearchParams();
     tokenBody.append('grant_type', 'authorization_code');
     tokenBody.append('client_id', process.env.MP_CLIENT_ID!);
@@ -77,12 +64,6 @@ async function oauthCallback(req: Request, res: Response) {
     tokenBody.append('code', code as string);
     tokenBody.append('redirect_uri', process.env.MP_REDIRECT_URI!);
     tokenBody.append('code_verifier', codeVerifier);
-
-    console.log('🟡 Enviando token request con PKCE...');
-    console.log('🟡 Client ID:', process.env.MP_CLIENT_ID);
-    console.log('🟡 Redirect URI:', process.env.MP_REDIRECT_URI);
-    console.log('🟡 Code length:', (code as string).length);
-    console.log('🟡 Code Verifier length:', codeVerifier.length);
 
     const tokenResponse = await fetch('https://api.mercadopago.com/oauth/token', {
       method: 'POST',
@@ -92,28 +73,18 @@ async function oauthCallback(req: Request, res: Response) {
       body: tokenBody
     });
 
-    console.log('🟡 Status:', tokenResponse.status);
-    console.log('🟡 Headers:', Object.fromEntries(tokenResponse.headers.entries()));
     
     const tokenData = await tokenResponse.json();
-    console.log('🟡 Respuesta completa:', JSON.stringify(tokenData, null, 2));
 
     if (!tokenResponse.ok) {
       console.error('❌ Error en token exchange:', tokenData);
       
-      // Limpiar el code_verifier en caso de error
       deleteCodeVerifier(userId as string);
       
       throw new Error(tokenData.error_description || tokenData.message || `Error ${tokenResponse.status}`);
     }
 
-    // Si llegamos aquí, ¡funcionó! Limpiar el code_verifier
     deleteCodeVerifier(userId as string);
-
-    console.log('✅ Token exchange EXITOSO con PKCE');
-    console.log('✅ Access Token:', tokenData.access_token?.substring(0, 20) + '...');
-    console.log('✅ Refresh Token:', tokenData.refresh_token?.substring(0, 20) + '...');
-    console.log('✅ User ID MP:', tokenData.user_id);
 
     // Buscar y actualizar usuario
     const user = await em.findOne(User, { id: userId as string });
@@ -130,7 +101,7 @@ async function oauthCallback(req: Request, res: Response) {
     );
 
     await em.flush();
-    console.log('✅ Tokens guardados exitosamente');
+    console.log(' Tokens guardados exitosamente');
 
     return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/Profile?mp_success=true`);
 
@@ -151,9 +122,6 @@ async function syncMovements(req: Request, res: Response) {
     const firebaseUser = (req as any).firebaseUser;
     const userId = firebaseUser.uid;
 
-    console.log('🔵 === INICIANDO SINCRONIZACIÓN ===');
-    console.log('🔵 User ID:', userId);
-
     // Obtener usuario con token de MP
     const user = await em.findOne(User, { id: userId });
     if (!user) {
@@ -172,13 +140,8 @@ async function syncMovements(req: Request, res: Response) {
       });
     }
 
-    console.log('🟡 Token válido, expira:', user.mpTokenExpiresAt);
-
     // Obtener movimientos de Mercado Pago
-    console.log('🟡 Obteniendo movimientos de MP...');
     const movements = await fetchMovementsFromMP(user.mpAccessToken!);
-    
-    console.log('✅ Movimientos obtenidos:', movements?.length || 0);
 
     // Procesar y guardar movimientos
     const savedMovements = await processAndSaveMovements(userId, movements);
@@ -187,8 +150,6 @@ async function syncMovements(req: Request, res: Response) {
     user.markLastSync();
     await em.flush();
 
-    console.log('✅ Sincronización completada exitosamente');
-
    return res.status(200).json({
   success: true,
   message: "Movimientos sincronizados exitosamente",
@@ -196,7 +157,6 @@ async function syncMovements(req: Request, res: Response) {
     imported: savedMovements.length,
     movements: savedMovements,
     lastSyncAt: user.lastSyncAt,
-    // ✅ Agregar estadísticas de operation_type
     statistics: {
       incomes: savedMovements.filter(m => m.type === OperationType.INGRESO).length,
       expenses: savedMovements.filter(m => m.type === OperationType.GASTO).length,
@@ -233,7 +193,6 @@ async function getConnectionStatus(req: Request, res: Response) {
 
     const user = await em.findOne(User, { id: userId });
 
-    // Usar el método helper
     const isConnected = user ? user.isMercadoPagoConnected() : false;
 
     return res.status(200).json({
@@ -258,13 +217,7 @@ async function getConnectionStatus(req: Request, res: Response) {
 // Funciones auxiliares
 async function fetchMovementsFromMP(accessToken: string): Promise<any[]> {
   try {
-    // ✅ URL CORRECTA - Sin parámetros de fecha
     const url = `https://api.mercadopago.com/v1/payments/search?sort=date_created&criteria=desc&limit=100`;
-    
-    console.log('🟡 === FETCHING MOVEMENTS FROM MP ===');
-    console.log('🟡 URL:', url);
-    console.log('🟡 Access Token:', accessToken.substring(0, 20) + '...');
-    console.log('🟡 Nota: MP devuelve automáticamente últimos 12 meses');
 
     const response = await fetch(url, {
       headers: {
@@ -273,8 +226,6 @@ async function fetchMovementsFromMP(accessToken: string): Promise<any[]> {
       }
     });
 
-    console.log('🟡 Response status:', response.status);
-
     if (!response.ok) {
       const errorData = await response.json();
       console.error('❌ Error response:', errorData);
@@ -282,17 +233,10 @@ async function fetchMovementsFromMP(accessToken: string): Promise<any[]> {
     }
 
     const data = await response.json();
-    console.log('🟡 Response data:', {
-      resultsCount: data.results?.length || 0,
-      total: data.paging?.total
-    });
 
-    // ✅ Filtrar solo pagos aprobados/completados
     const filteredResults = (data.results || []).filter((payment:any) => 
       payment.status === 'approved' || payment.status === 'completed'
     );
-
-    console.log('🟡 Pagos filtrados (aprobados/completados):', filteredResults.length);
 
     return filteredResults;
 
@@ -322,12 +266,9 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
   let incomeCount = 0;
   let expenseCount = 0;
 
-  console.log('🟡 === PROCESANDO MOVIMIENTOS ===');
-  console.log('🟡 Total movimientos recibidos de MP:', mpMovements.length);
 
   for (const payment of mpMovements) {
     try {
-      // ✅ CONSULTA NATIVA para verificar duplicados
       if (payment.id) {
         const existingCount = await em.getConnection().execute(
           'SELECT COUNT(*) as count FROM operation WHERE userid = ? AND external_id = ?',
@@ -335,16 +276,13 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
         );
         
         if (existingCount[0].count > 0) {
-          console.log(`⏭️  Pago ${payment.id} ya existe en DB, omitiendo`);
           duplicateCount++;
           continue;
         }
       }
 
-      // ✅ ACEPTAR MÁS ESTADOS
       const validStatuses = ['approved', 'completed', 'authorized', 'in_process'];
       if (!validStatuses.includes(payment.status)) {
-        console.log(`⏭️  Pago ${payment.id} con estado "${payment.status}" omitido`);
         invalidStatusCount++;
         continue;
       }
@@ -353,18 +291,14 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
       const transactionAmount = payment.transaction_amount || payment.amount || 0;
       const amount = Math.abs(transactionAmount);
       
-      // Si el monto es 0, omitir
       if (amount === 0) {
-        console.log(`⏭️  Pago ${payment.id} con monto 0, omitiendo`);
         continue;
       }
 
-      // ✅ LÓGICA MEJORADA CON operation_type
-      let type: OperationType = OperationType.GASTO; // Por defecto GASTO
+      let type: OperationType = OperationType.GASTO; 
       let typeReason = 'asumido gasto por defecto';
       const operationType = payment.operation_type || 'sin_operation_type';
 
-      // 1. PRIMERO por operation_type (más confiable)
       if (payment.operation_type) {
         switch (payment.operation_type) {
           case 'money_transfer':
@@ -382,7 +316,6 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
             break;
           case 'investment':
           case 'money_exchange':
-            // Estos pueden ser ambiguos, los dejamos como gasto por defecto
             type = OperationType.GASTO;
             typeReason = `operation_type: ${payment.operation_type} (asumido gasto)`;
             break;
@@ -390,11 +323,9 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
             typeReason = `operation_type: ${payment.operation_type} (no reconocido, asumido gasto)`;
         }
       }
-      // 2. LUEGO por description (solo si operation_type no está definido)
       else if (payment.description) {
         const descLower = payment.description.toLowerCase();
         
-        // Palabras clave que indican INGRESO (entrada de dinero)
         const incomeKeywords = [
           'reembolso',
           'devolución',
@@ -418,23 +349,19 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
         }
       }
 
-      // Contar por tipo
       if (type === OperationType.INGRESO) {
         incomeCount++;
       } else {
         expenseCount++;
       }
 
-      // Crear descripción (incluir operation_type para referencia)
       const description = payment.description || 
                          `Pago MP ${payment.id}`;
 
       // Fecha del pago
       const paymentDate = new Date(payment.date_created || payment.date_approved || payment.created_date);
 
-      console.log(`✅ Procesando: ${description} - $${amount} (${type}) - Razón: ${typeReason}`);
-
-      // Crear operation - ✅ SIN metadata
+      // Crear operation
       const operation = new Operation(
         amount,
         description,
@@ -454,7 +381,6 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
       await em.persistAndFlush(operation);
       processedCount++;
       
-      // ✅ Guardar operation_type en el objeto de respuesta para debug
       savedOperations.push({
         id: operation.id,
         amount: operation.amount,
@@ -466,26 +392,15 @@ async function processAndSaveMovements(userId: string, mpMovements: any[]): Prom
         operation_type: operationType // Para análisis en frontend
       });
 
-      console.log(`💾 Guardado: ${operation.description} - $${operation.amount} como ${operation.type}`);
-
     } catch (error) {
       console.error(`❌ Error procesando pago ${payment.id}:`, error);
     }
   }
 
-  console.log('🟡 === RESUMEN DETALLADO IMPORTACIÓN ===');
-  console.log('🟡 Total movimientos MP:', mpMovements.length);
-  console.log('🟡 Duplicados omitidos:', duplicateCount);
-  console.log('🟡 Estados inválidos omitidos:', invalidStatusCount);
-  console.log('🟡 Procesados exitosamente:', processedCount);
-  console.log('🟡 Ingresos:', incomeCount);
-  console.log('🟡 Gastos:', expenseCount);
-  console.log('🟡 Movimientos guardados:', savedOperations.length);
-
   return savedOperations;
 }
 
-// En mercadoPago.controller.ts - agregar esta función
+
 async function debugConfig(req: Request, res: Response) {
   try {
     const config = {
@@ -497,8 +412,6 @@ async function debugConfig(req: Request, res: Response) {
       clientSecretLength: process.env.MP_CLIENT_SECRET?.length || 0,
       accessTokenLength: process.env.MP_ACCESS_TOKEN?.length || 0
     };
-
-    console.log('🔧 Configuración MP:', config);
 
     return res.status(200).json({
       success: true,
@@ -513,7 +426,6 @@ async function debugConfig(req: Request, res: Response) {
   }
 }
 
-// En mercadoPago.controller.ts
 async function verifyOAuthConfig(req: Request, res: Response) {
   try {
     const config = {
@@ -531,8 +443,6 @@ async function verifyOAuthConfig(req: Request, res: Response) {
       ]
     };
 
-    console.log('🔍 Verificación OAuth:', config);
-
     return res.status(200).json({
       success: true,
       message: "Verificación de configuración OAuth",
@@ -546,7 +456,6 @@ async function verifyOAuthConfig(req: Request, res: Response) {
   }
 }
 
-// En mercadoPago.controller.ts - agregar esta función
 async function connectDirectly(req: Request, res: Response) {
   try {
     const firebaseUser = (req as any).firebaseUser;
@@ -559,11 +468,6 @@ async function connectDirectly(req: Request, res: Response) {
     }
 
     const userId = firebaseUser.uid;
-
-    console.log('🔵 === CONEXIÓN DIRECTA CON client_credentials ===');
-    console.log('🔵 User ID:', userId);
-    console.log('🔵 Client ID:', process.env.MP_CLIENT_ID);
-    console.log('🔵 Client Secret length:', process.env.MP_CLIENT_SECRET?.length);
 
     // Hacer la request directa a MP
     const tokenResponse = await fetch('https://api.mercadopago.com/oauth/token', {
@@ -578,12 +482,8 @@ async function connectDirectly(req: Request, res: Response) {
         test_token: 'false'
       })
     });
-
-    console.log('🟡 Status response:', tokenResponse.status);
-    console.log('🟡 Response headers:', Object.fromEntries(tokenResponse.headers.entries()));
     
     const tokenData = await tokenResponse.json();
-    console.log('🟡 Response data:', JSON.stringify(tokenData, null, 2));
 
     if (!tokenResponse.ok) {
       console.error('❌ Error en conexión directa:', tokenData);
@@ -595,13 +495,6 @@ async function connectDirectly(req: Request, res: Response) {
       throw new Error('No se recibió access_token en la respuesta');
     }
 
-    console.log('✅ Conexión directa EXITOSA');
-    console.log('✅ Access Token recibido:', tokenData.access_token.substring(0, 20) + '...');
-    console.log('✅ Token type:', tokenData.token_type);
-    console.log('✅ Expires in:', tokenData.expires_in);
-    console.log('✅ Scope:', tokenData.scope);
-    console.log('✅ User ID:', tokenData.user_id);
-
     // Buscar y actualizar usuario
     const user = await em.findOne(User, { id: userId });
     if (!user) {
@@ -611,20 +504,20 @@ async function connectDirectly(req: Request, res: Response) {
     // Actualizar tokens en el usuario
     user.updateMercadoPagoTokens(
       tokenData.access_token,
-      tokenData.refresh_token, // Puede ser undefined en client_credentials
+      tokenData.refresh_token, 
       tokenData.expires_in || 21600,
       tokenData.user_id
     );
 
     await em.flush();
-    console.log('✅ Tokens guardados en base de datos');
+    console.log('Tokens guardados en base de datos');
 
     return res.status(200).json({
       success: true,
       message: "Cuenta de Mercado Pago conectada exitosamente",
       data: { 
         connected: true,
-        accessToken: tokenData.access_token.substring(0, 20) + '...', // Solo para debug
+        accessToken: tokenData.access_token.substring(0, 20) + '...', 
         tokenType: tokenData.token_type,
         expiresIn: tokenData.expires_in,
         scope: tokenData.scope
@@ -655,18 +548,12 @@ async function verifyToken(req: Request, res: Response) {
       });
     }
 
-    console.log('🔵 === VERIFICANDO TOKEN MP ===');
-    console.log('🔵 Token:', user.mpAccessToken.substring(0, 20) + '...');
-
-    // Probar el token obteniendo información del usuario
     const response = await fetch('https://api.mercadopago.com/users/me', {
       headers: {
         'Authorization': `Bearer ${user.mpAccessToken}`,
         'Content-Type': 'application/json'
       }
     });
-
-    console.log('🟡 Response status:', response.status);
     
     if (!response.ok) {
       const errorData = await response.json();
@@ -680,7 +567,6 @@ async function verifyToken(req: Request, res: Response) {
     }
 
     const userInfo = await response.json();
-    console.log('✅ User info obtenida:', userInfo);
 
     return res.status(200).json({
       success: true,
@@ -704,8 +590,6 @@ async function verifyToken(req: Request, res: Response) {
   }
 }
 
-// Función para probar obtener pagos específicamente
-// En mercadoPago.controller.ts - REEMPLAZA la función formatDateForMP
 function formatDateForMP(date: Date): string {
   // FORZAR 2024 temporalmente para probar
   const correctedDate = new Date(date);
@@ -715,14 +599,10 @@ function formatDateForMP(date: Date): string {
   const month = String(correctedDate.getMonth() + 1).padStart(2, '0');
   const day = String(correctedDate.getDate()).padStart(2, '0');
   
-  console.log(`🟡 Fecha original: ${date.toISOString()}`);
-  console.log(`🟡 Fecha corregida: ${year}-${month}-${day}`);
-  
   return `${year}-${month}-${day}`;
 }
 
 
-// También actualiza la función testPayments para usar fechas reales del pasado
 async function testPayments(req: Request, res: Response) {
   try {
     const firebaseUser = (req as any).firebaseUser;
@@ -735,10 +615,7 @@ async function testPayments(req: Request, res: Response) {
         message: "Usuario no tiene token de MP",
       });
     }
-
-    console.log('🔵 === TESTEANDO ENDPOINT DE PAGOS ===');
     
-    // ✅ USAR FECHAS REALES DEL PASADO - CORREGIDO
     const today = new Date();
     const thirtyDaysAgo = new Date(today);
     thirtyDaysAgo.setDate(today.getDate() - 30);
@@ -749,11 +626,6 @@ async function testPayments(req: Request, res: Response) {
     
     // URL con fechas reales
     const testUrl = `https://api.mercadopago.com/v1/payments/search?range=date_created&begin_date=${fromDate}&end_date=${toDate}&sort=date_created&criteria=desc&limit=10`;
-    
-    console.log('🟡 Test URL:', testUrl);
-    console.log('🟡 From Date (corregido):', fromDate);
-    console.log('🟡 To Date (corregido):', toDate);
-    console.log('🟡 Token:', user.mpAccessToken.substring(0, 20) + '...');
 
     const response = await fetch(testUrl, {
       headers: {
@@ -762,7 +634,6 @@ async function testPayments(req: Request, res: Response) {
       }
     });
 
-    console.log('🟡 Response status:', response.status);
     
     if (!response.ok) {
       const errorData = await response.json();
@@ -776,10 +647,6 @@ async function testPayments(req: Request, res: Response) {
     }
 
     const paymentsData = await response.json();
-    console.log('✅ Payments test successful:', {
-      results: paymentsData.results?.length || 0,
-      total: paymentsData.paging?.total
-    });
 
     return res.status(200).json({
       success: true,
@@ -788,7 +655,7 @@ async function testPayments(req: Request, res: Response) {
         paymentsCount: paymentsData.results?.length || 0,
         total: paymentsData.paging?.total,
         sample: paymentsData.results?.slice(0, 3),
-        // Para debug adicional
+
         dateRange: {
           from: fromDate,
           to: toDate,

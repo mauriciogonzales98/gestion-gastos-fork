@@ -7,7 +7,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 */
-/* ?? */ 
 body, html {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   overflow: hidden;
@@ -18,7 +17,6 @@ body, html {
   box-sizing: border-box;
 }
 
-/* ?? */ 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -54,14 +52,11 @@ input::placeholder {
   color: #8a9a8a;
 }
 
-
-/* ESTILOS GLOBALES PARA SCROLLBARS */
 * {
   scrollbar-width: thin;
   scrollbar-color: #1b8188 transparent;
 }
 
-/* Webkit (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -85,7 +80,6 @@ input::placeholder {
   background: linear-gradient(135deg, #12824c 0%, #1b8188 100%);
 }
 
-/* Scrollbars específicos para elementos con overflow */
 .scroll-container {
   scrollbar-width: thin;
   scrollbar-color: #1b8188 transparent;
