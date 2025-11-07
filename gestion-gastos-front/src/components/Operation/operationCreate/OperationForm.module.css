@@ -123,24 +123,29 @@
   font-size: 16px;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  background-color: white !important;
+  color: #495057; 
 }
 
 .input:focus {
   outline: none;
   border-color: #007bff;
+  background-color: white !important; 
 }
 
 .input:disabled {
-  background-color: #f8f9fa;
+  background-color: #f8f9fa !important; 
   cursor: not-allowed;
   opacity: 0.7;
 }
 
+.input[type="number"],
+.input[type="text"],
 .input[type="date"] {
+  background-color: white !important;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-color: white;
   font-family: inherit;
 }
 
@@ -179,7 +184,6 @@
   background-color: #e3f2fd;
 }
 
-/* Estilos para Firefox */
 .input[type="date"]::-moz-focus-inner {
   border: 0;
   padding: 0;
@@ -195,6 +199,25 @@
 
 .input[type="date"]::-moz-calendar-picker-indicator:hover {
   background-color: #e9ecef;
+}
+
+.input[type="number"] {
+  background-color: white !important;
+}
+
+.input[type="number"]::-webkit-outer-spin-button,
+.input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.input[type="text"] {
+  background-color: white !important;
 }
 
 .categorySection {

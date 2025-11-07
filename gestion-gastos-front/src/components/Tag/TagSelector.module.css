@@ -38,12 +38,12 @@
 }
 
 .placeholder {
-  color: #6c757d;
+  color: #555; 
   font-style: italic;
 }
 
 .arrow {
-  color: #6c757d;
+  color: #555; 
   font-size: 12px;
   transition: transform 0.2s;
   width: 16px;

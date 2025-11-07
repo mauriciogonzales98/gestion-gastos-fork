@@ -34,8 +34,13 @@ export class Operation {
   @ManyToOne(() => Wallet, { fieldName: 'walletid' })
   wallet!: Wallet;
 
-  @ManyToOne(() => Category, { fieldName: 'categoryid', nullable: true })
-  category!: Category;
+  @ManyToOne(() => Category, { 
+    fieldName: 'categoryid', 
+    nullable: true,
+    deleteRule: 'set null',
+    updateRule: 'cascade' 
+  })
+  category?: Category;
 
   @Property({ fieldName: 'external_id', nullable: true })
   externalId?: string;

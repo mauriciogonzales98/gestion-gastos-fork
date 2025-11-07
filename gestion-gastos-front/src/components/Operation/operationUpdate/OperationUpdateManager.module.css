@@ -12,7 +12,6 @@
   overflow: hidden;
 }
 
-/* Efecto glassmorphism overlay para mantener la legibilidad */
 .editForm::before {
   content: '';
   position: absolute;
@@ -185,7 +184,6 @@
   transform: translateY(0);
 }
 
-/* Estilos para inputs específicos */
 .editInput[type="date"] {
   cursor: pointer;
   width: 100%;
@@ -197,7 +195,6 @@
 }
 
 .editInput[type="number"] {
-  /* Propiedades estándar primero */
   appearance: textfield;
   -moz-appearance: textfield;
   width: 100%;
@@ -214,7 +211,6 @@
   width: 100%;
 }
 
-/* Estados de deshabilitado */
 .editInput:disabled {
   background: rgba(255, 255, 255, 0.05);
   color: #a6beb9;
@@ -236,7 +232,6 @@
   box-shadow: none;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .editForm {
     padding: 1.5rem;
@@ -283,7 +278,6 @@
   }
 }
 
-/* Animaciones suaves */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -299,8 +293,13 @@
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Asegurar que todos los elementos respeten el contenedor */
 .editForm * {
   box-sizing: border-box;
   max-width: 100%;
+}
+
+.tagSelectorContainer {
+  margin-top: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
