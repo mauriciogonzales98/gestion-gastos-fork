@@ -222,3 +222,71 @@
     font-size: 0.95rem;
   }
 }
+/* Estilos para las reglas de contraseña */
+.passwordRules {
+  background: rgba(27, 129, 136, 0.1);
+  border: 1px solid #386d6d;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+
+.rulesTitle {
+  color: #e9e8ee;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.rulesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: #a6beb9;
+  font-size: 0.8rem;
+}
+
+.rulesList li {
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ruleValid {
+  color: #12824c;
+}
+
+.ruleInvalid {
+  color: #ff6b6b;
+}
+
+/* Estilos para el indicador de coincidencia de contraseñas */
+.matchValid {
+  color: #12824c;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.matchInvalid {
+  color: #ff6b6b;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Responsive para las reglas de contraseña */
+@media (max-width: 768px) {
+  .passwordRules {
+    padding: 0.8rem;
+  }
+  
+  .rulesList {
+    font-size: 0.75rem;
+  }
+}
